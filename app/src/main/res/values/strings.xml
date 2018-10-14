@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Economist Vocabulary</string>
+    <string name="article_image">Economist Article image</string>
 </resources>

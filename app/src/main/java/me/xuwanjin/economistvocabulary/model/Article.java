@@ -80,11 +80,11 @@ public class Article {
         this.articleUrl = articleUrl;
     }
 
-    public String getImagesUrls() {
+    public ArrayList<String> getImagesUrls() {
         return imagesUrls;
     }
 
-    public void setImagesUrls(String imagesUrls) {
+    public void setImagesUrls(ArrayList<String> imagesUrls) {
         this.imagesUrls = imagesUrls;
     }
 

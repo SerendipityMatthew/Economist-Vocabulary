@@ -5,9 +5,9 @@ with open("OALECD_History_20190811.txt", "r") as file:
     vocabulary_dict = file.readlines()
 
 
-def eliminate_duplicate_word(dict):
+def eliminate_duplicate_word(dictionary):
     eliminated = []
-    for word in dict:
+    for word in dictionary:
         w = word.replace("\n", "")
         if w is not None and w not in eliminated:
             eliminated.append(w)

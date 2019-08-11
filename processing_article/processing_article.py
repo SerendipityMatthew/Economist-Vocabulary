@@ -1,8 +1,11 @@
-with open("article", "r") as file:
-    article_file = file.readlines()
+VOCABULARY_FILE = "OALECD_History_20190811.txt"
+BASE_ARTICLE_FILE = "article"
 
-with open("OALECD_History_20190811.txt", "r") as file:
-    vocabulary_dict = file.readlines()
+
+def get_article_file_stream(filename):
+    with open(filename, "r") as file:
+        article = file.readlines()
+    return article
 
 
 # 消除重复的单词
@@ -63,7 +66,8 @@ def match_sentence_and_vocabulary(sentence, vocabulary_list):
     return None
 
 
-def main():
+def get_article_word_sentence_map(article_file_path):
+    article_file = get_article_file_stream(article_file_path)
     para_list = process_article_get_para(article_file)
     line_list = []
     for para in para_list:
@@ -71,16 +75,33 @@ def main():
         for line in d:
             line_list.append(line)
 
+    vocabulary_dict = get_article_file_stream(VOCABULARY_FILE)
     eliminated = eliminate_duplicate_word(vocabulary_dict)
-
+    print(len(eliminated))
     word_sentence = []
     for line in line_list:
         word_sentence_map = match_sentence_and_vocabulary(line, eliminated)
         if word_sentence_map is not None:
             word_sentence.append(word_sentence_map)
 
-    for l in word_sentence:
-        print(l)
+    for n in word_sentence:
+        print(n)
+    return word_sentence
+
+
+def get_all_word_sentence():
+    all_map = []
+    for n in range(1, 6):
+        article_file = BASE_ARTICLE_FILE + "0" + str(n)
+        word_sentence_map = get_article_word_sentence_map(article_file)
+        all_map.extend(word_sentence_map)
+
+    # for n in all_map:
+        # print(n)
+
+
+def main():
+    get_all_word_sentence()
 
 
 if __name__ == "__main__":

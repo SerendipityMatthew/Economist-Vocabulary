@@ -2326,7 +2326,6 @@ memorabilia
 autocracy
 subpoena
 disingenuous
-do
 in-house
 curate
 curate
@@ -2884,7 +2883,6 @@ mortality
 resemble
 lethal
 gut
-or
 hypothetical
 decrepit
 walk
@@ -9180,13 +9178,6 @@ lay
 lay
 lay
 laid
-talk
-talk
-come
-come
-come
-came
-go
 limb
 annals
 sedentary
@@ -10337,8 +10328,6 @@ beat
 blow
 bring
 point
-use
-do
 hang
 mole
 ownership

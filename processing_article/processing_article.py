@@ -5,6 +5,7 @@ with open("OALECD_History_20190811.txt", "r") as file:
     vocabulary_dict = file.readlines()
 
 
+# 消除重复的单词
 def eliminate_duplicate_word(dictionary):
     eliminated = []
     for word in dictionary:
@@ -15,6 +16,7 @@ def eliminate_duplicate_word(dictionary):
     return eliminated
 
 
+# 处理每一篇文章, 获取每一篇文章的段落
 def process_article_get_para(article):
     processed = []
     for n in article:
@@ -22,6 +24,7 @@ def process_article_get_para(article):
     return processed
 
 
+# 处理每一个段落, 获得段落里的每一个句子
 def process_para_get_lines(para):
     lines = []
     li = para.split(". ")
@@ -35,6 +38,7 @@ def process_para_get_lines(para):
 
 # word -----> [sentence01, sentence02, sentence03]
 # [sentence]   ------> [word01, word02, word03]
+# 匹配生词和句子
 def match_sentence_and_vocabulary(sentence, vocabulary_list):
     # sentence_list = str(sentence).split(" ")
     # for word in sentence_list:
@@ -75,7 +79,8 @@ def main():
         if word_sentence_map is not None:
             word_sentence.append(word_sentence_map)
 
-    print(word_sentence)
+    for l in word_sentence:
+        print(l)
 
 
 if __name__ == "__main__":

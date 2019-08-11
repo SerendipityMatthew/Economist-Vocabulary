@@ -28,24 +28,54 @@ def process_para_get_lines(para):
     for l in li:
         if not l.endswith("."):
             l1 = l.__add__(".")
-            lines.append(l1)
+            l = l1
+        lines.append(l)
     return lines
+
+
+# word -----> [sentence01, sentence02, sentence03]
+# [sentence]   ------> [word01, word02, word03]
+def match_sentence_and_vocabulary(sentence, vocabulary_list):
+    # sentence_list = str(sentence).split(" ")
+    # for word in sentence_list:
+    #     w = word
+    #     if "," in word:
+    #         w = word.replace(",", "")
+    #     if "." in word:
+    #         w = word.replace(".", "")
+    #     if ":" in word:
+    #         w = word.replace(":", "")
+    #
+    #     if w in vocabulary_list:
+    #         return [w, {sentence}]
+
+    splatted_sentence = sentence.replace(":", "").replace(",", "").replace("?", "").replace("!", "").split(" ")
+
+    for vocabulary in vocabulary_list:
+        for word in splatted_sentence:
+            if word.lower().__eq__(vocabulary.lower()):
+                return [word, sentence]
+
+    return None
 
 
 def main():
     para_list = process_article_get_para(article_file)
     line_list = []
-    for x in para_list:
-        d = process_para_get_lines(x)
+    for para in para_list:
+        d = process_para_get_lines(para)
         for line in d:
             line_list.append(line)
 
-    for l in line_list:
-        pass
-        # print(l)
-
     eliminated = eliminate_duplicate_word(vocabulary_dict)
-    print(eliminated)
+
+    word_sentence = []
+    for line in line_list:
+        word_sentence_map = match_sentence_and_vocabulary(line, eliminated)
+        if word_sentence_map is not None:
+            word_sentence.append(word_sentence_map)
+
+    print(word_sentence)
 
 
 if __name__ == "__main__":

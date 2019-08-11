@@ -1,3 +1,4 @@
+impromptu
 deplorable
 lamentable
 nominal
@@ -851,7 +852,6 @@ reluctant
 ascribe
 monty
 lily-livered
-big
 assiduous
 orderly
 obedient
@@ -1707,7 +1707,6 @@ sell-off
 break
 fortify
 uproot
-I
 mishap
 street light
 lamp
@@ -3530,7 +3529,6 @@ breach
 upend
 eligible
 coherence
-it
 aggregator
 swoop
 acrimonious
@@ -3799,7 +3797,6 @@ compound
 scalar
 reason
 mutable
-get
 indisposition
 lurgy
 ailment
@@ -3993,7 +3990,6 @@ err
 surpass
 supremacy
 expatriate
-an
 indelible
 crapshoot
 plunge
@@ -4901,7 +4897,6 @@ feud
 rivalry
 fierce
 derision
-the
 prompt
 intimate
 catalogue
@@ -7187,7 +7182,6 @@ mottled
 bedstead
 agony
 sinister
-that
 wry
 toll
 reassert
@@ -7795,7 +7789,6 @@ alone
 frail
 taut
 plaque
-man
 attendant
 nebulous
 fixation
@@ -7805,7 +7798,7 @@ augment
 exquisite
 manifest
 change
-glamorous
+glamorousthat
 unglamorous
 lethal
 foreshadow
@@ -8233,7 +8226,6 @@ devastating
 horseradish
 mistress
 pastry
-get
 disparage
 comrade
 dowry
@@ -8242,7 +8234,6 @@ christen
 register
 incorporate
 contentious
-they
 inherit
 entail
 reluctant
@@ -8402,7 +8393,6 @@ stash
 stash
 elude
 vantage point
-that
 emphatic
 convulse
 bawl
@@ -8805,7 +8795,6 @@ hysteria
 resistance
 excoriate
 netizen
-A
 categorize
 dig
 displeasure
@@ -9769,9 +9758,6 @@ codify
 exile
 idolize
 revere
-come
-come
-get
 horrific
 parole
 plea
@@ -11321,7 +11307,6 @@ devoid
 auditory
 capacity
 service
-from
 memo
 mono
 stereo

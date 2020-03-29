@@ -6,17 +6,17 @@
         android:title="@string/item_today"
         />
     <item android:id="@+id/item_weekly"
-        android:orderInCategory="0"
+        android:orderInCategory="1"
         android:icon="@mipmap/ic_launcher_round"
         android:title="@string/item_weekly"
         />
     <item android:id="@+id/item_bookmark"
         android:icon="@mipmap/ic_launcher_round"
-        android:orderInCategory="0"
+        android:orderInCategory="2"
         android:title="@string/item_bookmark"
         />
     <item android:id="@+id/item_setting"
-        android:orderInCategory="0"
+        android:orderInCategory="3"
         android:icon="@mipmap/ic_launcher_round"
         android:title="@string/item_settings"
         />

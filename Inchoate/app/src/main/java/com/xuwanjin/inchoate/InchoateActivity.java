@@ -3,6 +3,9 @@ package com.xuwanjin.inchoate;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,7 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class InchoateActivity extends AppCompatActivity
 implements BottomNavigationView.OnNavigationItemSelectedListener{
-
+    NavController controller;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,18 +25,21 @@ implements BottomNavigationView.OnNavigationItemSelectedListener{
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setBackgroundColor(Color.WHITE);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        View fragment = findViewById(R.id.nav_host_fragment);
+        controller = Navigation.findNavController(this, R.id.nav_host_fragment);
 
 
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Log.d("Matthew", "onNavigationItemSelected: 0 ");
         if (item.getItemId() == R.id.item_today){
-            Log.d("Matthew", "onNavigationItemSelected: 1 ");
+            controller.navigate(R.id.navigation_today);
         }else if (item.getItemId() == R.id.item_weekly){
-            Log.d("Matthew", "onNavigationItemSelected: 2");
+           controller.navigate(R.id.navigation_weekly);
+        }else if (item.getItemId() == R.id.item_bookmark){
+            controller.navigate(R.id.navigation_bookmark);
+        }else if (item.getItemId() == R.id.item_setting){
+            controller.navigate(R.id.navigation_settings);
         }
         return false;
     }

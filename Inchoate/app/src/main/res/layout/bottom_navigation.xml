@@ -8,8 +8,11 @@
         android:id="@+id/bottom_navigation"
         app:itemTextColor="@color/selector_item_color"
         android:layout_width="match_parent"
+        app:itemTextAppearanceActive="@color/colorPrimary"
+        app:itemTextAppearanceInactive="@color/colorAccent"
+        app:itemRippleColor="@color/colorPrimary"
         android:layout_height="wrap_content"
-        app:itemIconTint="@color/colorAccent"
+        app:itemIconTint="@color/selector_item_color"
         app:menu="@menu/menu_bottom_nav"
         >
     </com.google.android.material.bottomnavigation.BottomNavigationView>

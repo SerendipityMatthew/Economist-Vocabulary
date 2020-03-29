@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
 public class InchoateActivity extends AppCompatActivity
 implements BottomNavigationView.OnNavigationItemSelectedListener{
@@ -25,6 +26,7 @@ implements BottomNavigationView.OnNavigationItemSelectedListener{
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setBackgroundColor(Color.WHITE);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         controller = Navigation.findNavController(this, R.id.nav_host_fragment);
 
 
@@ -38,7 +40,7 @@ implements BottomNavigationView.OnNavigationItemSelectedListener{
            controller.navigate(R.id.navigation_weekly);
         }else if (item.getItemId() == R.id.item_bookmark){
             controller.navigate(R.id.navigation_bookmark);
-        }else if (item.getItemId() == R.id.item_setting){
+        } else if (item.getItemId() == R.id.item_setting){
             controller.navigate(R.id.navigation_settings);
         }
         return false;

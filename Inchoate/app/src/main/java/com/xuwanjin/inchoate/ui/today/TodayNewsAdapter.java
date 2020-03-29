@@ -1,0 +1,67 @@
+package com.xuwanjin.inchoate.ui.today;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.Glide;
+import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.model.Article;
+
+import java.util.List;
+
+public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.ViewHolder> {
+    private List<Article> mArticleList;
+    private Context mContext;
+
+    public TodayNewsAdapter(Context context, List<Article> articles) {
+        mArticleList = articles;
+        mContext = context;
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.today_news, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Glide.with(mContext).load(R.mipmap.article_image).into(holder.articleImage);
+        LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
+//        lottieAnimationView.setAnimationFromJson(Animation);
+//        Glide.with(mContext).load()
+    }
+
+    @Override
+    public int getItemCount() {
+        return mArticleList == null ? 0 : mArticleList.size();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView articleImage;
+        TextView sectionText;
+        TextView summaryText;
+        TextView readTime;
+        ImageView play;
+        ImageView bookmark;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            articleImage = itemView.findViewById(R.id.article_image);
+            sectionText = itemView.findViewById(R.id.section);
+            summaryText = itemView.findViewById(R.id.summary);
+            readTime = itemView.findViewById(R.id.read_time);
+            play = itemView.findViewById(R.id.play);
+            bookmark = itemView.findViewById(R.id.bookmark);
+        }
+    }
+}

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,22 +12,22 @@
         android:orientation="vertical">
 
         <TextView
-            android:textStyle="bold"
-            android:textSize="30sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:text="@string/weekly"
-            android:layout_marginLeft="20dp"
+            android:textSize="30sp"
+            android:textStyle="bold"
             tools:ignore="MissingConstraints" />
 
         <ImageView
-            android:layout_marginTop="20dp"
             android:id="@+id/magazine_cover"
-            android:layout_marginLeft="110dp"
-            android:layout_marginRight="110dp"
-            android:background="@mipmap/magazine_cover"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="110dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="110dp"
+            android:background="@mipmap/magazine_cover" />
 
         <TextView
             android:id="@+id/magazine_headline"
@@ -42,56 +42,84 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="2">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_height="wrap_content">
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal">
+
                 <ImageView
-                    android:background="@mipmap/ic_launcher_round"
                     android:layout_width="50dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
+                    android:gravity="end|center_vertical"
+                    android:background="@mipmap/ic_launcher_round"
                     android:contentDescription="TODO" />
+
                 <TextView
                     android:id="@+id/stream_audio"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:layout_gravity="center_vertical"
                     android:singleLine="true"
-                    android:text="@string/stream_audio" />
+                    android:gravity="end"
+                    android:text="@string/stream_audio"
+                    android:textSize="20sp"
+                    tools:ignore="NestedWeights" />
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_gravity="left"
                 tools:ignore="UseCompoundDrawables">
+
                 <ImageView
                     android:layout_width="50dp"
-                    android:background="@mipmap/ic_launcher_round"
                     android:layout_height="wrap_content"
+                    android:background="@mipmap/ic_launcher_round"
                     android:contentDescription="TODO" />
+
                 <TextView
                     android:id="@+id/download_audio"
                     android:layout_width="match_parent"
-                    android:layout_gravity="center_vertical"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:singleLine="true"
-                    android:textSize="20sp"
-                    android:text="@string/download_audio" />
+                    android:text="@string/download_audio"
+                    android:textSize="20sp" />
             </LinearLayout>
         </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/darker_gray" />
+
         <TextView
             android:id="@+id/previous_edition"
-            android:textSize="20sp"
             android:layout_width="match_parent"
-            android:layout_height="30dp"/>
+            android:layout_height="30dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/previous"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/darker_gray" />
+
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="30dp"
             android:id="@+id/issue_content_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -106,4 +134,4 @@
             tools:spanCount="2" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

@@ -17,13 +17,16 @@ import com.xuwanjin.inchoate.model.Article;
 
 import java.util.List;
 
-public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHolder> {
+public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHolder> implements StickHeaderDecoration.StickHeaderInterface {
     private Context mContext;
     private List<Article> mArticleList;
-    public BookmarkAdapter(List<Article> articles, Context context){
+
+    public BookmarkAdapter(List<Article> articles, Context context) {
         mContext = context;
         mArticleList = articles;
     }
+
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,18 +37,30 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Glide.with(mContext).load(R.mipmap.article_image).into(holder.article_image);
+        holder.article_title.setText("Matthew" + position);
+        holder.dateAndReadTime.setText("Matthew" + position);
     }
 
 
     @Override
     public int getItemCount() {
-        return mArticleList == null? 0:mArticleList.size();
+        return mArticleList == null ? 0 : mArticleList.size();
     }
-    class ViewHolder extends RecyclerView.ViewHolder{
+
+    @Override
+    public boolean isStick(int position) {
+        if ((position % 8 == 0)) {
+            return true;
+        }
+        return false;
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
         TextView article_title;
         ImageView article_image;
         TextView dateAndReadTime;
         ImageView bookmark;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             article_title = itemView.findViewById(R.id.article_title);

@@ -1,12 +1,11 @@
 package com.xuwanjin.inchoate.model;
 
-import android.net.Uri;
-
 import java.net.URL;
 
 public class Article {
-    public String section;
+    public Section section;
     public String headline;
+    public String date;
     public String Title;
     public String summary;
     public String mainArticleImage;

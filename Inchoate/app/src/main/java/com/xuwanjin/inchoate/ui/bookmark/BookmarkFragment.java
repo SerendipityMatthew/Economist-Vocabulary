@@ -27,20 +27,22 @@ public class BookmarkFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),1);
         gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         bookmarkRecycleView.setLayoutManager(gridLayoutManager);
+        List<Article> articles = new ArrayList<>();
+        for (int i =0; i< 60 ;i ++){
+            Article article =  new Article();
+            article.summary = "Matthew" + i;
+            article.headline= "Matthew = " + i;
+            articles.add(article);
+        }
+        BookmarkAdapter adapter = new BookmarkAdapter(articles, getContext());
+        bookmarkRecycleView.setAdapter(adapter);
+        bookmarkRecycleView.addItemDecoration(new StickHeaderDecoration(bookmarkRecycleView));
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        List<Article> articles = new ArrayList<>();
-        for (int i =0; i< 60 ;i ++){
-            Article article =  new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.headline= "Matthew = " + i;
-            articles.add(article);
-        }
-        BookmarkAdapter adapter = new BookmarkAdapter(articles, getContext());
-        bookmarkRecycleView.setAdapter(adapter);
+
     }
 }

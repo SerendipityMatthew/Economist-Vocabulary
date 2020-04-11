@@ -34,7 +34,7 @@ public class BookmarkFragment extends Fragment {
             article.headline= "Matthew = " + i;
             articles.add(article);
         }
-        BookmarkAdapter adapter = new BookmarkAdapter(articles, getContext());
+        BookmarkAdapter adapter = new BookmarkAdapter(articles, getContext(), this);
         bookmarkRecycleView.setAdapter(adapter);
         bookmarkRecycleView.addItemDecoration(new StickHeaderDecoration(bookmarkRecycleView));
         return view;

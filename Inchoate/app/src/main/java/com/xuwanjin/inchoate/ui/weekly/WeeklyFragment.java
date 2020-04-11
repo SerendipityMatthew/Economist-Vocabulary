@@ -42,7 +42,7 @@ public class WeeklyFragment extends Fragment {
             article.headline= "Matthew = " + i;
             articles.add(article);
         }
-        BookmarkAdapter adapter = new BookmarkAdapter(articles, getContext());
+        BookmarkAdapter adapter = new BookmarkAdapter(articles, getContext(), this);
         issue_content_recyclerView.setAdapter(adapter);
         issue_content_recyclerView.addItemDecoration(new StickHeaderDecoration(issue_content_recyclerView));
 

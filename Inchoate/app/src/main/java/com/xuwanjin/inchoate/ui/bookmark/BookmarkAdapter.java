@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,10 +21,16 @@ import java.util.List;
 public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHolder> implements StickHeaderDecoration.StickHeaderInterface {
     private Context mContext;
     private List<Article> mArticleList;
+    private Fragment mFragment;
 
-    public BookmarkAdapter(List<Article> articles, Context context) {
+    public BookmarkAdapter(List<Article> articles, Context context, Fragment fragment) {
         mContext = context;
         mArticleList = articles;
+        mFragment = fragment;
+    }
+
+    public Fragment getFragment(){
+        return mFragment;
     }
 
 

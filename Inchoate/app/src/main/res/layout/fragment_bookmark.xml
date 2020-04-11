@@ -18,6 +18,7 @@
             android:layout_marginStart="20dp"
             android:text="@string/bookmarks"
             android:textSize="30sp"
+            android:id="@+id/bookmark"
             android:textStyle="bold"
             android:orientation="vertical"
             android:layout_marginTop="10dp"

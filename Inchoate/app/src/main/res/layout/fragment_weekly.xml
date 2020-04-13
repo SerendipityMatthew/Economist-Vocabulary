@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,16 +20,8 @@
             android:textSize="30sp"
             android:textStyle="bold"
             tools:ignore="MissingConstraints" />
-
-        <TextView
-            android:id="@+id/section_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:background="@color/colorAccent"
-            android:text="@string/section_menu"
-            tools:ignore="MissingConstraints" />
     </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/issue_content_recyclerView"
@@ -46,6 +37,4 @@
         tools:itemCount="20"
         tools:listitem="@layout/today_news"
         tools:spanCount="2" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

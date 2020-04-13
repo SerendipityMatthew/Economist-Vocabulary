@@ -88,7 +88,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             if (mHeaderView != null) {
                 Glide.with(mContext).load(R.mipmap.article_image).into(holder.article_image);
                 holder.article_title.setText(mArticleList.get(position).headline + "  , position = " + position);
-                holder.dateAndReadTime.setText(mArticleList.get(position - 1).headline);
+                holder.dateAndReadTime.setText(mArticleList.get(position).headline);
             } else {
                 Glide.with(mContext).load(R.mipmap.article_image).into(holder.article_image);
                 holder.article_title.setText(mArticleList.get(position).headline + "  , position = " + position);

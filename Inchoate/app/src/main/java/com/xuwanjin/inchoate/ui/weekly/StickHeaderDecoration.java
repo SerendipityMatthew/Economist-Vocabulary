@@ -45,7 +45,7 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
 
         mItemHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mItemHeaderPaint.setColor(Color.RED);
-        mItemHeaderPaint.setAlpha(100);
+//        mItemHeaderPaint.setAlpha(100);
         mItemHeaderHeight = dip2px(mContext, 40);
 
         mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -88,7 +88,6 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
         for (int i = 0; i < count; i++) {
             View view = parent.getChildAt(i);
             // view 是 RecyclerView 里的每一项, 包括填充进去的 HeaderView
-//            Log.d("Matthew", "onDraw: view = " + view + " mHeaderView = " + adapter.getHeaderView());
             int position = parent.getChildLayoutPosition(view);
 
             boolean isHeader = adapter.isItemHeader(position);

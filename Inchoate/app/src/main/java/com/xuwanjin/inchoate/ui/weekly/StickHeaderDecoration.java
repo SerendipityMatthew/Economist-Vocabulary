@@ -126,9 +126,7 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
             // 如果不是 mHeaderView 的话(也就是头部 View) ,
             // 那么就在 RecycleView 里列表的第一个可以看见的 View 的顶部画一个固定栏
             // 怎样找到第一个可见的 View, 以及在第一个可见的 View 的顶部x, y 坐标值
-            boolean isHeader = adapter.isItemHeader(position + 1);
-//            Log.d("Matthew", "onDrawOver: isHeader = " + isHeader);
-//            Log.d("Matthew", "onDrawOver: position = " + position);
+            boolean isHeader = adapter.isItemHeader(position);
             if (isHeader) {
                 int bottom = Math.min(mItemHeaderHeight, view.getBottom());
                 canvas.drawRect(0, view.getTop() - mItemHeaderHeight, parent.getWidth(), bottom, mItemHeaderPaint);

@@ -138,7 +138,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             return true;
         }
         // position == 1 ,以及之后的才是, 才是 item1, item2, item3, item3
-        if(position == 0){
+        if (position == 0) {
             return false;
         }
         String lastGroupName = mArticleList.get(position - 1).section.getName();

@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,9 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
-import com.xuwanjin.inchoate.model.Section;
+import com.xuwanjin.inchoate.model.ArticleSection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ public class WeeklyFragment extends Fragment {
     RecyclerView issueContentRecyclerView;
     private View mSectionHeaderView;
     private View mFooterView;
-
+    private TextView previousEdition;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,7 +37,13 @@ public class WeeklyFragment extends Fragment {
         // 这种 header 的出现, 他会 inflate 在 RecyclerView 的上面, 这个时候, 画第一个 item 的 header,
         //也会出现在 RecyclerView 的上面, 但是他会出现, HeaderView 的上面
         mSectionHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.weekly_section_header, issueContentRecyclerView, false);
-
+        previousEdition = mSectionHeaderView.findViewById(R.id.previous_edition);
+        previousEdition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.navigationControllerUtils(InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_previous_edition);
+            }
+        });
         return view;
     }
 
@@ -55,133 +63,133 @@ public class WeeklyFragment extends Fragment {
         for (int i = 0; i < 5; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.headline = "Matthew = " + Section.THE_WORLD_THIS_WEEK;
-            article.section = Section.THE_WORLD_THIS_WEEK;
+            article.headline = "Matthew = " + ArticleSection.THE_WORLD_THIS_WEEK;
+            article.section = ArticleSection.THE_WORLD_THIS_WEEK;
             articles.add(article);
         }
         for (int i = 0; i < 9; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.headline = "Matthew = " + Section.LEADERS;
-            article.section = Section.LEADERS;
+            article.headline = "Matthew = " + ArticleSection.LEADERS;
+            article.section = ArticleSection.LEADERS;
             articles.add(article);
         }
         for (int i = 0; i < 10; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.headline = "Matthew = " + Section.LETTERS;
-            article.section = Section.LETTERS;
+            article.headline = "Matthew = " + ArticleSection.LETTERS;
+            article.section = ArticleSection.LETTERS;
             articles.add(article);
         }
         for (int i = 0; i < 10; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.BRIEFING;
-            article.headline = "Matthew = " + Section.BRIEFING;
+            article.section = ArticleSection.BRIEFING;
+            article.headline = "Matthew = " + ArticleSection.BRIEFING;
             articles.add(article);
         }
         for (int i = 0; i < 20; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.UNITED_STATES;
-            article.headline = "Matthew = " + Section.UNITED_STATES;
+            article.section = ArticleSection.UNITED_STATES;
+            article.headline = "Matthew = " + ArticleSection.UNITED_STATES;
             articles.add(article);
         }
         for (int i = 0; i < 5; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.THE_AMERICAS;
+            article.section = ArticleSection.THE_AMERICAS;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 9; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.ASIA;
+            article.section = ArticleSection.ASIA;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 10; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.CHINA;
+            article.section = ArticleSection.CHINA;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 15; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.MIDDLE_EAST_AND_AFRICA;
+            article.section = ArticleSection.MIDDLE_EAST_AND_AFRICA;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 5; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.EUROPE;
+            article.section = ArticleSection.EUROPE;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 9; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.BRITAIN;
+            article.section = ArticleSection.BRITAIN;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 10; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.INTERNATIONAL;
+            article.section = ArticleSection.INTERNATIONAL;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 15; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.BUSINESS;
+            article.section = ArticleSection.BUSINESS;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 5; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.FINANCE_AND_ECONOMICS;
+            article.section = ArticleSection.FINANCE_AND_ECONOMICS;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 9; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.SCIENCE_AND_TECHNOLOGY;
+            article.section = ArticleSection.SCIENCE_AND_TECHNOLOGY;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 10; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.BOOKS_AND_ARTS;
+            article.section = ArticleSection.BOOKS_AND_ARTS;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 15; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.ECONOMICS_AND_FINANCIAL_INDICATORS;
+            article.section = ArticleSection.ECONOMICS_AND_FINANCIAL_INDICATORS;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 5; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.GRAPHIC_DETAIL;
+            article.section = ArticleSection.GRAPHIC_DETAIL;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 9; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = Section.OBITUNARY;
+            article.section = ArticleSection.OBITUNARY;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }

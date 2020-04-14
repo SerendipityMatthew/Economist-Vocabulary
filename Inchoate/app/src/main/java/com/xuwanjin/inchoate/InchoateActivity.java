@@ -28,21 +28,25 @@ implements BottomNavigationView.OnNavigationItemSelectedListener{
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         controller = Navigation.findNavController(this, R.id.nav_host_fragment);
-
-
+        InchoateApplication.NAVIGATION_CONTROLLER = controller;
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.item_today){
-            controller.navigate(R.id.navigation_today);
+//            controller.navigate(R.id.navigation_today);
+            Utils.navigationControllerUtils(controller, R.id.navigation_today);
         }else if (item.getItemId() == R.id.item_weekly){
-           controller.navigate(R.id.navigation_weekly);
+//           controller.navigate(R.id.navigation_weekly);
+            Utils.navigationControllerUtils(controller, R.id.navigation_weekly);
         }else if (item.getItemId() == R.id.item_bookmark){
-            controller.navigate(R.id.navigation_bookmark);
+//            controller.navigate(R.id.navigation_bookmark);
+            Utils.navigationControllerUtils(controller, R.id.navigation_bookmark);
         } else if (item.getItemId() == R.id.item_setting){
-            controller.navigate(R.id.navigation_settings);
+//            controller.navigate(R.id.navigation_settings);
+            Utils.navigationControllerUtils(controller, R.id.navigation_settings);
         }
+
         return false;
     }
 }

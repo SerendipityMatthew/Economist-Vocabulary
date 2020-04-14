@@ -29,4 +29,10 @@
         android:label="@string/app_name"
         tools:layout="@layout/fragment_weekly" >
     </fragment>
+    <fragment
+        android:id="@+id/navigation_previous_edition"
+        android:name="com.xuwanjin.inchoate.ui.previous.PreviousFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_previous" >
+    </fragment>
 </navigation>

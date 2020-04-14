@@ -3,8 +3,13 @@ package com.xuwanjin.inchoate;
 import android.app.Application;
 import android.os.StrictMode;
 
+import androidx.navigation.NavController;
+
 public class InchoateApplication extends Application {
+    public static NavController NAVIGATION_CONTROLLER;
+    public final static String ECONOMIST_URL = "";
     @Override
+
     public void onCreate() {
         super.onCreate();
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy
@@ -20,7 +25,7 @@ public class InchoateApplication extends Application {
                 .detectActivityLeaks()
                 .penaltyLog()
                 .penaltyDeath()
-                .setClassInstanceLimit(InchoateActivity.class,1)
+                .setClassInstanceLimit(InchoateActivity.class, 1)
                 .build());
     }
 }

@@ -16,7 +16,7 @@ import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
-import com.xuwanjin.inchoate.model.ArticleSection;
+import com.xuwanjin.inchoate.model.ArticleCategorySection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,133 +63,133 @@ public class WeeklyFragment extends Fragment {
         for (int i = 0; i < 5; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.headline = "Matthew = " + ArticleSection.THE_WORLD_THIS_WEEK;
-            article.section = ArticleSection.THE_WORLD_THIS_WEEK;
+            article.headline = "Matthew = " + ArticleCategorySection.THE_WORLD_THIS_WEEK;
+            article.section = ArticleCategorySection.THE_WORLD_THIS_WEEK;
             articles.add(article);
         }
         for (int i = 0; i < 9; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.headline = "Matthew = " + ArticleSection.LEADERS;
-            article.section = ArticleSection.LEADERS;
+            article.headline = "Matthew = " + ArticleCategorySection.LEADERS;
+            article.section = ArticleCategorySection.LEADERS;
             articles.add(article);
         }
         for (int i = 0; i < 10; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.headline = "Matthew = " + ArticleSection.LETTERS;
-            article.section = ArticleSection.LETTERS;
+            article.headline = "Matthew = " + ArticleCategorySection.LETTERS;
+            article.section = ArticleCategorySection.LETTERS;
             articles.add(article);
         }
         for (int i = 0; i < 10; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.BRIEFING;
-            article.headline = "Matthew = " + ArticleSection.BRIEFING;
+            article.section = ArticleCategorySection.BRIEFING;
+            article.headline = "Matthew = " + ArticleCategorySection.BRIEFING;
             articles.add(article);
         }
         for (int i = 0; i < 20; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.UNITED_STATES;
-            article.headline = "Matthew = " + ArticleSection.UNITED_STATES;
+            article.section = ArticleCategorySection.UNITED_STATES;
+            article.headline = "Matthew = " + ArticleCategorySection.UNITED_STATES;
             articles.add(article);
         }
         for (int i = 0; i < 5; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.THE_AMERICAS;
+            article.section = ArticleCategorySection.THE_AMERICAS;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 9; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.ASIA;
+            article.section = ArticleCategorySection.ASIA;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 10; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.CHINA;
+            article.section = ArticleCategorySection.CHINA;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 15; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.MIDDLE_EAST_AND_AFRICA;
+            article.section = ArticleCategorySection.MIDDLE_EAST_AND_AFRICA;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 5; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.EUROPE;
+            article.section = ArticleCategorySection.EUROPE;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 9; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.BRITAIN;
+            article.section = ArticleCategorySection.BRITAIN;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 10; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.INTERNATIONAL;
+            article.section = ArticleCategorySection.INTERNATIONAL;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 15; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.BUSINESS;
+            article.section = ArticleCategorySection.BUSINESS;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 5; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.FINANCE_AND_ECONOMICS;
+            article.section = ArticleCategorySection.FINANCE_AND_ECONOMICS;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 9; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.SCIENCE_AND_TECHNOLOGY;
+            article.section = ArticleCategorySection.SCIENCE_AND_TECHNOLOGY;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 10; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.BOOKS_AND_ARTS;
+            article.section = ArticleCategorySection.BOOKS_AND_ARTS;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 15; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.ECONOMICS_AND_FINANCIAL_INDICATORS;
+            article.section = ArticleCategorySection.ECONOMICS_AND_FINANCIAL_INDICATORS;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 5; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.GRAPHIC_DETAIL;
+            article.section = ArticleCategorySection.GRAPHIC_DETAIL;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }
         for (int i = 0; i < 9; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleSection.OBITUNARY;
+            article.section = ArticleCategorySection.OBITUNARY;
             article.headline = "Matthew = " + article.section;
             articles.add(article);
         }

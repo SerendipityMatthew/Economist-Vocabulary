@@ -1,4 +1,4 @@
-package com.xuwanjin.inchoate.model;
+package com.xuwanjin.inchoate.model.common;
 
 public class EconomistUrl {
     public String canonical;

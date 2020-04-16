@@ -1,4 +1,6 @@
-package com.xuwanjin.inchoate.model;
+package com.xuwanjin.inchoate.model.archive;
+
+import com.xuwanjin.inchoate.model.common.EconomistUrl;
 
 public class CoverContent {
     public String headline;

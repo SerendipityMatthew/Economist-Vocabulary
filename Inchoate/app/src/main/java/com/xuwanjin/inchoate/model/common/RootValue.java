@@ -1,4 +1,4 @@
-package com.xuwanjin.inchoate.model;
+package com.xuwanjin.inchoate.model.common;
 public class RootValue {
     public String requestId;
     public String xFresh;

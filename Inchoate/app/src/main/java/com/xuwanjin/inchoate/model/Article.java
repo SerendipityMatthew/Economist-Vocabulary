@@ -3,7 +3,7 @@ package com.xuwanjin.inchoate.model;
 import java.net.URL;
 
 public class Article {
-    public ArticleSection section;
+    public ArticleCategorySection section;
     public String headline;
     public String date;
     public String Title;

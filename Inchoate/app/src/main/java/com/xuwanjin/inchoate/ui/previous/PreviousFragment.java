@@ -14,17 +14,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.model.Issue;
-import com.xuwanjin.inchoate.model.Part;
-import com.xuwanjin.inchoate.model.RootValueAndData;
+import com.xuwanjin.inchoate.model.archive.Archive;
+import com.xuwanjin.inchoate.model.archive.Part;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.net.URL;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,12 +40,13 @@ public class PreviousFragment extends Fragment {
     GridLayoutManager mGridLayoutManager;
     PreviousAdapter previousAdapter;
     List<Issue> issueList;
+    public static final int FETCH_DATA_AND_NOTIFY_MSG = 1000;
     public static final String TAG = "PreviousFragment";
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            if (msg.what == 1000){
+            if (msg.what == FETCH_DATA_AND_NOTIFY_MSG){
                 if (previousAdapter != null){
                     previousAdapter.notifyDataSetChanged();
                 }
@@ -83,8 +85,20 @@ public class PreviousFragment extends Fragment {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String jsonResult = response.body().string();
-                Gson gson = new Gson().newBuilder().create();
-                RootValueAndData data = gson.fromJson(jsonResult, RootValueAndData.class);
+                Gson gson = new Gson()
+                        .newBuilder()
+                        .setFieldNamingStrategy(new FieldNamingStrategy() {
+                            @Override
+                            public String translateName(Field f) {
+                                String name = f.getName();
+                                if (name.contains("-")){
+                                    return name.replaceAll("-", "");
+                                }
+                                return name;
+                            }
+                        }) // setFieldNamingPolicy 有什么区别
+                        .create();
+                Archive data = gson.fromJson(jsonResult, Archive.class);
                 Log.d(TAG, "onResponse: rootValueAndData.data " + data.data);
                 Part[] partArray = data.data.section.hasPart.parts;
                 issueList.clear();
@@ -93,9 +107,9 @@ public class PreviousFragment extends Fragment {
                     issue.isDownloaded = false;
                     issue.issueDate = partArray[i].datePublished;
                     issue.coverImageUrl = partArray[i].image.cover.get(0).url.canonical;
-                   issueList.add(issue);
+                    issueList.add(issue);
                 }
-                mHandler.sendEmptyMessage(1000);
+                mHandler.sendEmptyMessage(FETCH_DATA_AND_NOTIFY_MSG);
             }
         });
         return view;

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.model.Issue;
 
@@ -34,7 +35,10 @@ public class PreviousAdapter extends RecyclerView.Adapter<PreviousAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(mContext).load(mIssueList.get(position).coverImageUrl).into(holder.issueCover);
+        Glide.with(mContext)
+                .load(mIssueList.get(position).coverImageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.issueCover);
         holder.issueDate.setText(mIssueList.get(position).issueDate);
     }
 

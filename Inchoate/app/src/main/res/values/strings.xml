@@ -27,4 +27,5 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="log_in">Log In</string>
     <string name="log_out">Log Out</string>
+    <string name="minutes_read"> min read</string>
 </resources>

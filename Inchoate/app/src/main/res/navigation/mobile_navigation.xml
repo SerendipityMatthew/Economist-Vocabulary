@@ -35,4 +35,10 @@
         android:label="@string/app_name"
         tools:layout="@layout/fragment_previous" >
     </fragment>
+    <fragment
+        android:id="@+id/navigation_article"
+        android:name="com.xuwanjin.inchoate.ui.article.ArticleFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_article_detail" >
+    </fragment>
 </navigation>

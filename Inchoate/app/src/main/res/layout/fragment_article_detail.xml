@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
@@ -58,14 +59,18 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
             android:background="@android:color/darker_gray" />
-        <TextView
-            android:id="@+id/article_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/article_content_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:text="@string/table_of_contents"
-            android:layout_width="match_parent"
-            android:textSize="30sp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
+            android:overScrollMode="never"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            app:layoutManager="GridLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:ignore="MissingConstraints"
+            tools:itemCount="20"
+            tools:spanCount="1" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

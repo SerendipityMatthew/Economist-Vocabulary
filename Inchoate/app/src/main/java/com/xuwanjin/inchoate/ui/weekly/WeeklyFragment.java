@@ -1,6 +1,7 @@
 package com.xuwanjin.inchoate.ui.weekly;
 
 import android.annotation.SuppressLint;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,11 +25,14 @@ import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.ArticleCategorySection;
+import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.week.WeekFragment;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +43,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.xuwanjin.inchoate.Utils.getIssue;
 import static com.xuwanjin.inchoate.Utils.getWholeArticle;
 
 public class WeeklyFragment extends Fragment {
@@ -48,6 +53,7 @@ public class WeeklyFragment extends Fragment {
     private View mFooterView;
     private TextView previousEdition;
     List<Article> mArticlesList;
+
     WeeklyAdapter mWeeklyAdapter;
     StickHeaderDecoration mStickHeaderDecoration;
     public static final int FETCH_DATA_AND_NOTIFY_MSG = 1000;
@@ -91,7 +97,6 @@ public class WeeklyFragment extends Fragment {
         mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
         issueContentRecyclerView.addItemDecoration(new StickHeaderDecoration(issueContentRecyclerView, getContext()));
 
-        weekFragmentTest();
         return view;
     }
 
@@ -101,15 +106,56 @@ public class WeeklyFragment extends Fragment {
 
     }
 
-    private List<Article> initData(ArrayList<Article> articles) {
-        for (int i = 0; i < 82; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.BRIEFING.toString();
-            article.headline = "Matthew = " + ArticleCategorySection.BRIEFING;
-            articles.add(article);
+    private List<Article> initData(List<Article> articles) {
+        List<Issue> issueList = InchoateApplication.getNewestIssueCache();
+        Issue issue;
+        if (issueList != null && issueList.size() > 0) {
+            issue = issueList.get(0);
+            articles = issue.containArticle;
+            Log.d(TAG, "onResponse: use the cache ");
+        } else {
+            for (int i = 0; i < 82; i++) {
+                Article article = new Article();
+                article.summary = "heeeeeeeeee" + i;
+                article.section = ArticleCategorySection.BRIEFING.toString();
+                article.headline = "Matthew = " + ArticleCategorySection.BRIEFING;
+                articles.add(article);
+            }
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    parseJsonDataFromAsset();
+                }
+            });
         }
         return articles;
+    }
+
+    public void parseJsonDataFromAsset() {
+        Gson gson = new Gson()
+                .newBuilder()
+                .setFieldNamingStrategy(new FieldNamingStrategy() {
+                    @Override
+                    public String translateName(Field f) {
+                        String name = f.getName();
+                        if (name.contains("-")) {
+                            return name.replaceAll("-", "");
+                        }
+                        return name;
+                    }
+                }) // setFieldNamingPolicy 有什么区别
+                .create();
+
+        InputStream jsonStream = getContext().getResources().openRawResource(R.raw.week_fragment_query);
+        InputStreamReader reader = new InputStreamReader(jsonStream);
+        WeekFragment weekFragment = gson.fromJson(reader, WeekFragment.class);
+        Issue issue = getIssue(weekFragment);
+        Log.d(TAG, "parseJsonDataFromAsset: issue.containArticle.get(0) = " + issue.containArticle.get(0));
+        InchoateApplication.setNewestIssueCache(issue);
+        mArticlesList = issue.containArticle;
+        mHandler.sendEmptyMessage(FETCH_DATA_AND_NOTIFY_MSG);
+
+
     }
 
     public void weekFragmentTest() {
@@ -143,8 +189,10 @@ public class WeeklyFragment extends Fragment {
                         .create();
                 WeekFragment weekFragment = gson.fromJson(jsonResult, WeekFragment.class);
                 Log.d(TAG, "onResponse: FETCH_DATA_AND_NOTIFY_MSG = ");
-                mArticlesList.clear();
-                mArticlesList.addAll(getWholeArticle(weekFragment));
+                Issue issue = getIssue(weekFragment);
+                InchoateApplication.setNewestIssueCache(issue);
+                Log.d(TAG, "onResponse: fetch from economist.com ");
+                mArticlesList = issue.containArticle;
 //                Log.d(TAG, "onResponse: mArticlesList = " + mArticlesList.get(0));
                 mHandler.sendEmptyMessage(FETCH_DATA_AND_NOTIFY_MSG);
             }

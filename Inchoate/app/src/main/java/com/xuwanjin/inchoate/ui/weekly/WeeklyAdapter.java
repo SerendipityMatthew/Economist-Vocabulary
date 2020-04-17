@@ -13,7 +13,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 
 import java.util.List;
@@ -21,7 +24,7 @@ import java.util.List;
 public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder>
         implements StickHeaderDecoration.StickHeaderInterface {
     private Context mContext;
-    private List<Article> mArticleList;
+    public List<Article> mArticleList;
     private Fragment mFragment;
     private View mHeaderView;
     private View mFooterView;
@@ -79,28 +82,46 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                 view = LayoutInflater.from(mContext).inflate(R.layout.weekly_content_list, parent, false);
                 break;
         }
+        if (!view.equals(mHeaderView)) {
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Utils.navigationControllerUtils(
+                            InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_article);
+                }
+            });
+        }
         return new WeeklyAdapter.ViewHolder(view);
     }
 
-    public void updateData(List<Article> articleList){
+    public void updateData(List<Article> articleList) {
         mArticleList.clear();
         mArticleList.addAll(articleList);
         notifyDataSetChanged();
-//        notifyItemRangeChanged(1, getItemCount());
     }
 
     @Override
     public void onBindViewHolder(@NonNull WeeklyAdapter.ViewHolder holder, int position) {
+
         if (getItemViewType(position) == TYPE_NORMAL) {
-            Article article = mArticleList.get(position);
+            //  mArticleList.get(position) 会出现第一个 item 不显示的状况
+            Article article = mArticleList.get(position-1);
             Glide.with(mContext)
                     .load(article.imageUrl)
                     .error(R.mipmap.ic_launcher)
                     .placeholder(R.mipmap.ic_launcher)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.article_image);
             holder.articleTitle.setText(article.title);
             holder.articleFlyTitle.setText(article.flyTitle);
-            holder.dateAndReadTime.setText(article.title);
+            holder.dateAndReadTime.setText(position + " min read");
+
+            Glide.with(mContext)
+                    .load(article.isBookmark ? R.mipmap.bookmark_green : R.mipmap.bookmark_white)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.mipmap.bookmark_white)
+                    .into(holder.bookmark);
+
         }
     }
 
@@ -108,13 +129,13 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
         if (mHeaderView == null && mFooterView == null) {
             return TYPE_NORMAL;
         }
+        // position 为零, 同时 mHeaderView 不为空, 那么第一个应该是 TYPE_HEADER
         if (position == 0) {
             if (mHeaderView != null) {
                 return TYPE_HEADER;
-            } else {
-                return TYPE_NORMAL;
             }
         }
+        // 最后一个
         if (position == getItemCount() - 1) {
             if (mFooterView != null) {
                 //最后一个,应该加载Footer
@@ -129,6 +150,9 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
+        if (mHeaderView != null && mFooterView == null){
+            return mArticleList.size() + 1;
+        }
         return mArticleList == null ? 0 : mArticleList.size();
     }
 
@@ -139,16 +163,17 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     // 判断当前的 position 对应的 item1 是否是相应的组的第一项
     @Override
     public boolean isItemHeader(int position) {
-        // position == 0 ,是inflater 进去的 HeaderView, HeaderView 上面不能画一个 ItemHeaderView, 所以, 返回的是 false
-        // 因为第一项是 HeaderView
+        // position == 1 ,以及之后的才是, 才是 item1, item2, item3, item3
         if (position == 1) {
             return true;
         }
-        // position == 1 ,以及之后的才是, 才是 item1, item2, item3, item3
+        // position == 0 ,是inflater 进去的 HeaderView,
+        // HeaderView 上面不能画一个 ItemHeaderView, 所以, 返回的是 false
+        // 因为第一项是 HeaderView
         if (position == 0) {
             return false;
         }
-        String lastGroupName = mArticleList.get(position - 1).section;
+        String lastGroupName = mArticleList.get(position-1).section;
         String currentGroupName = mArticleList.get(position).section;
         if (lastGroupName.equals(currentGroupName)) {
             return false;
@@ -165,15 +190,11 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            if (itemView == mHeaderView) {
-                return;
-            }
             articleTitle = itemView.findViewById(R.id.article_title);
             articleFlyTitle = itemView.findViewById(R.id.article_fly_title);
             article_image = itemView.findViewById(R.id.article_image);
             dateAndReadTime = itemView.findViewById(R.id.date_and_read_time);
             bookmark = itemView.findViewById(R.id.bookmark);
-
         }
 
     }

@@ -1,5 +1,6 @@
 package com.xuwanjin.inchoate.model.archive;
 
+import com.xuwanjin.inchoate.model.common.Image;
 import com.xuwanjin.inchoate.model.common.EconomistUrl;
 
 public class Part {
@@ -7,6 +8,6 @@ public class Part {
     public String id;
     public String[] type;
     public String datePublished;
-    public ArchiveImage image;
+    public Image image;
 
 }

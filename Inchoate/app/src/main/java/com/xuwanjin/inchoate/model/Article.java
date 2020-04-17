@@ -1,5 +1,7 @@
 package com.xuwanjin.inchoate.model;
 
+import java.util.List;
+
 public class Article {
     public String section;
     public String headline;
@@ -15,11 +17,12 @@ public class Article {
     public String content;
     public String imageUrl;
     public String articleUrl;
+    public List<Paragraph> paragraphList;
 
     @Override
     public String toString() {
         return "Article{" +
-                "section=" + section +
+                "section='" + section + '\'' +
                 ", headline='" + headline + '\'' +
                 ", date='" + date + '\'' +
                 ", title='" + title + '\'' +
@@ -33,6 +36,7 @@ public class Article {
                 ", content='" + content + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", articleUrl='" + articleUrl + '\'' +
+                ", paragraphList=" + paragraphList +
                 '}';
     }
 }

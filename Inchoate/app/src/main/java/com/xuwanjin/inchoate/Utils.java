@@ -5,8 +5,10 @@ import android.util.Log;
 import androidx.navigation.NavController;
 
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.week.WeekFragment;
 import com.xuwanjin.inchoate.model.week.WeekPart;
+import com.xuwanjin.inchoate.model.week.WeekSection;
 import com.xuwanjin.inchoate.model.week.WeekText;
 
 import java.util.ArrayList;
@@ -79,5 +81,14 @@ public class Utils {
             allArticleList.add(article);
         }
         return allArticleList;
+    }
+    public static Issue getIssue(WeekFragment weekFragment) {
+        Issue issue = new Issue();
+        WeekSection weekSection = weekFragment.data.section;
+        issue.headline = weekSection.image.cover.get(0).headline;
+        issue.issueUrl = weekSection.url.canonical;
+        issue.coverImageUrl = weekSection.image.cover.get(0).url.canonical;
+        issue.containArticle = getWholeArticle(weekFragment);
+        return issue;
     }
 }

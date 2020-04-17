@@ -76,24 +76,31 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                 break;
             case TYPE_NORMAL:
             default:
-                view = LayoutInflater.from(mContext).inflate(R.layout.bookmark_list, parent, false);
+                view = LayoutInflater.from(mContext).inflate(R.layout.weekly_content_list, parent, false);
                 break;
         }
         return new WeeklyAdapter.ViewHolder(view);
     }
 
+    public void updateData(List<Article> articleList){
+        mArticleList.clear();
+        mArticleList.addAll(articleList);
+        notifyDataSetChanged();
+//        notifyItemRangeChanged(1, getItemCount());
+    }
+
     @Override
     public void onBindViewHolder(@NonNull WeeklyAdapter.ViewHolder holder, int position) {
         if (getItemViewType(position) == TYPE_NORMAL) {
-            if (mHeaderView != null) {
-                Glide.with(mContext).load(R.mipmap.article_image).into(holder.article_image);
-                holder.article_title.setText(mArticleList.get(position).headline + "  , position = " + position);
-                holder.dateAndReadTime.setText(mArticleList.get(position).headline);
-            } else {
-                Glide.with(mContext).load(R.mipmap.article_image).into(holder.article_image);
-                holder.article_title.setText(mArticleList.get(position).headline + "  , position = " + position);
-                holder.dateAndReadTime.setText(mArticleList.get(position).headline);
-            }
+            Article article = mArticleList.get(position);
+            Glide.with(mContext)
+                    .load(article.imageUrl)
+                    .error(R.mipmap.ic_launcher)
+                    .placeholder(R.mipmap.ic_launcher)
+                    .into(holder.article_image);
+            holder.articleTitle.setText(article.title);
+            holder.articleFlyTitle.setText(article.flyTitle);
+            holder.dateAndReadTime.setText(article.title);
         }
     }
 
@@ -126,7 +133,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     }
 
     public String getGroupName(int position) {
-        return mArticleList.get(position).section.getName();
+        return mArticleList.get(position).section;
     }
 
     // 判断当前的 position 对应的 item1 是否是相应的组的第一项
@@ -141,8 +148,8 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
         if (position == 0) {
             return false;
         }
-        String lastGroupName = mArticleList.get(position - 1).section.getName();
-        String currentGroupName = mArticleList.get(position).section.getName();
+        String lastGroupName = mArticleList.get(position - 1).section;
+        String currentGroupName = mArticleList.get(position).section;
         if (lastGroupName.equals(currentGroupName)) {
             return false;
         }
@@ -150,7 +157,8 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView article_title;
+        TextView articleTitle;
+        TextView articleFlyTitle;
         ImageView article_image;
         TextView dateAndReadTime;
         ImageView bookmark;
@@ -160,10 +168,12 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             if (itemView == mHeaderView) {
                 return;
             }
-            article_title = itemView.findViewById(R.id.article_title);
+            articleTitle = itemView.findViewById(R.id.article_title);
+            articleFlyTitle = itemView.findViewById(R.id.article_fly_title);
             article_image = itemView.findViewById(R.id.article_image);
             dateAndReadTime = itemView.findViewById(R.id.date_and_read_time);
             bookmark = itemView.findViewById(R.id.bookmark);
+
         }
 
     }

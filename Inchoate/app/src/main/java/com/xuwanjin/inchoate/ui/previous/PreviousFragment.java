@@ -1,5 +1,6 @@
 package com.xuwanjin.inchoate.ui.previous;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,9 +19,14 @@ import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.archive.Archive;
 import com.xuwanjin.inchoate.model.archive.Part;
+import com.xuwanjin.inchoate.model.week.WeekData;
+import com.xuwanjin.inchoate.model.week.WeekFragment;
+import com.xuwanjin.inchoate.model.week.WeekPart;
+import com.xuwanjin.inchoate.model.week.WeekText;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +41,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.xuwanjin.inchoate.Utils.getWholeArticle;
+
 public class PreviousFragment extends Fragment {
     RecyclerView issueListRecyclerView;
     GridLayoutManager mGridLayoutManager;
@@ -42,12 +50,13 @@ public class PreviousFragment extends Fragment {
     List<Issue> issueList;
     public static final int FETCH_DATA_AND_NOTIFY_MSG = 1000;
     public static final String TAG = "PreviousFragment";
-    private Handler mHandler = new Handler(){
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            if (msg.what == FETCH_DATA_AND_NOTIFY_MSG){
-                if (previousAdapter != null){
+            if (msg.what == FETCH_DATA_AND_NOTIFY_MSG) {
+                if (previousAdapter != null) {
                     previousAdapter.notifyDataSetChanged();
                 }
             }
@@ -91,7 +100,7 @@ public class PreviousFragment extends Fragment {
                             @Override
                             public String translateName(Field f) {
                                 String name = f.getName();
-                                if (name.contains("-")){
+                                if (name.contains("-")) {
                                     return name.replaceAll("-", "");
                                 }
                                 return name;

@@ -1,6 +1,10 @@
 package com.xuwanjin.inchoate.ui.weekly;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +16,54 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.FieldNamingStrategy;
+import com.google.gson.Gson;
+import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.ArticleCategorySection;
+import com.xuwanjin.inchoate.model.week.WeekFragment;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import static com.xuwanjin.inchoate.Utils.getWholeArticle;
+
 public class WeeklyFragment extends Fragment {
+    public static final String TAG = "WeekFragment";
     RecyclerView issueContentRecyclerView;
     private View mSectionHeaderView;
     private View mFooterView;
     private TextView previousEdition;
+    List<Article> mArticlesList;
+    WeeklyAdapter mWeeklyAdapter;
+    StickHeaderDecoration mStickHeaderDecoration;
+    public static final int FETCH_DATA_AND_NOTIFY_MSG = 1000;
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == FETCH_DATA_AND_NOTIFY_MSG) {
+                if (mWeeklyAdapter != null) {
+                    mWeeklyAdapter.notifyDataSetChanged();
+                }
+            }
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -44,156 +82,73 @@ public class WeeklyFragment extends Fragment {
                 Utils.navigationControllerUtils(InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_previous_edition);
             }
         });
+        mArticlesList = initData(new ArrayList<Article>());
+
+        mWeeklyAdapter = new WeeklyAdapter(mArticlesList, getContext(), this);
+        issueContentRecyclerView.setAdapter(mWeeklyAdapter);
+        mWeeklyAdapter.setHeaderView(mSectionHeaderView);
+//        adapter.setFooterView(mFooterView);
+        mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
+        issueContentRecyclerView.addItemDecoration(new StickHeaderDecoration(issueContentRecyclerView, getContext()));
+
+        weekFragmentTest();
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        List<Article> articles;
-        articles = initData(new ArrayList<Article>());
-        WeeklyAdapter adapter = new WeeklyAdapter(articles, getContext(), this);
-        issueContentRecyclerView.setAdapter(adapter);
-        adapter.setHeaderView(mSectionHeaderView);
-//        adapter.setFooterView(mFooterView);
-        issueContentRecyclerView.addItemDecoration(new StickHeaderDecoration(issueContentRecyclerView, getContext()));
+
     }
 
-    public List<Article> initData(List<Article> articles) {
-        for (int i = 0; i < 5; i++) {
+    private List<Article> initData(ArrayList<Article> articles) {
+        for (int i = 0; i < 82; i++) {
             Article article = new Article();
             article.summary = "heeeeeeeeee" + i;
-            article.headline = "Matthew = " + ArticleCategorySection.THE_WORLD_THIS_WEEK;
-            article.section = ArticleCategorySection.THE_WORLD_THIS_WEEK;
-            articles.add(article);
-        }
-        for (int i = 0; i < 9; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.headline = "Matthew = " + ArticleCategorySection.LEADERS;
-            article.section = ArticleCategorySection.LEADERS;
-            articles.add(article);
-        }
-        for (int i = 0; i < 10; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.headline = "Matthew = " + ArticleCategorySection.LETTERS;
-            article.section = ArticleCategorySection.LETTERS;
-            articles.add(article);
-        }
-        for (int i = 0; i < 10; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.BRIEFING;
+            article.section = ArticleCategorySection.BRIEFING.toString();
             article.headline = "Matthew = " + ArticleCategorySection.BRIEFING;
             articles.add(article);
         }
-        for (int i = 0; i < 20; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.UNITED_STATES;
-            article.headline = "Matthew = " + ArticleCategorySection.UNITED_STATES;
-            articles.add(article);
-        }
-        for (int i = 0; i < 5; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.THE_AMERICAS;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 9; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.ASIA;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 10; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.CHINA;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 15; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.MIDDLE_EAST_AND_AFRICA;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 5; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.EUROPE;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 9; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.BRITAIN;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 10; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.INTERNATIONAL;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 15; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.BUSINESS;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 5; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.FINANCE_AND_ECONOMICS;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 9; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.SCIENCE_AND_TECHNOLOGY;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 10; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.BOOKS_AND_ARTS;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 15; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.ECONOMICS_AND_FINANCIAL_INDICATORS;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 5; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.GRAPHIC_DETAIL;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-        for (int i = 0; i < 9; i++) {
-            Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = ArticleCategorySection.OBITUNARY;
-            article.headline = "Matthew = " + article.section;
-            articles.add(article);
-        }
-
         return articles;
     }
+
+    public void weekFragmentTest() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(Constants.WEEK_FRAGMENT_QUERY_URL)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.d(TAG, "weekFragmentTest: onFailure: e = " + e.toString());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String jsonResult = response.body().string();
+//                Log.d(TAG, "onResponse: jsonResult: jsonResult = " + jsonResult);
+                Gson gson = new Gson()
+                        .newBuilder()
+                        .setFieldNamingStrategy(new FieldNamingStrategy() {
+                            @Override
+                            public String translateName(Field f) {
+                                String name = f.getName();
+                                if (name.contains("-")) {
+                                    return name.replaceAll("-", "");
+                                }
+                                return name;
+                            }
+                        }) // setFieldNamingPolicy 有什么区别
+                        .create();
+                WeekFragment weekFragment = gson.fromJson(jsonResult, WeekFragment.class);
+                Log.d(TAG, "onResponse: FETCH_DATA_AND_NOTIFY_MSG = ");
+                mArticlesList.clear();
+                mArticlesList.addAll(getWholeArticle(weekFragment));
+//                Log.d(TAG, "onResponse: mArticlesList = " + mArticlesList.get(0));
+                mHandler.sendEmptyMessage(FETCH_DATA_AND_NOTIFY_MSG);
+            }
+        });
+    }
+
 }

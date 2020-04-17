@@ -1,17 +1,38 @@
 package com.xuwanjin.inchoate.model;
 
-import java.net.URL;
-
 public class Article {
-    public ArticleCategorySection section;
+    public String section;
     public String headline;
     public String date;
-    public String Title;
+    public String title;
+    public String flyTitle;
     public String summary;
     public String mainArticleImage;
     public int readTime;
-    public URL audioUrl;
-    public int audioDuration;
+    public String audioUrl;
+    public float audioDuration;
     public boolean isBookmark;
     public String content;
+    public String imageUrl;
+    public String articleUrl;
+
+    @Override
+    public String toString() {
+        return "Article{" +
+                "section=" + section +
+                ", headline='" + headline + '\'' +
+                ", date='" + date + '\'' +
+                ", title='" + title + '\'' +
+                ", flyTitle='" + flyTitle + '\'' +
+                ", summary='" + summary + '\'' +
+                ", mainArticleImage='" + mainArticleImage + '\'' +
+                ", readTime=" + readTime +
+                ", audioUrl='" + audioUrl + '\'' +
+                ", audioDuration=" + audioDuration +
+                ", isBookmark=" + isBookmark +
+                ", content='" + content + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", articleUrl='" + articleUrl + '\'' +
+                '}';
+    }
 }

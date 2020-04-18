@@ -43,8 +43,9 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     }
 
     public boolean isFirstItem(int position) {
-        if ((mHeaderView != null && position == 1) ||
-                (mHeaderView == null && position == 0)) {
+        if (mHeaderView != null && position == 1) {
+            return true;
+        } else if (mHeaderView == null && position == 0) {
             return true;
         }
         return false;
@@ -72,6 +73,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
         View view;
         switch (viewType) {
             case TYPE_HEADER:
+                mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.weekly_section_header, parent, false);
                 view = mHeaderView;
                 break;
             case TYPE_FOOTER:
@@ -102,10 +104,11 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull WeeklyAdapter.ViewHolder holder, int position) {
-
+        int viewType = getItemViewType(position);
+        Log.d("Matthew", "onBindViewHolder: position = " + position + ",  viewType = " + viewType);
         if (getItemViewType(position) == TYPE_NORMAL) {
             //  mArticleList.get(position) 会出现第一个 item 不显示的状况
-            Article article = mArticleList.get(position-1);
+            Article article = mArticleList.get(position - 1);
             Glide.with(mContext)
                     .load(article.imageUrl)
                     .error(R.mipmap.ic_launcher)
@@ -114,7 +117,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                     .into(holder.article_image);
             holder.articleTitle.setText(article.title);
             holder.articleFlyTitle.setText(article.flyTitle);
-            holder.dateAndReadTime.setText(position + " min read");
+            holder.dateAndReadTime.setText(position - 1 + " min read");
 
             Glide.with(mContext)
                     .load(article.isBookmark ? R.mipmap.bookmark_green : R.mipmap.bookmark_white)
@@ -150,7 +153,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        if (mHeaderView != null && mFooterView == null){
+        if (mHeaderView != null && mFooterView == null) {
             return mArticleList.size() + 1;
         }
         return mArticleList == null ? 0 : mArticleList.size();
@@ -163,7 +166,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     // 判断当前的 position 对应的 item1 是否是相应的组的第一项
     @Override
     public boolean isItemHeader(int position) {
-        // position == 1 ,以及之后的才是, 才是 item1, item2, item3, item3
+        // position == 1 ,以及之后的才是 item1, item2, item3, item3
         if (position == 1) {
             return true;
         }
@@ -173,8 +176,10 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
         if (position == 0) {
             return false;
         }
-        String lastGroupName = mArticleList.get(position-1).section;
-        String currentGroupName = mArticleList.get(position).section;
+        // 因为我们有一个 HeaderView, 这个 Position 是
+        // RecyclerView 里的是 List.size() +1 项, 为了数据对应. 这里的需要  position -2
+        String lastGroupName = mArticleList.get(position - 2).section;
+        String currentGroupName = mArticleList.get(position -1).section;
         if (lastGroupName.equals(currentGroupName)) {
             return false;
         }
@@ -190,6 +195,9 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            if (itemView == mHeaderView) {
+                return;
+            }
             articleTitle = itemView.findViewById(R.id.article_title);
             articleFlyTitle = itemView.findViewById(R.id.article_fly_title);
             article_image = itemView.findViewById(R.id.article_image);

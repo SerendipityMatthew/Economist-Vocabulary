@@ -118,7 +118,7 @@ public class WeeklyFragment extends Fragment {
             for (int i = 0; i < 82; i++) {
                 Article article = new Article();
                 article.summary = "heeeeeeeeee" + i;
-                article.section = ArticleCategorySection.BRIEFING.toString();
+                article.section = "Matthew, helllo";
                 article.headline = "Matthew = " + ArticleCategorySection.BRIEFING;
                 articles.add(article);
             }
@@ -153,6 +153,7 @@ public class WeeklyFragment extends Fragment {
         Issue issue = getIssue(weekFragment);
         Log.d(TAG, "parseJsonDataFromAsset: issue.containArticle.get(0) = " + issue.containArticle.get(0));
         InchoateApplication.setNewestIssueCache(issue);
+//        mArticlesList.clear();
         mArticlesList = issue.containArticle;
         mHandler.sendEmptyMessage(FETCH_DATA_AND_NOTIFY_MSG);
 

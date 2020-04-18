@@ -86,15 +86,16 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
     public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.onDraw(canvas, parent, state);
         int count = parent.getChildCount();
+        Log.d("Matthew", "onDraw: count = " + count);
         for (int i = 0; i < count; i++) {
             View view = parent.getChildAt(i);
             // view 是 RecyclerView 里的每一项, 包括填充进去的 HeaderView
             int position = parent.getChildLayoutPosition(view);
             boolean isHeader = adapter.isItemHeader(position);
-            int y = view.getTop() - mItemHeaderHeight;
             if (isHeader) {
                 //draw left 矩形的左边位置, top 矩形的上边位置, right 矩形的右边位置, bottom 矩形的下边位置
-                String groupName = adapter.getGroupName(position);
+                int y = view.getTop() - mItemHeaderHeight;
+                String groupName = adapter.getGroupName(position-1);
                 canvas.drawRect(0, y, parent.getWidth(), view.getTop(), mItemHeaderPaint);
                 mTextPaint.getTextBounds(groupName, 0, groupName.length(), mTextRect);
                 canvas.drawText(groupName+ "   , Matthew", 100,
@@ -122,9 +123,18 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
             // 怎样找到第一个可见的 View, 以及在第一个可见的 View 的顶部x, y 坐标值
 
             boolean isHeader = adapter.isItemHeader(position);
+            // position 为零表示, 这个是 HeaderView, 不需要再 HeaderView 上面画一个 itemHeader
+            if (position == 0){
+                return;
+            }
+            Log.d("Matthew", "onDrawOver: position = " +
+                    position + ", isHeader = " +
+                    isHeader + ", adapter.mArticleList = " +
+                    adapter.mArticleList.get(position).title
+                    +
+                    ", section = " + adapter.mArticleList.get(position).section
+                    + ", ");
 
-            Log.d("Matthew", "onDrawOver: position = " + position + ", isHeader = " + isHeader + ", adapter.mArticleList = " + adapter.mArticleList.get(position).title
-                    + ", section = " + adapter.mArticleList.get(position).section);
             String groupName = adapter.getGroupName(position);
             int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
             if (isHeader) {

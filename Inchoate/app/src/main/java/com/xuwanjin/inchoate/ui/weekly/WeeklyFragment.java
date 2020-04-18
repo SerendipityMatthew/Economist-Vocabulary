@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.FieldNamingStrategy;
@@ -75,9 +76,9 @@ public class WeeklyFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weekly, container, false);
         issueContentRecyclerView = view.findViewById(R.id.issue_content_recyclerView);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1);
-        gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        issueContentRecyclerView.setLayoutManager(gridLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
+        issueContentRecyclerView.setLayoutManager(linearLayoutManager);
         // 这种 header 的出现, 他会 inflate 在 RecyclerView 的上面, 这个时候, 画第一个 item 的 header,
         //也会出现在 RecyclerView 的上面, 但是他会出现, HeaderView 的上面
         mSectionHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.weekly_section_header, issueContentRecyclerView, false);

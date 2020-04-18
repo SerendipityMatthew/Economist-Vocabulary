@@ -176,10 +176,11 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
         if (position == 0) {
             return false;
         }
+
         // 因为我们有一个 HeaderView, 这个 Position 是
         // RecyclerView 里的是 List.size() +1 项, 为了数据对应. 这里的需要  position -2
-        String lastGroupName = mArticleList.get(position - 2).section;
-        String currentGroupName = mArticleList.get(position -1).section;
+        String lastGroupName = mArticleList.get(position - 1).section;
+        String currentGroupName = mArticleList.get(position ).section;
         if (lastGroupName.equals(currentGroupName)) {
             return false;
         }

@@ -120,6 +120,12 @@ public class WeeklyFragment extends Fragment {
         mFab.setFocusable(true);
         mFab.setClickable(true);
         mFab.setVisibility(View.VISIBLE);
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.navigationControllerUtils(InchoateApplication.NAVIGATION_CONTROLLER, R.id.float_action);
+            }
+        });
 
         return view;
     }

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:ns1="http://schemas.android.com/apk/res-auto">
     <string name="app_name">Inchoate</string>
     <string name="summary_hint">Stories of an extraordinary world</string>
     <string name="read_time_hint">5 min read</string>
@@ -28,4 +28,5 @@
     <string name="log_in">Log In</string>
     <string name="log_out">Log Out</string>
     <string name="minutes_read"> min read</string>
+
 </resources>

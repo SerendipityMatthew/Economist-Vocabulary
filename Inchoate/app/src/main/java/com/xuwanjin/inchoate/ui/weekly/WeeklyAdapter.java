@@ -105,7 +105,6 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull WeeklyAdapter.ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
-        Log.d("Matthew", "onBindViewHolder: position = " + position + ",  viewType = " + viewType);
         if (getItemViewType(position) == TYPE_NORMAL) {
             //  mArticleList.get(position) 会出现第一个 item 不显示的状况
             Article article = mArticleList.get(position - 1);

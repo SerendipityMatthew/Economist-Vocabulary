@@ -7,10 +7,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -86,7 +84,6 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
     public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.onDraw(canvas, parent, state);
         int count = parent.getChildCount();
-        Log.d("Matthew", "onDraw: count = " + count);
         for (int i = 0; i < count; i++) {
             View view = parent.getChildAt(i);
             // view 是 RecyclerView 里的每一项, 包括填充进去的 HeaderView
@@ -95,10 +92,10 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
             if (isHeader) {
                 //draw left 矩形的左边位置, top 矩形的上边位置, right 矩形的右边位置, bottom 矩形的下边位置
                 int y = view.getTop() - mItemHeaderHeight;
-                String groupName = adapter.getGroupName(position-1);
+                String groupName = adapter.getGroupName(position - 1);
                 canvas.drawRect(0, y, parent.getWidth(), view.getTop(), mItemHeaderPaint);
                 mTextPaint.getTextBounds(groupName, 0, groupName.length(), mTextRect);
-                canvas.drawText(groupName+ "   , Matthew", 100,
+                canvas.drawText(groupName + "   , Matthew", 100,
                         (y) + mItemHeaderHeight / 2, mTextPaint);
             } else {
                 // 在这里绘制每一项的分割线
@@ -124,7 +121,7 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
 
             boolean isHeader = adapter.isItemHeader(position);
             // position 为零表示, 这个是 HeaderView, 不需要再 HeaderView 上面画一个 itemHeader
-            if (position == 0){
+            if (position == 0) {
                 return;
             }
             Log.d("Matthew", "onDrawOver: position = " +

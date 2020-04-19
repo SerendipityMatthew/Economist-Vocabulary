@@ -15,10 +15,12 @@ import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class InchoateActivity extends AppCompatActivity
 implements BottomNavigationView.OnNavigationItemSelectedListener{
     NavController controller;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +31,7 @@ implements BottomNavigationView.OnNavigationItemSelectedListener{
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         controller = Navigation.findNavController(this, R.id.nav_host_fragment);
         InchoateApplication.NAVIGATION_CONTROLLER = controller;
+
     }
 
     @Override

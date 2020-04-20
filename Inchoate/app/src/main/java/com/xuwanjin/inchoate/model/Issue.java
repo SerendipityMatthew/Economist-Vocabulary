@@ -9,6 +9,7 @@ public class Issue {
     public String headline;
     public String issueUrl;
     public List<Article> containArticle;
+    public List<String> categorySection;
 
     @Override
     public String toString() {
@@ -19,6 +20,7 @@ public class Issue {
                 ", headline='" + headline + '\'' +
                 ", issueUrl='" + issueUrl + '\'' +
                 ", containArticle=" + containArticle +
+                ", categorySection=" + categorySection +
                 '}';
     }
 }

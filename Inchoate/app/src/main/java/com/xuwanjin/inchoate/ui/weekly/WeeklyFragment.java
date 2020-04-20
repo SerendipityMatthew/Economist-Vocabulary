@@ -106,11 +106,10 @@ public class WeeklyFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: previousEdition = " + previousEdition);
-                Utils.navigationControllerUtils(InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_previous_edition);
+                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_previous_edition);
             }
         });
         mArticlesList = initData(new ArrayList<Article>());
-
         mWeeklyAdapter = new WeeklyAdapter(mArticlesList, getContext(), this);
         issueContentRecyclerView.setAdapter(mWeeklyAdapter);
         mWeeklyAdapter.setHeaderView(mSectionHeaderView);
@@ -123,7 +122,7 @@ public class WeeklyFragment extends Fragment {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.navigationControllerUtils(InchoateApplication.NAVIGATION_CONTROLLER, R.id.float_action);
+                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER, R.id.float_action);
             }
         });
 

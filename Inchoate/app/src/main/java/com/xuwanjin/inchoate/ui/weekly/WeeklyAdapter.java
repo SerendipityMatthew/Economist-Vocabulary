@@ -1,6 +1,7 @@
 package com.xuwanjin.inchoate.ui.weekly;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,15 +85,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                 view = LayoutInflater.from(mContext).inflate(R.layout.weekly_content_list, parent, false);
                 break;
         }
-        if (!view.equals(mHeaderView)) {
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Utils.navigationControllerUtils(
-                            InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_article);
-                }
-            });
-        }
+
         return new WeeklyAdapter.ViewHolder(view);
     }
 
@@ -103,9 +96,9 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WeeklyAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull WeeklyAdapter.ViewHolder holder, final int position) {
         int viewType = getItemViewType(position);
-        if (getItemViewType(position) == TYPE_NORMAL) {
+        if (viewType == TYPE_NORMAL) {
             //  mArticleList.get(position) 会出现第一个 item 不显示的状况
             Article article = mArticleList.get(position - 1);
             Glide.with(mContext)
@@ -117,6 +110,16 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             holder.articleTitle.setText(article.title);
             holder.articleFlyTitle.setText(article.flyTitle);
             holder.dateAndReadTime.setText(position - 1 + " min read");
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = getFragment().getArguments();
+                    bundle.putParcelable("article_detail", mArticleList.get(position));
+                    getFragment().getActivity().getIntent().putExtra("article_detail", bundle);
+                    Utils.navigationController(
+                            InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_article);
+                }
+            });
 
             Glide.with(mContext)
                     .load(article.isBookmark ? R.mipmap.bookmark_green : R.mipmap.bookmark_white)
@@ -179,7 +182,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
         // 因为我们有一个 HeaderView, 这个 Position 是
         // RecyclerView 里的是 List.size() +1 项, 为了数据对应. 这里的需要  position -2
         String lastGroupName = mArticleList.get(position - 2).section;
-        String currentGroupName = mArticleList.get(position -1).section;
+        String currentGroupName = mArticleList.get(position - 1).section;
         if (lastGroupName.equals(currentGroupName)) {
             return false;
         }

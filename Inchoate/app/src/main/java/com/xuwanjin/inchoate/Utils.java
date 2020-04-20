@@ -6,6 +6,7 @@ import androidx.navigation.NavController;
 
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
+import com.xuwanjin.inchoate.model.archive.CoverContent;
 import com.xuwanjin.inchoate.model.week.WeekFragment;
 import com.xuwanjin.inchoate.model.week.WeekPart;
 import com.xuwanjin.inchoate.model.week.WeekSection;
@@ -16,7 +17,7 @@ import java.util.List;
 
 
 public class Utils {
-    public static void navigationControllerUtils(NavController navController, int resId) {
+    public static void navigationController(NavController navController, int resId) {
         if (navController != null) {
             navController.navigate(resId);
         }
@@ -35,14 +36,14 @@ public class Utils {
 //          weekText.type == p 的表示段落
 //          WeekText weekText = weekTextList.get(0);  // 获取的
             //2. weekPart.text 获取的是一篇文章的所有的 json 数据
-            String audioUrl ="";
+            String audioUrl = "";
             float audioDuration = 0;
-            String imageUrl ="";
-            if(weekPart.audio.main != null){
+            String imageUrl = "";
+            if (weekPart.audio.main != null) {
                 audioUrl = weekPart.audio.main.url.canonical;
                 audioDuration = weekPart.audio.main.duration;
             }
-            if (weekPart.image != null && weekPart.image.main != null){
+            if (weekPart.image != null && weekPart.image.main != null) {
                 imageUrl = weekPart.image.main.url.canonical;
             }
             String articleSection = weekPart.print.section.sectionName;
@@ -82,13 +83,22 @@ public class Utils {
         }
         return allArticleList;
     }
+
     public static Issue getIssue(WeekFragment weekFragment) {
         Issue issue = new Issue();
         WeekSection weekSection = weekFragment.data.section;
-        issue.headline = weekSection.image.cover.get(0).headline;
+        CoverContent coverContent = weekSection.image.cover.get(0);
+        issue.headline = coverContent.headline;
         issue.issueUrl = weekSection.url.canonical;
-        issue.coverImageUrl = weekSection.image.cover.get(0).url.canonical;
+        issue.coverImageUrl = coverContent.url.canonical;
         issue.containArticle = getWholeArticle(weekFragment);
+        List<String> sectionList = new ArrayList<>();
+        for (Article a : issue.containArticle) {
+            if (!sectionList.contains(a.section)){
+                sectionList.add(a.section);
+            }
+        }
+        issue.categorySection = sectionList;
         return issue;
     }
 }

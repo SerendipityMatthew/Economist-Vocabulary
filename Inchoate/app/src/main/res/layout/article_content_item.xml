@@ -3,11 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <TextView
+    <com.xuwanjin.inchoate.customtext.SelectableTextView
         android:id="@+id/paragraph"
-        android:layout_width="match_parent"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:textIsSelectable="true"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>

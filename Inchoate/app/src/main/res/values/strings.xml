@@ -29,6 +29,8 @@
     <string name="log_out">Log Out</string>
     <string name="minutes_read"> min read</string>
     <string name="header_section">Sections</string>
+    <string name="collect">collect</string>
+    <string name="corral">corral</string>
 
 
 </resources>

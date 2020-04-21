@@ -2,11 +2,13 @@ package com.xuwanjin.inchoate;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -19,11 +21,12 @@ public class InchoateActivity extends AppCompatActivity implements
         BottomNavigationController {
     NavController controller;
     BottomNavigationView bottomNavigationView;
-
+    ConstraintLayout mConstraintLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mConstraintLayout = findViewById(R.id.main_activity);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setBackgroundColor(Color.WHITE);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
@@ -49,10 +52,16 @@ public class InchoateActivity extends AppCompatActivity implements
 
     @Override
     public void isShowBottomNavigation(boolean isShow) {
+        Log.d("Matthew", "isShowBottomNavigation: isShow = " + isShow);
         if (isShow) {
+            bottomNavigationView = findViewById(R.id.bottom_navigation);
             bottomNavigationView.setVisibility(View.VISIBLE);
+            bottomNavigationView.setBackgroundColor(Color.WHITE);
+            bottomNavigationView.setOnNavigationItemSelectedListener(this);
+            bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
+
         }else {
-            bottomNavigationView.setVisibility(View.GONE);
+            bottomNavigationView.removeAllViews();
         }
     }
 }

@@ -3,7 +3,6 @@ package com.xuwanjin.inchoate.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.List;
 
 public class Article implements Parcelable {

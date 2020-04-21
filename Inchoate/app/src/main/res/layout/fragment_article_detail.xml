@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
@@ -11,66 +11,17 @@
         tools:ignore="MissingConstraints">
     </androidx.appcompat.widget.Toolbar>
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/article_content_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:ignore="MissingConstraints">
-
-        <ImageView
-            android:id="@+id/article_cover_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/article_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/section_and_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1px"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
-            android:background="@android:color/darker_gray" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/play"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:text="@string/listen_to_this_story"
-                android:textSize="25sp"
-                android:layout_height="match_parent"/>
-            <TextView
-                android:id="@+id/duration"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"/>
-        </LinearLayout>
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1px"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
-            android:background="@android:color/darker_gray" />
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/article_content_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="30dp"
-            android:overScrollMode="never"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            app:layoutManager="GridLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:ignore="MissingConstraints"
-            tools:itemCount="20"
-            tools:spanCount="1" />
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_marginTop="30dp"
+        android:overScrollMode="never"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        app:layoutManager="GridLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:ignore="MissingConstraints"
+        tools:itemCount="20"
+        tools:spanCount="1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

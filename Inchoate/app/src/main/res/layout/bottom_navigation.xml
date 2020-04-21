@@ -17,7 +17,6 @@
         app:itemTextColor="@color/selector_item_color"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_bottom_nav"
-
         >
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>

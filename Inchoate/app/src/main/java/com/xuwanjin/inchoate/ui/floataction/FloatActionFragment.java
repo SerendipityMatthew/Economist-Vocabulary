@@ -22,7 +22,6 @@ public class FloatActionFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ((InchoateActivity)getActivity()).isShowBottomNavigation(false);
         View view = inflater.inflate(R.layout.fragment_float_action, container, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         RecyclerView recyclerView = view.findViewById(R.id.float_action_recyclerView);

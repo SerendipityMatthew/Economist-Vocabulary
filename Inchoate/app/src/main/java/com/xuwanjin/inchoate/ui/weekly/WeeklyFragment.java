@@ -30,6 +30,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
+import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
@@ -114,7 +115,7 @@ public class WeeklyFragment extends Fragment {
         issueContentRecyclerView.setAdapter(mWeeklyAdapter);
         mWeeklyAdapter.setHeaderView(mSectionHeaderView);
         mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
-        issueContentRecyclerView.addItemDecoration(new StickHeaderDecoration(issueContentRecyclerView, getContext()));
+        issueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);
         mFab = view.findViewById(R.id.issue_category_fab);
         mFab.setFocusable(true);
         mFab.setClickable(true);

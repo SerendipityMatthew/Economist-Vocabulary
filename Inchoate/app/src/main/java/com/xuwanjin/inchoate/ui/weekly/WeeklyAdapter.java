@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
@@ -113,9 +114,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bundle bundle = getFragment().getArguments();
-                    bundle.putParcelable("article_detail", mArticleList.get(position));
-                    getFragment().getActivity().getIntent().putExtra("article_detail", bundle);
+                    InchoateApplication.setDisplayArticleCache(mArticleList.get(position - 1));
                     Utils.navigationController(
                             InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_article);
                 }

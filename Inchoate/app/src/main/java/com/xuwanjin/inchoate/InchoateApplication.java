@@ -17,25 +17,26 @@ public class InchoateApplication extends Application {
     public static NavController NAVIGATION_CONTROLLER;
     public final static String ECONOMIST_URL = "";
     public static List<Issue> cacheNewestIssue = new ArrayList<>(1);
+    public static Article cacheDisplayArticle ;
     @Override
 
     public void onCreate() {
         super.onCreate();
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy
-                .Builder()
-                .detectNetwork()
-                .detectDiskReads()
-                .detectDiskWrites()
-                .penaltyDialog()
-                .detectDiskReads()
-                .build());
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                .detectLeakedClosableObjects()
-                .detectActivityLeaks()
-                .penaltyLog()
-                .penaltyDeath()
-                .setClassInstanceLimit(InchoateActivity.class, 1)
-                .build());
+//        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy
+//                .Builder()
+//                .detectNetwork()
+//                .detectDiskReads()
+//                .detectDiskWrites()
+//                .penaltyDialog()
+//                .detectDiskReads()
+//                .build());
+//        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+//                .detectLeakedClosableObjects()
+//                .detectActivityLeaks()
+//                .penaltyLog()
+//                .penaltyDeath()
+//                .setClassInstanceLimit(InchoateActivity.class, 1)
+//                .build());
     }
 
     public static void setNewestIssueCache(Issue issue){
@@ -43,5 +44,11 @@ public class InchoateApplication extends Application {
     }
     public static List<Issue> getNewestIssueCache(){
         return cacheNewestIssue;
+    }
+    public static void setDisplayArticleCache(Article article){
+        cacheDisplayArticle = article;
+    }
+    public static Article getDisplayArticleCache(){
+        return cacheDisplayArticle;
     }
 }

@@ -6,6 +6,7 @@ import androidx.navigation.NavController;
 
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
+import com.xuwanjin.inchoate.model.Paragraph;
 import com.xuwanjin.inchoate.model.archive.CoverContent;
 import com.xuwanjin.inchoate.model.week.WeekFragment;
 import com.xuwanjin.inchoate.model.week.WeekPart;
@@ -58,7 +59,8 @@ public class Utils {
             article.flyTitle = weekPart.print.flyTitle;
             article.articleUrl = articleUrl;
             article.mainArticleImage = imageUrl;
-
+            article.date = weekPart.published.substring(0, 9);
+            article.paragraphList = new ArrayList<>();
             StringBuilder articleBuilder = new StringBuilder();
             for (WeekText weekText0 : weekPart.text) {
                 // weekText0.children 第一个 children列表里data 字段, 合并成一个段落
@@ -76,12 +78,27 @@ public class Utils {
                         }
                     }
                 }
+                Paragraph paragraph = getParagraph(paragraphBuilder);
+
+                if (paragraph != null) {
+                    paragraph.articleName = article.title;
+                    article.paragraphList.add(paragraph);
+                }
                 articleBuilder.append(paragraphBuilder);
             }
             article.content = articleBuilder.toString();
             allArticleList.add(article);
         }
         return allArticleList;
+    }
+
+    public static Paragraph getParagraph(StringBuilder paragraphBuilder) {
+        Paragraph paragraph = new Paragraph();
+        if (paragraphBuilder != null && !paragraphBuilder.toString().trim().isEmpty()) {
+            paragraph.paragraph = paragraphBuilder.toString();
+            return paragraph;
+        }
+        return null;
     }
 
     public static Issue getIssue(WeekFragment weekFragment) {
@@ -92,9 +109,10 @@ public class Utils {
         issue.issueUrl = weekSection.url.canonical;
         issue.coverImageUrl = coverContent.url.canonical;
         issue.containArticle = getWholeArticle(weekFragment);
+        issue.issueDate = weekSection.datePublished.substring(0, 9);
         List<String> sectionList = new ArrayList<>();
         for (Article a : issue.containArticle) {
-            if (!sectionList.contains(a.section)){
+            if (!sectionList.contains(a.section)) {
                 sectionList.add(a.section);
             }
         }

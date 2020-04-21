@@ -10,7 +10,6 @@
         android:layout_height="match_parent"
         android:overScrollMode="never"
         android:paddingStart="8dp"
-        android:layout_marginBottom="60dp"
         android:paddingEnd="8dp"
         app:layoutManager="GridLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

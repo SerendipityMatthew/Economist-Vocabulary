@@ -14,20 +14,21 @@
         <TextView
             android:text="@string/header_section"
             android:layout_width="wrap_content"
-            android:layout_weight="1"
             android:textSize="20sp"
+            android:gravity="center"
             android:layout_height="wrap_content" />
+
         <ImageView
             android:id="@+id/header_controller"
             android:background="@mipmap/float_action_close"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:layout_width="30dp"
             android:layout_height="30dp"/>
         <ImageView
             android:id="@+id/header_cancel"
+            android:layout_marginLeft="140dp"
             android:background="@mipmap/float_action_close"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
+            android:layout_width="30dp"
             android:layout_height="30dp"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

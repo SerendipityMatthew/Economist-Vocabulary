@@ -2,7 +2,7 @@ package com.xuwanjin.inchoate.ui.article;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
+import android.graphics.Typeface;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,14 +10,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.customtext.OnWordClickListener;
 import com.xuwanjin.inchoate.customtext.SelectableTextView;
@@ -108,10 +108,11 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
             paragraph = itemView.findViewById(R.id.paragraph);
             paragraph.setTextIsSelectable(true);
             paragraph.setFocusable(true);
-            paragraph.setSelectTextBackColorRes(R.color.black);
+            paragraph.setSelectTextBackColorRes(R.color.colorAccent);
             paragraph.setSelectTextFrontColorRes(R.color.colorPrimary);
+            Typeface typeface = ResourcesCompat.getFont(mContext, R.font.milote_textita);
             paragraph.setFocusableInTouchMode(true);
-            paragraph.hasSelection();
+            paragraph.setTypeface(typeface);
             paragraph.setOnWordClickListener(new OnWordClickListener() {
                 @Override
                 protected void onNoDoubleClick(String word) {

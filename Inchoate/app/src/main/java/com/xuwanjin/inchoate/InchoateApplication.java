@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class InchoateApplication extends Application {
+    public static InchoateApplication inchoateApp;
     public static NavController NAVIGATION_CONTROLLER;
     public final static String ECONOMIST_URL = "";
     public static List<Issue> cacheNewestIssue = new ArrayList<>(1);
@@ -22,6 +23,7 @@ public class InchoateApplication extends Application {
 
     public void onCreate() {
         super.onCreate();
+        inchoateApp = this;
 //        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy
 //                .Builder()
 //                .detectNetwork()

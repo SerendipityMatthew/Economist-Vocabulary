@@ -7,8 +7,9 @@
 
     <com.xuwanjin.inchoate.customtext.SelectableTextView
         android:id="@+id/paragraph"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:textColor="@color/black"
+        android:lineSpacingExtra="8dp"
         android:layout_width="wrap_content"
         android:textIsSelectable="true"
         android:layout_height="wrap_content"

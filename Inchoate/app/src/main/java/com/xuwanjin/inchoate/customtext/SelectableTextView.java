@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.BackgroundColorSpan;
@@ -133,6 +134,13 @@ public class SelectableTextView extends AppCompatTextView {
                 mSpannableString.setSpan(mBackgroundColorSpan, getSelectionStart(), getSelectionEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 mSpannableString.setSpan(mForegroundColorSpan, getSelectionStart(), getSelectionEnd(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 setText(mSpannableString, mBufferType);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(Color.BLACK);
+                ds.setUnderlineText(false);
             }
         };
         return clickableSpan;

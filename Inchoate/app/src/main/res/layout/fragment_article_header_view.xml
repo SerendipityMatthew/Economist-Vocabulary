@@ -36,7 +36,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="1px"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="20dp"
             android:background="@android:color/darker_gray" />
 
@@ -73,7 +73,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="1px"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
             android:background="@android:color/darker_gray" />
     </LinearLayout>

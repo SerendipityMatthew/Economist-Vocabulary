@@ -127,12 +127,11 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
             Log.d("Matthew", "onDrawOver: position = " +
                     position + ", isHeader = " +
                     isHeader + ", adapter.mArticleList = " +
-                    adapter.mArticleList.get(position).title
-                    +
+                    adapter.mArticleList.get(position).title +
                     ", section = " + adapter.mArticleList.get(position).section
-                    + ", ");
+            );
 
-            String groupName = adapter.getGroupName(position-1);
+            String groupName = adapter.getGroupName(position - 1);
             int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
             if (isHeader) {
                 int bottom = Math.min(mItemHeaderHeight, view.getBottom());

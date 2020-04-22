@@ -6,8 +6,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
 
         <ImageView
             android:id="@+id/magazine_cover"
@@ -15,6 +17,7 @@
             android:layout_height="300dp"
             android:layout_marginLeft="100dp"
             android:layout_marginTop="80dp"
+            android:background="@mipmap/article_image"
             android:layout_marginRight="100dp" />
 
         <TextView
@@ -27,8 +30,8 @@
             android:id="@+id/issue_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            />
+            android:gravity="center" />
+
 
         <LinearLayout
             android:layout_width="match_parent"

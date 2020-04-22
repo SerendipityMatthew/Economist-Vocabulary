@@ -1,5 +1,6 @@
 package com.xuwanjin.inchoate.ui.article;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,23 +19,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Paragraph;
 
 import java.util.List;
+
+import static com.xuwanjin.inchoate.Utils.getDurationFormat;
 
 public class ArticleFragment extends Fragment {
     RecyclerView mArticleContentRV;
     public ArticleContentAdapter mArticleContentAdapter;
     public List<Paragraph> mParagraphList;
     public GridLayoutManager mGridLayoutManager;
-
     public View mArticleContentHeaderView;
-
+    MediaPlayer mediaPlayer = new MediaPlayer();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Article article = InchoateApplication.getDisplayArticleCache();
+        final Article article = InchoateApplication.getDisplayArticleCache();
         if (article != null) {
             mParagraphList = article.paragraphList;
         }
@@ -49,12 +52,19 @@ public class ArticleFragment extends Fragment {
         mArticleContentHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_article_header_view, mArticleContentRV, false);
         mArticleContentAdapter.setHeaderView(mArticleContentHeaderView);
         TextView duration = mArticleContentHeaderView.findViewById(R.id.duration);
+        ImageView play = mArticleContentHeaderView.findViewById(R.id.play);
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InchoateApplication.setDisplayArticleCache(article);
+                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER,R.id.navigation_audio_playing);
+
+            }
+        });
         TextView sectionAndDate = mArticleContentHeaderView.findViewById(R.id.section_and_date);
         TextView articleTitle = mArticleContentHeaderView.findViewById(R.id.article_title);
         articleTitle.setText(article.title);
-        Log.d("Matthew", "onCreateView: article.date = "+ article.date);
         sectionAndDate.setText(article.section + "  |  " + article.date);
-
         duration.setText(getDurationFormat(article.audioDuration));
 
         ImageView articleCoverImage = mArticleContentHeaderView.findViewById(R.id.article_cover_image);
@@ -62,23 +72,6 @@ public class ArticleFragment extends Fragment {
         return view;
     }
 
-    public static String getDurationFormat(float duration) {
-        int minute = (int) (duration / 60);  // 63
-        int seconds = (int) (duration % 60);
-        if (minute < 10 && seconds < 10) {
-            return "0" + minute + ":" + "0" + seconds;
-        }
-        if (minute < 10 && seconds > 10) {
-            return "0" + minute + ":" + seconds;
-        }
-        if (minute > 10 && seconds > 10) {
-            return  minute + ":" + seconds;
-        }
-        if (minute > 10 && seconds < 10) {
-            return minute + ":" + "0:" + seconds;
-        }
-        return null;
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

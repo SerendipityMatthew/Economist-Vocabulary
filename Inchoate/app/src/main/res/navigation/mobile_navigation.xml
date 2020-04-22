@@ -42,13 +42,13 @@
         tools:layout="@layout/fragment_article_detail" >
     </fragment>
     <fragment
-        android:id="@+id/float_action"
+        android:id="@+id/navigation_float_action"
         android:name="com.xuwanjin.inchoate.ui.floataction.FloatActionFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_article_detail" >
     </fragment>
     <fragment
-        android:id="@+id/audio_playing"
+        android:id="@+id/navigation_audio_playing"
         android:name="com.xuwanjin.inchoate.ui.playing.AudioPlayerFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_audio_play" >

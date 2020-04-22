@@ -7,18 +7,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
 
 
         <ImageView
             android:id="@+id/magazine_cover"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginTop="80dp"
+            android:layout_width="250dp"
+            android:layout_height="350dp"
+            android:layout_gravity="center"
             android:background="@mipmap/article_image"
-            android:layout_marginRight="100dp" />
+            />
 
         <TextView
             android:id="@+id/magazine_headline"
@@ -100,7 +100,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="1px"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:background="@android:color/darker_gray" />
 
@@ -108,7 +108,7 @@
             android:id="@+id/previous_edition"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:text="@string/previous"
             android:textSize="20sp" />
@@ -116,7 +116,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="1px"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
             android:background="@android:color/darker_gray" />

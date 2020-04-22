@@ -95,8 +95,8 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
                 String groupName = adapter.getGroupName(position - 1);
                 canvas.drawRect(0, y, parent.getWidth(), view.getTop(), mItemHeaderPaint);
                 mTextPaint.getTextBounds(groupName, 0, groupName.length(), mTextRect);
-                canvas.drawText(groupName + "   , Matthew", 100,
-                        (y) + mItemHeaderHeight / 2, mTextPaint);
+                canvas.drawText(groupName, 50,
+                        (y) + mItemHeaderHeight / 2 + 15, mTextPaint);
             } else {
                 // 在这里绘制每一项的分割线
                 canvas.drawRect(50, view.getTop() - 1, parent.getWidth(), view.getTop(), mLinePaint);
@@ -136,12 +136,12 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
             if (isHeader) {
                 int bottom = Math.min(mItemHeaderHeight, view.getBottom());
                 canvas.drawRect(0, view.getTop() - mItemHeaderHeight, parent.getWidth(), bottom, mItemHeaderPaint);
-                canvas.drawText(groupName, 80,
+                canvas.drawText(groupName, 50,
                         y - (mItemHeaderHeight - bottom), mTextPaint);
             } else {
-                // 如果把下面的注释掉, 会出现即使下一个分类小组没有滑动到顶部, 顶部的stick header 已经变成了下一个分类小组的了
+                // 如果把下面的注释掉, 会出现即使下一个分类小组没有滑动到顶部, 顶部的 stick header 会消失
                 canvas.drawRect(0, 0, parent.getWidth(), mItemHeaderHeight, mItemHeaderPaint);
-                canvas.drawText(groupName, 80, y, mTextPaint);
+                canvas.drawText(groupName, 50, y, mTextPaint);
             }
         }
     }

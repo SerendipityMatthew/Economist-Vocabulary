@@ -123,7 +123,7 @@ public class WeeklyFragment extends Fragment {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER, R.id.float_action);
+                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_float_action);
             }
         });
 

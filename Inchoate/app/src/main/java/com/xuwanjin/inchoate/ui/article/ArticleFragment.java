@@ -33,7 +33,6 @@ public class ArticleFragment extends Fragment {
     public List<Paragraph> mParagraphList;
     public GridLayoutManager mGridLayoutManager;
     public View mArticleContentHeaderView;
-    MediaPlayer mediaPlayer = new MediaPlayer();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

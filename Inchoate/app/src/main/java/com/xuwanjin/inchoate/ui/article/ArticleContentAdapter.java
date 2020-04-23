@@ -73,6 +73,10 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
         return mParagraphList == null ? 0 : mParagraphList.size();
     }
 
+    public List<Paragraph> getParagraphList() {
+        return mParagraphList;
+    }
+
     public int getItemViewType(int position) {
         if (mHeaderView == null && mFooterView == null) {
             return TYPE_NORMAL;
@@ -121,6 +125,7 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
             });
             paragraph.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
                 private Menu mMenu;
+
                 @Override
                 public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                     menu.clear();

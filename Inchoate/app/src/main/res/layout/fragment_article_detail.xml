@@ -52,9 +52,9 @@
         android:overScrollMode="never"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
+        android:layout_marginBottom="60dp"
         app:layoutManager="GridLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:ignore="MissingConstraints"
-        tools:itemCount="20"
         tools:spanCount="1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

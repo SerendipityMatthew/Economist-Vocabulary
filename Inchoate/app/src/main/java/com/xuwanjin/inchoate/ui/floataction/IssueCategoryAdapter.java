@@ -27,7 +27,7 @@ public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdap
         this.mContext = context;
     }
 
-    public void setHeaderView(View headerView){
+    public void setHeaderView(View headerView) {
         this.mHeaderView = headerView;
     }
 
@@ -54,9 +54,14 @@ public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
         if (viewType == TYPE_NORMAL) {
-            holder.categoryMenu.setText(mSectionList.get(position-1));
+            if (mHeaderView != null){
+                holder.categoryMenu.setText(mSectionList.get(position - 1));
+            }else {
+                holder.categoryMenu.setText(mSectionList.get(position));
+            }
         }
     }
+
     public int getItemViewType(int position) {
         if (mHeaderView == null && mFooterView == null) {
             return TYPE_NORMAL;
@@ -66,6 +71,7 @@ public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdap
             if (mHeaderView != null) {
                 return TYPE_HEADER;
             }
+            return TYPE_NORMAL;
         }
         // 最后一个
         if (position == getItemCount() - 1) {
@@ -84,7 +90,16 @@ public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdap
         if (mHeaderView != null && mFooterView == null) {
             return mSectionList.size() + 1;
         }
-        return mSectionList == null ? 0 : mSectionList.size();
+        if (mHeaderView == null && mFooterView != null) {
+            return mSectionList == null ? 0 : mSectionList.size() + 1;
+        }
+        if (mHeaderView == null && mFooterView == null) {
+            return mSectionList == null ? 0 : mSectionList.size();
+        }
+        if (mHeaderView != null && mFooterView != null) {
+            return mSectionList == null ? 0 : mSectionList.size() + 2;
+        }
+        return -1;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

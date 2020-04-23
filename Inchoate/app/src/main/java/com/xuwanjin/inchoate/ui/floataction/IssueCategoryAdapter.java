@@ -1,6 +1,7 @@
 package com.xuwanjin.inchoate.ui.floataction;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.Utils;
 
 import java.util.List;
 
@@ -18,6 +21,7 @@ public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdap
     private List<String> mSectionList;
     private View mHeaderView;
     private View mFooterView;
+    public static final String TAG = "IssueCategoryAdapter";
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_FOOTER = 1;
     public static final int TYPE_NORMAL = 2;
@@ -51,16 +55,25 @@ public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         int viewType = getItemViewType(position);
         if (viewType == TYPE_NORMAL) {
+            int revisedPosition = position;
             if (mHeaderView != null){
-                holder.categoryMenu.setText(mSectionList.get(position - 1));
-            }else {
-                holder.categoryMenu.setText(mSectionList.get(position));
+                revisedPosition = position-1;
             }
+            holder.categoryMenu.setText(mSectionList.get(revisedPosition));
+            holder.categoryMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    InchoateApplication.setScrollToPosition(position);
+                    Log.d(TAG, "onClick:  position = " + position);
+                    Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_weekly);
+                }
+            });
         }
     }
+
 
     public int getItemViewType(int position) {
         if (mHeaderView == null && mFooterView == null) {
@@ -108,6 +121,7 @@ public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdap
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             categoryMenu = itemView.findViewById(R.id.issue_category_menu);
+
         }
     }
 }

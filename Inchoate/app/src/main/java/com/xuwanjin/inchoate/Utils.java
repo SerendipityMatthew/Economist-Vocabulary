@@ -14,7 +14,13 @@ import com.xuwanjin.inchoate.model.week.WeekSection;
 import com.xuwanjin.inchoate.model.week.WeekText;
 
 import java.util.ArrayList;
+
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.xuwanjin.inchoate.InchoateApplication.sArticleLinkedHashMap;
 
 
 public class Utils {
@@ -117,8 +123,38 @@ public class Utils {
             }
         }
         issue.categorySection = sectionList;
+        sArticleLinkedHashMap = getArticleListBySection(issue);
         return issue;
     }
+    public static LinkedHashMap<String, List<Article>> getArticleListBySection(Issue issue) {
+        LinkedHashMap<String, List<Article>> articleLinkedHashMap= new LinkedHashMap<>();
+        List<Article> articleList = issue.containArticle;
+        List<Article> list = new ArrayList<>();
+        for (Article article : articleList) {
+            System.out.println(article.section);
+            if (articleLinkedHashMap.get(article.section) == null){
+                list = new ArrayList<>();
+            }else {
+                list = articleLinkedHashMap.get(article.section);
+            }
+            list.add(article);
+            articleLinkedHashMap.put(article.section, list);
+        }
+        return articleLinkedHashMap;
+    }
+    public static int getArticleSumBySection(int sectionPosition) {
+        LinkedHashMap<String, List<Article>> maps = sArticleLinkedHashMap;
+        int i = 0;
+        int sum = 0;
+        for(Iterator pairs = maps.entrySet().iterator(); pairs.hasNext() && i < sectionPosition; i++) {
+            Map.Entry pair = (Map.Entry) pairs.next();
+            List<Article> articleList = (List<Article>) pair.getValue();
+            sum += articleList.size();
+        }
+        return sum;
+    }
+
+
 
     public static String getDurationFormat(float duration) {
         int minute = (int) (duration / 60);  // 63

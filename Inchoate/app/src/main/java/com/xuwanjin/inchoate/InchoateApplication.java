@@ -18,7 +18,9 @@ public class InchoateApplication extends Application {
     public static NavController NAVIGATION_CONTROLLER;
     public final static String ECONOMIST_URL = "";
     public static List<Issue> cacheNewestIssue = new ArrayList<>(1);
+    public static LinkedHashMap<String, List<Article>> sArticleLinkedHashMap = new LinkedHashMap<>();
     public static Article cacheDisplayArticle ;
+    public static int SCROLL_TO_POSITION = -1 ;
     @Override
 
     public void onCreate() {
@@ -52,5 +54,11 @@ public class InchoateApplication extends Application {
     }
     public static Article getDisplayArticleCache(){
         return cacheDisplayArticle;
+    }
+    public static void setScrollToPosition(int position){
+        SCROLL_TO_POSITION = position;
+    }
+    public static int getScrollToPosition(){
+        return SCROLL_TO_POSITION;
     }
 }

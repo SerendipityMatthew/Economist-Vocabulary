@@ -46,6 +46,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.Call;
@@ -55,7 +56,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.xuwanjin.inchoate.Utils.getIssue;
-import static com.xuwanjin.inchoate.Utils.getWholeArticle;
 
 public class WeeklyFragment extends Fragment {
     public static final String TAG = "WeekFragment";
@@ -65,6 +65,7 @@ public class WeeklyFragment extends Fragment {
     private TextView previousEdition;
     List<Article> mArticlesList;
     FloatingActionButton mFab;
+    private HashMap<String, List<Article>> issueHashMap = new HashMap<>();
     TextView downloadAudio;
     TextView streamAudio;
     TextView issueDate;
@@ -94,6 +95,11 @@ public class WeeklyFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         issueContentRecyclerView.setLayoutManager(linearLayoutManager);
+        int sectionToPosition = InchoateApplication.getScrollToPosition();
+        if (sectionToPosition > 0 ){
+            int scrollToPosition = Utils.getArticleSumBySection(sectionToPosition-2);
+            linearLayoutManager.scrollToPosition(scrollToPosition);
+        }
         // 这种 header 的出现, 他会 inflate 在 RecyclerView 的上面, 这个时候, 画第一个 item 的 header,
         //也会出现在 RecyclerView 的上面, 但是他会出现, HeaderView 的上面
         mSectionHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.weekly_section_header, issueContentRecyclerView, false);
@@ -114,6 +120,7 @@ public class WeeklyFragment extends Fragment {
         mWeeklyAdapter = new WeeklyAdapter(mArticlesList, getContext(), this);
         issueContentRecyclerView.setAdapter(mWeeklyAdapter);
         mWeeklyAdapter.setHeaderView(mSectionHeaderView);
+
         mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
         issueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);
         mFab = view.findViewById(R.id.issue_category_fab);

@@ -3,8 +3,11 @@ package com.xuwanjin.inchoate;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +17,9 @@ import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+
+import java.util.List;
+import java.util.concurrent.BlockingDeque;
 
 
 public class InchoateActivity extends AppCompatActivity implements

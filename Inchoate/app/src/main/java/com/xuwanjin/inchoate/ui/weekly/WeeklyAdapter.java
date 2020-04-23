@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
@@ -75,7 +74,6 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
         View view;
         switch (viewType) {
             case TYPE_HEADER:
-                mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.weekly_section_header, parent, false);
                 view = mHeaderView;
                 break;
             case TYPE_FOOTER:

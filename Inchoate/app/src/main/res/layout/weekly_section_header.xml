@@ -21,12 +21,16 @@
         <TextView
             android:id="@+id/magazine_headline"
             android:layout_width="match_parent"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold"
             android:layout_height="wrap_content"
             android:gravity="center" />
 
         <TextView
             android:id="@+id/issue_date"
             android:layout_width="match_parent"
+            android:textSize="20sp"
             android:layout_height="wrap_content"
             android:gravity="center" />
 
@@ -49,9 +53,9 @@
                 android:paddingRight="15dp">
 
                 <ImageView
-                    android:layout_width="50dp"
+                    android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@mipmap/ic_launcher_round"
+                    android:background="@mipmap/play_stream"
                     android:contentDescription="TODO"
                     android:gravity="end|center_vertical" />
 
@@ -62,8 +66,9 @@
                     android:gravity="end"
                     android:paddingLeft="5dp"
                     android:singleLine="true"
+                    android:textColor="@color/black"
                     android:text="@string/stream_audio"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     tools:ignore="NestedWeights" />
             </LinearLayout>
 
@@ -76,9 +81,9 @@
                 tools:ignore="UseCompoundDrawables">
 
                 <ImageView
-                    android:layout_width="50dp"
+                    android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@mipmap/ic_launcher_round"
+                    android:background="@mipmap/download"
                     android:contentDescription="TODO" />
 
                 <TextView
@@ -88,8 +93,9 @@
                     android:layout_gravity="center_vertical"
                     android:paddingLeft="5dp"
                     android:singleLine="true"
+                    android:textColor="@color/black"
                     android:text="@string/download_audio"
-                    android:textSize="10sp" />
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 

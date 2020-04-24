@@ -38,10 +38,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/issue_content_recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:layout_marginBottom="90dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:ignore="MissingConstraints" />
 

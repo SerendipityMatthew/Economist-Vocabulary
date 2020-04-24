@@ -61,16 +61,18 @@ public class InchoateActivity extends AppCompatActivity implements
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSlidingPanel(SlidingUpControllerEvent event){
-        inflateAudioPlaying();
+        inflateAudioPlaying(event.panelState);
     }
-    public void inflateAudioPlaying() {
+    public void inflateAudioPlaying(SlidingUpPanelLayout.PanelState panelState) {
         AudioPlayerFragment audioPlayerFragment = new AudioPlayerFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager
                 .beginTransaction()
                 .replace(R.id.now_playing_control, audioPlayerFragment)
                 .commitAllowingStateLoss();
+        slidingUpPanelLayout.setPanelState(panelState);
         slidingUpPanelLayout.setTouchEnabled(true);
+        slidingUpPanelLayout.setPanelHeight(400);
     }
 
     @Override

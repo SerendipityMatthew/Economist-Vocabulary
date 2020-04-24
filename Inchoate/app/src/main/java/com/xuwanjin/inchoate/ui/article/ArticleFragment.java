@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
@@ -96,11 +97,11 @@ public class ArticleFragment extends Fragment {
                     public void run() {
                         InchoateApplication.setDisplayArticleCache(article);
                         InchoateApplication.setAudioPlayingArticleListCache(InchoateApplication.getNewestIssueCache().get(0).containArticle);
-//                        EventBus.getDefault().post(new SlidingUpControllerEvent());
+                        SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
+                        panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
+                        EventBus.getDefault().post(panelState);
                     }
                 }).start();
-                ((InchoateActivity) getActivity()).inflateAudioPlaying();
-                ((InchoateActivity) getActivity()).slidingUpPanelLayout.setPanelHeight(450);
 
             }
         });

@@ -23,12 +23,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.player.EconomistService;
 import com.xuwanjin.inchoate.player.IPlayer;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -145,16 +150,15 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration));
         seekBarProgress.setMax((int) mAudioPlayingArticle.audioDuration);
         playToggle.setImageResource(R.mipmap.pause);
-
-
-
     }
 
     public void initOnListener() {
         barPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            }
+                SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
+                panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
+                EventBus.getDefault().post(panelState);            }
         });
 
         seekBarProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -194,6 +198,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
                 }
             }
         });
+
     }
 
 

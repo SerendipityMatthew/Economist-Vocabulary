@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/colorAccent"
     android:layout_height="match_parent">
 
     <FrameLayout
         android:id="@+id/audio_playing_bar"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@color/colorAccent"
         tools:ignore="MissingConstraints">
 
         <LinearLayout

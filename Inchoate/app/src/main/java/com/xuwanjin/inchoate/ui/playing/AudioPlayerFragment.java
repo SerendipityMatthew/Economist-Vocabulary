@@ -28,7 +28,7 @@ import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.player.EconomistService;
 import com.xuwanjin.inchoate.player.IPlayer;
 
-public class AudioPlayerFragment extends Fragment implements IPlayer.Callback{
+public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     private IPlayer mPlayService;
     private Context mContext;
     private Article mArticle;
@@ -48,6 +48,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback{
     TextView playFlyTitle;
     TextView audioPlayTitle;
     TextView playSpeed;
+    View view;
     private Runnable mProgressCallback = new Runnable() {
         @Override
         public void run() {
@@ -91,26 +92,41 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback{
                 new Intent(getContext(), EconomistService.class),
                 mConnection, Context.BIND_AUTO_CREATE);
         mArticle = InchoateApplication.getDisplayArticleCache();
-        View view = inflater.inflate(R.layout.fragment_audio_play, container, false);
-        articleCoverImage = view.findViewById(R.id.article_cover_image);
-        Glide.with(getContext()).load(mArticle.mainArticleImage).into(articleCoverImage);
-        playFlyTitle = view.findViewById(R.id.audio_play_fly_title);
-        audioPlayTitle = view.findViewById(R.id.audio_play_title);
-        playFlyTitle.setText(mArticle.flyTitle);
-        audioPlayTitle.setText(mArticle.title);
+        view = inflater.inflate(R.layout.fragment_audio_play, container, false);
+        initView();
+//        initData();
+        initOnListener();
+
+        return view;
+    }
+    public void initView() {
         last = view.findViewById(R.id.last);
         next = view.findViewById(R.id.next);
+        articleCoverImage = view.findViewById(R.id.article_cover_image);
+        playFlyTitle = view.findViewById(R.id.audio_play_fly_title);
+        audioPlayTitle = view.findViewById(R.id.audio_play_title);
         issueCategoryMenu = view.findViewById(R.id.issue_category_menu);
         audioPlayed = view.findViewById(R.id.audio_played);
         audioLeft = view.findViewById(R.id.audio_left);
         replay = view.findViewById(R.id.replay);
         forward = view.findViewById(R.id.forward);
         playToggle = view.findViewById(R.id.play_toggle);
-        playToggle.setImageResource(R.mipmap.pause);
+        seekBarProgress = view.findViewById(R.id.playing_progress);
+        playSpeed = view.findViewById(R.id.play_speed);
+    }
+
+    private void initData() {
+        Glide.with(getContext()).load(mArticle.mainArticleImage).into(articleCoverImage);
+        playFlyTitle.setText(mArticle.flyTitle);
+        audioPlayTitle.setText(mArticle.title);
         audioPlayed.setText(Utils.getDurationFormat(0));
         audioLeft.setText(Utils.getDurationFormat(mArticle.audioDuration));
-        seekBarProgress = view.findViewById(R.id.playing_progress);
         seekBarProgress.setMax((int) mArticle.audioDuration);
+        playToggle.setImageResource(R.mipmap.pause);
+
+    }
+    public void initOnListener(){
+
         seekBarProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -130,13 +146,12 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback{
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Log.d("Matthew", "onStopTrackingTouch: " + seekBar.getProgress());
                 mPlayService.seekTo(seekBar.getProgress());
-                if (mPlayService.isPlaying()){
+                if (mPlayService.isPlaying()) {
                     mHandler.removeCallbacks(mProgressCallback);
                     mHandler.post(mProgressCallback);
                 }
             }
         });
-        playSpeed = view.findViewById(R.id.play_speed);
         playToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,8 +164,6 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback{
                 }
             }
         });
-
-        return view;
     }
 
 
@@ -159,14 +172,14 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback{
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public void updatePlayToggle(boolean isPlaying){
-        playToggle.setImageResource(isPlaying?R.mipmap.pause:R.mipmap.play);
+    public void updatePlayToggle(boolean isPlaying) {
+        playToggle.setImageResource(isPlaying ? R.mipmap.pause : R.mipmap.play);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if(mPlayService != null && mPlayService.isPlaying()){
+        if (mPlayService != null && mPlayService.isPlaying()) {
             mHandler.removeCallbacks(mProgressCallback);
             mHandler.post(mProgressCallback);
         }
@@ -206,10 +219,10 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback{
     @Override
     public void onPlayStatusChanged(boolean isPlaying) {
         updatePlayToggle(isPlaying);
-        if (isPlaying){
+        if (isPlaying) {
             mHandler.removeCallbacks(mProgressCallback);
             mHandler.post(mProgressCallback);
-        }else {
+        } else {
             mHandler.removeCallbacks(mProgressCallback);
         }
     }

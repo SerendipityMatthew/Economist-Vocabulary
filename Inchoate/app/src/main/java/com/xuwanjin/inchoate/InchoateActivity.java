@@ -3,20 +3,21 @@ package com.xuwanjin.inchoate;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.xuwanjin.inchoate.ui.playing.AudioPlayerFragment;
 
 import java.util.List;
 import java.util.concurrent.BlockingDeque;
@@ -28,6 +29,9 @@ public class InchoateActivity extends AppCompatActivity implements
     NavController controller;
     BottomNavigationView bottomNavigationView;
     ConstraintLayout mConstraintLayout;
+    FrameLayout nowPlayingControl;
+    public SlidingUpPanelLayout slidingUpPanelLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +42,16 @@ public class InchoateActivity extends AppCompatActivity implements
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         controller = Navigation.findNavController(this, R.id.nav_host_fragment);
+        slidingUpPanelLayout = findViewById(R.id.slide_layout);
         InchoateApplication.NAVIGATION_CONTROLLER = controller;
+        nowPlayingControl = findViewById(R.id.now_playing_control);
+        AudioPlayerFragment audioPlayerFragment = new AudioPlayerFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.now_playing_control, audioPlayerFragment)
+                .commitAllowingStateLoss();
+        slidingUpPanelLayout.setPanelHeight(55);
     }
 
     @Override
@@ -66,7 +79,7 @@ public class InchoateActivity extends AppCompatActivity implements
             bottomNavigationView.setOnNavigationItemSelectedListener(this);
             bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
 
-        }else {
+        } else {
             bottomNavigationView.removeAllViews();
         }
     }

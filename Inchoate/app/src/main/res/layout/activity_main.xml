@@ -7,21 +7,31 @@
     android:layout_height="match_parent"
     tools:context=".InchoateActivity">
 
-    <LinearLayout
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        android:id="@+id/slide_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:gravity="bottom"
         tools:ignore="MissingConstraints">
 
         <fragment
             android:id="@+id/nav_host_fragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             app:defaultNavHost="true"
             app:navGraph="@navigation/mobile_navigation" />
-    </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/now_playing_control"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:background="@color/colorAccent"
+            tools:ignore="MissingConstraints" />
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
     <include
         layout="@layout/bottom_navigation"

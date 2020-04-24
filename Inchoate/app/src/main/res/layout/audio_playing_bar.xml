@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         tools:ignore="MissingConstraints">
+
         <ImageView
-            android:background="@mipmap/play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@mipmap/play" />
+
         <androidx.appcompat.widget.AppCompatSeekBar
             android:id="@+id/playing_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp" />
+
         <ImageView
-            android:background="@mipmap/forward"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_marginStart="10dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@mipmap/forward" />
+
         <ImageView
-            android:background="@mipmap/float_action_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:background="@mipmap/float_action_close" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

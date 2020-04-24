@@ -7,6 +7,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/bar_play"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@mipmap/play" />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/bar_playing_progress"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp" />
+
+        <ImageView
+            android:id="@+id/bar_skip_15"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:background="@mipmap/forward" />
+
+        <ImageView
+            android:id="@+id/bar_playing_close"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:background="@mipmap/float_action_close" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
 
@@ -25,17 +58,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:hint="@string/app_name"
                 android:textColor="@color/red"
-                android:textSize="15sp"
-                android:hint="@string/app_name" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/audio_play_title"
                 android:layout_width="match_parent"
-                android:textColor="@color/black"
-                android:textSize="25sp"
                 android:layout_height="wrap_content"
-                android:gravity="center" />
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -45,23 +78,23 @@
 
                 <ImageView
                     android:id="@+id/last"
-                    android:background="@mipmap/last"
-                    android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:background="@mipmap/last" />
 
                 <ImageView
                     android:id="@+id/article_cover_image"
-                    android:layout_marginLeft="10dp"
                     android:layout_width="320dp"
-                    android:layout_height="200dp" />
+                    android:layout_height="200dp"
+                    android:layout_marginStart="10dp" />
 
                 <ImageView
                     android:id="@+id/next"
                     android:layout_width="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:background="@mipmap/next"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:background="@mipmap/next" />
             </LinearLayout>
 
             <LinearLayout
@@ -73,7 +106,7 @@
                     android:id="@+id/audio_played"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:gravity="center"
                     android:textSize="20sp" />
 
@@ -81,14 +114,14 @@
                     android:id="@+id/playing_progress"
                     android:layout_width="250dp"
                     android:layout_height="50dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:max="100" />
 
                 <TextView
                     android:id="@+id/audio_left"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:gravity="center"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -102,35 +135,34 @@
                     android:id="@+id/issue_category_menu"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:background="@mipmap/issue_category_menu" />
 
                 <ImageView
                     android:id="@+id/replay"
                     android:layout_width="30dp"
                     android:layout_height="50dp"
-                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp"
                     android:background="@mipmap/replay" />
 
                 <ImageView
                     android:id="@+id/play_toggle"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginLeft="40dp"
-                     />
+                    android:layout_marginStart="40dp" />
 
                 <ImageView
                     android:id="@+id/forward"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp"
                     android:background="@mipmap/forward" />
 
                 <TextView
                     android:id="@+id/play_speed"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp"
                     android:gravity="center"
                     android:text="1X"
                     android:textSize="20sp" />

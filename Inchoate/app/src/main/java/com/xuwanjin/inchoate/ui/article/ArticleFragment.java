@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
@@ -33,42 +34,64 @@ public class ArticleFragment extends Fragment {
     public List<Paragraph> mParagraphList;
     public GridLayoutManager mGridLayoutManager;
     public View mArticleContentHeaderView;
+    TextView sectionAndDate;
+    ImageView play;
+    TextView duration;
+    TextView articleTitle;
+    ImageView articleCoverImage;
+    Article article;
+    View view;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final Article article = InchoateApplication.getDisplayArticleCache();
+        article = InchoateApplication.getDisplayArticleCache();
         if (article != null) {
             mParagraphList = article.paragraphList;
         }
-        View view = inflater.inflate(R.layout.fragment_article_detail, container, false);
-        mArticleContentRV = view.findViewById(R.id.article_content_recyclerview);
+        view = inflater.inflate(R.layout.fragment_article_detail, container, false);
+        initView();
         mGridLayoutManager = new GridLayoutManager(getContext(), 1);
         mArticleContentRV.setLayoutManager(mGridLayoutManager);
         mArticleContentAdapter = new ArticleContentAdapter(getContext(), mParagraphList, view);
         ArticleItemDecoration articleItemDecoration = new ArticleItemDecoration(mArticleContentRV, getContext());
         mArticleContentRV.addItemDecoration(articleItemDecoration);
         mArticleContentRV.setAdapter(mArticleContentAdapter);
-        mArticleContentHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_article_header_view, mArticleContentRV, false);
         mArticleContentAdapter.setHeaderView(mArticleContentHeaderView);
-        TextView duration = mArticleContentHeaderView.findViewById(R.id.duration);
-        ImageView play = mArticleContentHeaderView.findViewById(R.id.play);
+        initData();
+        initOnClickListener();
+        return view;
+    }
+
+    public void initView() {
+        mArticleContentRV = view.findViewById(R.id.article_content_recyclerview);
+        mArticleContentHeaderView = LayoutInflater.from(getContext())
+                .inflate(R.layout.fragment_article_header_view, mArticleContentRV, false);
+        duration = mArticleContentHeaderView.findViewById(R.id.duration);
+        play = mArticleContentHeaderView.findViewById(R.id.play);
+        articleCoverImage = mArticleContentHeaderView.findViewById(R.id.article_cover_image);
+        sectionAndDate = mArticleContentHeaderView.findViewById(R.id.section_and_date);
+        articleTitle = mArticleContentHeaderView.findViewById(R.id.article_title);
+    }
+
+    public void initData() {
+        articleTitle.setText(article.title);
+        sectionAndDate.setText(article.section + "  |  " + article.date);
+        duration.setText(getDurationFormat(article.audioDuration));
+        Glide.with(getContext()).load(article.imageUrl).into(articleCoverImage);
+
+    }
+
+    public void initOnClickListener() {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InchoateApplication.setDisplayArticleCache(article);
-                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER,R.id.navigation_audio_playing);
+//                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER,R.id.navigation_audio_playing);
+                ((InchoateActivity) getActivity()).slidingUpPanelLayout.setPanelHeight(400);
 
             }
         });
-        TextView sectionAndDate = mArticleContentHeaderView.findViewById(R.id.section_and_date);
-        TextView articleTitle = mArticleContentHeaderView.findViewById(R.id.article_title);
-        articleTitle.setText(article.title);
-        sectionAndDate.setText(article.section + "  |  " + article.date);
-        duration.setText(getDurationFormat(article.audioDuration));
-
-        ImageView articleCoverImage = mArticleContentHeaderView.findViewById(R.id.article_cover_image);
-        Glide.with(getContext()).load(article.imageUrl).into(articleCoverImage);
-        return view;
     }
 
 

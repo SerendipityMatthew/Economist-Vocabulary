@@ -43,8 +43,8 @@ public class IssueCategoryStickHeaderDecoration extends RecyclerView.ItemDecorat
                                @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
         if (parent.getAdapter() instanceof IssueCategoryAdapter) {
-            outRect.bottom = 50;
-            outRect.top = 10;
+//            outRect.bottom = 50;
+//            outRect.top = 10;
         }
     }
 

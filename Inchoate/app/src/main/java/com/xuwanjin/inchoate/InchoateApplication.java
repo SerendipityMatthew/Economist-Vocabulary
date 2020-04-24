@@ -20,6 +20,7 @@ public class InchoateApplication extends Application {
     public static List<Issue> cacheNewestIssue = new ArrayList<>(1);
     public static LinkedHashMap<String, List<Article>> sArticleLinkedHashMap = new LinkedHashMap<>();
     public static Article cacheDisplayArticle ;
+    public static List<Article> audioPlayingArticleListCache ;
     public static int SCROLL_TO_POSITION = -1 ;
     @Override
 
@@ -60,5 +61,11 @@ public class InchoateApplication extends Application {
     }
     public static int getScrollToPosition(){
         return SCROLL_TO_POSITION;
+    }
+    public static void setAudioPlayingArticleListCache(List<Article> list){
+        audioPlayingArticleListCache = list;
+    }
+    public static List<Article> getAudioPlayingArticleListCache(){
+        return audioPlayingArticleListCache;
     }
 }

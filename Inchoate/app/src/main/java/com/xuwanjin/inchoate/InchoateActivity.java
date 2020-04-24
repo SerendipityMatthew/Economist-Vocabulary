@@ -17,10 +17,14 @@ import android.widget.FrameLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.ui.playing.AudioPlayerFragment;
 
-import java.util.List;
-import java.util.concurrent.BlockingDeque;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+
 
 
 public class InchoateActivity extends AppCompatActivity implements
@@ -36,23 +40,37 @@ public class InchoateActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mConstraintLayout = findViewById(R.id.main_activity);
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        EventBus.getDefault().register(this);
+        initView();
         bottomNavigationView.setBackgroundColor(Color.WHITE);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         controller = Navigation.findNavController(this, R.id.nav_host_fragment);
-        slidingUpPanelLayout = findViewById(R.id.slide_layout);
         InchoateApplication.NAVIGATION_CONTROLLER = controller;
+        slidingUpPanelLayout.setPanelHeight(55);
+        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+    }
+
+    public void initView() {
+        mConstraintLayout = findViewById(R.id.main_activity);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        slidingUpPanelLayout = findViewById(R.id.slide_layout);
         nowPlayingControl = findViewById(R.id.now_playing_control);
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSlidingPanel(SlidingUpControllerEvent event){
+        inflateAudioPlaying();
+    }
+    public void inflateAudioPlaying() {
         AudioPlayerFragment audioPlayerFragment = new AudioPlayerFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager
                 .beginTransaction()
                 .replace(R.id.now_playing_control, audioPlayerFragment)
                 .commitAllowingStateLoss();
-        slidingUpPanelLayout.setPanelHeight(55);
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+        slidingUpPanelLayout.setTouchEnabled(true);
     }
 
     @Override

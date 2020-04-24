@@ -21,8 +21,11 @@ import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Paragraph;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -49,6 +52,7 @@ public class ArticleFragment extends Fragment {
         if (article != null) {
             mParagraphList = article.paragraphList;
         }
+
         view = inflater.inflate(R.layout.fragment_article_detail, container, false);
         initView();
         mGridLayoutManager = new GridLayoutManager(getContext(), 1);
@@ -86,9 +90,17 @@ public class ArticleFragment extends Fragment {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InchoateApplication.setDisplayArticleCache(article);
 //                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER,R.id.navigation_audio_playing);
-                ((InchoateActivity) getActivity()).slidingUpPanelLayout.setPanelHeight(400);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        InchoateApplication.setDisplayArticleCache(article);
+                        InchoateApplication.setAudioPlayingArticleListCache(InchoateApplication.getNewestIssueCache().get(0).containArticle);
+//                        EventBus.getDefault().post(new SlidingUpControllerEvent());
+                    }
+                }).start();
+                ((InchoateActivity) getActivity()).inflateAudioPlaying();
+                ((InchoateActivity) getActivity()).slidingUpPanelLayout.setPanelHeight(450);
 
             }
         });

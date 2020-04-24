@@ -100,5 +100,5 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
 
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
-
+    implementation 'org.greenrobot:eventbus:3.2.0'
 }

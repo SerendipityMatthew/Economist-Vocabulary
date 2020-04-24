@@ -103,6 +103,7 @@ public class WeeklyFragment extends Fragment {
         // 这种 header 的出现, 他会 inflate 在 RecyclerView 的上面, 这个时候, 画第一个 item 的 header,
         //也会出现在 RecyclerView 的上面, 但是他会出现, HeaderView 的上面
         mSectionHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.weekly_section_header, issueContentRecyclerView, false);
+        mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.weekly_footer, issueContentRecyclerView,false);
         previousEdition = mSectionHeaderView.findViewById(R.id.previous_edition);
         downloadAudio = mSectionHeaderView.findViewById(R.id.download_audio);
         streamAudio = mSectionHeaderView.findViewById(R.id.stream_audio);
@@ -120,6 +121,7 @@ public class WeeklyFragment extends Fragment {
         mWeeklyAdapter = new WeeklyAdapter(mArticlesList, getContext(), this);
         issueContentRecyclerView.setAdapter(mWeeklyAdapter);
         mWeeklyAdapter.setHeaderView(mSectionHeaderView);
+        mWeeklyAdapter.setFooterView(mFooterView);
 
         mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
         issueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);

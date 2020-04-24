@@ -48,7 +48,7 @@ public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdap
                 break;
             case TYPE_NORMAL:
             default:
-                itemView = LayoutInflater.from(mContext).inflate(R.layout.issue_category, parent, false);
+                itemView = LayoutInflater.from(mContext).inflate(R.layout.issue_category_item, parent, false);
                 break;
         }
         return new ViewHolder(itemView);

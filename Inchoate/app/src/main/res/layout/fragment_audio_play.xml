@@ -1,46 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/audio_playing_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="70dp"
+        android:background="@color/colorAccent"
         tools:ignore="MissingConstraints">
 
-        <ImageView
-            android:id="@+id/bar_play"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@mipmap/play" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            tools:ignore="MissingConstraints">
 
-        <androidx.appcompat.widget.AppCompatSeekBar
-            android:id="@+id/bar_playing_progress"
-            android:layout_width="250dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="10dp" />
+            <ImageView
+                android:id="@+id/bar_play"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@mipmap/play" />
+
+            <androidx.appcompat.widget.AppCompatSeekBar
+                android:id="@+id/bar_playing_progress"
+                android:layout_width="250dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp" />
+
+            <ImageView
+                android:id="@+id/bar_skip_15"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:background="@mipmap/forward" />
+
+            <ImageView
+                android:id="@+id/bar_playing_close"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:background="@mipmap/float_action_close" />
+        </LinearLayout>
 
         <ImageView
-            android:id="@+id/bar_skip_15"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="10dp"
-            android:background="@mipmap/forward" />
-
-        <ImageView
-            android:id="@+id/bar_playing_close"
+            android:id="@+id/audio_play_controller"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginStart="10dp"
-            android:background="@mipmap/float_action_close" />
-    </LinearLayout>
+            android:background="@mipmap/audio_player_collapse"
+            android:backgroundTint="@color/colorPrimary"
+            android:visibility="invisible" />
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/audio_playing_bar"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
@@ -48,17 +72,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/audio_play_controller"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
             <TextView
                 android:id="@+id/audio_play_fly_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:hint="@string/app_name"
+                android:text="The Economist"
                 android:textColor="@color/red"
                 android:textSize="15sp" />
 
@@ -67,6 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:text="Politics this week"
                 android:textColor="@color/black"
                 android:textSize="25sp" />
 
@@ -169,6 +190,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <include layout="@layout/issue_category" />
+        <include layout="@layout/issue_audio_category" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

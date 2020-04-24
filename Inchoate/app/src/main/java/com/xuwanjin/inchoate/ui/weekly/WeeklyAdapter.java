@@ -152,8 +152,12 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        if (mHeaderView != null && mFooterView == null) {
-            return mArticleList.size() + 1;
+        if ((mHeaderView != null && mFooterView == null)||
+                mHeaderView == null && mFooterView != null) {
+            return mArticleList == null ? 0 : mArticleList.size()+1;
+        }
+        if (mHeaderView != null && mFooterView != null){
+            return mArticleList == null ? 0 : mArticleList.size()+2;
         }
         return mArticleList == null ? 0 : mArticleList.size();
     }
@@ -173,6 +177,9 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
         // HeaderView 上面不能画一个 ItemHeaderView, 所以, 返回的是 false
         // 因为第一项是 HeaderView
         if (position == 0) {
+            return false;
+        }
+        if (position == getItemCount()-1) {
             return false;
         }
 

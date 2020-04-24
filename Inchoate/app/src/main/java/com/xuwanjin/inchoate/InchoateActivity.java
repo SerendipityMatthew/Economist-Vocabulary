@@ -52,6 +52,7 @@ public class InchoateActivity extends AppCompatActivity implements
                 .replace(R.id.now_playing_control, audioPlayerFragment)
                 .commitAllowingStateLoss();
         slidingUpPanelLayout.setPanelHeight(55);
+        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
     }
 
     @Override

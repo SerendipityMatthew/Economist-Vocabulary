@@ -45,6 +45,11 @@ public class ArticleFragment extends Fragment {
     ImageView articleCoverImage;
     Article article;
     View view;
+    ImageView backToWeeklyToolbar;
+    ImageView weeklyToolbar;
+    ImageView fontSizeToolbar;
+    ImageView bookmarkArticleToolbar;
+    ImageView articleShareToolbar;
 
     @Nullable
     @Override
@@ -70,6 +75,12 @@ public class ArticleFragment extends Fragment {
 
     public void initView() {
         mArticleContentRV = view.findViewById(R.id.article_content_recyclerview);
+        backToWeeklyToolbar = view.findViewById(R.id.back_to_weekly_toolbar);
+        weeklyToolbar = view.findViewById(R.id.weekly_toolbar);
+        fontSizeToolbar = view.findViewById(R.id.font_size_toolbar);
+        bookmarkArticleToolbar = view.findViewById(R.id.bookmark_article_toolbar);
+        articleShareToolbar = view.findViewById(R.id.article_share_toolbar);
+
         mArticleContentHeaderView = LayoutInflater.from(getContext())
                 .inflate(R.layout.fragment_article_header_view, mArticleContentRV, false);
         duration = mArticleContentHeaderView.findViewById(R.id.duration);
@@ -77,6 +88,7 @@ public class ArticleFragment extends Fragment {
         articleCoverImage = mArticleContentHeaderView.findViewById(R.id.article_cover_image);
         sectionAndDate = mArticleContentHeaderView.findViewById(R.id.section_and_date);
         articleTitle = mArticleContentHeaderView.findViewById(R.id.article_title);
+
     }
 
     public void initData() {
@@ -91,7 +103,6 @@ public class ArticleFragment extends Fragment {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER,R.id.navigation_audio_playing);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {

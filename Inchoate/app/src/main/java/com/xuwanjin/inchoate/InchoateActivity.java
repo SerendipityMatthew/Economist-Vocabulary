@@ -64,6 +64,7 @@ public class InchoateActivity extends AppCompatActivity implements
         inflateAudioPlaying(event.panelState);
     }
     public void inflateAudioPlaying(SlidingUpPanelLayout.PanelState panelState) {
+        Log.d("Matthew", "inflateAudioPlaying: ");
         AudioPlayerFragment audioPlayerFragment = new AudioPlayerFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager

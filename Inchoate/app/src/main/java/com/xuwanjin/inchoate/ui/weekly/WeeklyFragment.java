@@ -29,16 +29,19 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.ArticleCategorySection;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.week.WeekFragment;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -66,13 +69,14 @@ public class WeeklyFragment extends Fragment {
     List<Article> mArticlesList;
     FloatingActionButton mFab;
     private HashMap<String, List<Article>> issueHashMap = new HashMap<>();
-    TextView downloadAudio;
-    TextView streamAudio;
+    ImageView downloadAudio;
+    ImageView streamAudio;
     TextView issueDate;
     TextView magazineHeadline;
     ImageView magazineCover;
     WeeklyAdapter mWeeklyAdapter;
     StickHeaderDecoration mStickHeaderDecoration;
+    View view;
     public static final int FETCH_DATA_AND_NOTIFY_MSG = 1000;
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
@@ -90,33 +94,18 @@ public class WeeklyFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_weekly, container, false);
-        issueContentRecyclerView = view.findViewById(R.id.issue_content_recyclerView);
+        view = inflater.inflate(R.layout.fragment_weekly, container, false);
+        initView();
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         issueContentRecyclerView.setLayoutManager(linearLayoutManager);
         int sectionToPosition = InchoateApplication.getScrollToPosition();
-        if (sectionToPosition > 0 ){
-            int scrollToPosition = Utils.getArticleSumBySection(sectionToPosition-2);
+        if (sectionToPosition > 0) {
+            int scrollToPosition = Utils.getArticleSumBySection(sectionToPosition - 2);
             linearLayoutManager.scrollToPosition(scrollToPosition);
         }
-        // 这种 header 的出现, 他会 inflate 在 RecyclerView 的上面, 这个时候, 画第一个 item 的 header,
-        //也会出现在 RecyclerView 的上面, 但是他会出现, HeaderView 的上面
-        mSectionHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.weekly_section_header, issueContentRecyclerView, false);
-        mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.weekly_footer, issueContentRecyclerView,false);
-        previousEdition = mSectionHeaderView.findViewById(R.id.previous_edition);
-        downloadAudio = mSectionHeaderView.findViewById(R.id.download_audio);
-        streamAudio = mSectionHeaderView.findViewById(R.id.stream_audio);
-        issueDate = mSectionHeaderView.findViewById(R.id.issue_date);
-        magazineCover = mSectionHeaderView.findViewById(R.id.magazine_cover);
-        magazineHeadline = mSectionHeaderView.findViewById(R.id.magazine_headline);
-        previousEdition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: previousEdition = " + previousEdition);
-                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_previous_edition);
-            }
-        });
+
         mArticlesList = initData(new ArrayList<Article>());
         mWeeklyAdapter = new WeeklyAdapter(mArticlesList, getContext(), this);
         issueContentRecyclerView.setAdapter(mWeeklyAdapter);
@@ -125,10 +114,50 @@ public class WeeklyFragment extends Fragment {
 
         mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
         issueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);
-        mFab = view.findViewById(R.id.issue_category_fab);
         mFab.setFocusable(true);
         mFab.setClickable(true);
         mFab.setVisibility(View.VISIBLE);
+
+        initOnClickListener();
+        return view;
+    }
+
+    public void initView(){
+        issueContentRecyclerView = view.findViewById(R.id.issue_content_recyclerView);
+
+        // 这种 header 的出现, 他会 inflate 在 RecyclerView 的上面, 这个时候, 画第一个 item 的 header,
+        //也会出现在 RecyclerView 的上面, 但是他会出现, HeaderView 的上面
+        mSectionHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.weekly_section_header, issueContentRecyclerView, false);
+        mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.weekly_footer, issueContentRecyclerView, false);
+
+        mFab = view.findViewById(R.id.issue_category_fab);
+        previousEdition = mSectionHeaderView.findViewById(R.id.previous_edition);
+        downloadAudio = mSectionHeaderView.findViewById(R.id.download_audio);
+        streamAudio = mSectionHeaderView.findViewById(R.id.stream_audio);
+        issueDate = mSectionHeaderView.findViewById(R.id.issue_date);
+        magazineCover = mSectionHeaderView.findViewById(R.id.magazine_cover);
+        magazineHeadline = mSectionHeaderView.findViewById(R.id.magazine_headline);
+
+    }
+
+    public void initOnClickListener() {
+        streamAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        InchoateApplication.setDisplayArticleCache(article);
+                        InchoateApplication.setAudioPlayingArticleListCache(InchoateApplication.getNewestIssueCache().get(0).containArticle);
+                        SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
+                        panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
+                        EventBus.getDefault().post(panelState);
+                    }
+                }).start();
+
+            }
+        });
+
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,7 +165,13 @@ public class WeeklyFragment extends Fragment {
             }
         });
 
-        return view;
+        previousEdition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: previousEdition = " + previousEdition);
+                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_previous_edition);
+            }
+        });
     }
 
     @Override

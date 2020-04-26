@@ -143,6 +143,9 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     }
 
     private void initData() {
+        if (mAudioPlayingArticle == null) {
+            return;
+        }
         Glide.with(getContext()).load(mAudioPlayingArticle.imageUrl).into(articleCoverImage);
         playFlyTitle.setText(mAudioPlayingArticle.flyTitle);
         audioPlayTitle.setText(mAudioPlayingArticle.title);
@@ -158,7 +161,8 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
             public void onClick(View v) {
                 SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                 panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
-                EventBus.getDefault().post(panelState);            }
+                EventBus.getDefault().post(panelState);
+            }
         });
 
         seekBarProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

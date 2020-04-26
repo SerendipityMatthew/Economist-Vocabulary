@@ -99,6 +99,7 @@ public class ArticleFragment extends Fragment {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {

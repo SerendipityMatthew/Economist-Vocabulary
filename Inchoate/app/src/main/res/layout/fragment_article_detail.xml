@@ -5,9 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/article_content_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:overScrollMode="never"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        app:layoutManager="GridLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:ignore="MissingConstraints"
+        tools:spanCount="1" />
+
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
         tools:ignore="MissingConstraints">
 
         <ImageView
@@ -44,16 +59,4 @@
             android:background="@mipmap/article_share" />
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/article_content_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:overScrollMode="never"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        app:layoutManager="GridLayoutManager"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:ignore="MissingConstraints"
-        tools:spanCount="1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

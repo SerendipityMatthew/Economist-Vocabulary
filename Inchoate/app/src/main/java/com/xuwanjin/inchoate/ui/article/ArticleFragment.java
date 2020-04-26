@@ -46,7 +46,7 @@ public class ArticleFragment extends Fragment {
     Article article;
     View view;
     ImageView backToWeeklyToolbar;
-    ImageView weeklyToolbar;
+    TextView weeklyToolbar;
     ImageView fontSizeToolbar;
     ImageView bookmarkArticleToolbar;
     ImageView articleShareToolbar;

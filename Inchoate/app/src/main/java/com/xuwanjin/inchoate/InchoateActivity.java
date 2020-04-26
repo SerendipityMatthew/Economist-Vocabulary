@@ -47,8 +47,8 @@ public class InchoateActivity extends AppCompatActivity implements
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         controller = Navigation.findNavController(this, R.id.nav_host_fragment);
         InchoateApplication.NAVIGATION_CONTROLLER = controller;
-        slidingUpPanelLayout.setPanelHeight(55);
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+        // 第一次启动的时候隐藏 SlidingUpLayout ,
+        slidingUpPanelLayout.setPanelHeight(30);
     }
 
     public void initView() {

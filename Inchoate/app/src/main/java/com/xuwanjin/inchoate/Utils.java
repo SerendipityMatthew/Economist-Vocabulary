@@ -131,7 +131,6 @@ public class Utils {
         List<Article> articleList = issue.containArticle;
         List<Article> list = new ArrayList<>();
         for (Article article : articleList) {
-            System.out.println(article.section);
             if (articleLinkedHashMap.get(article.section) == null){
                 list = new ArrayList<>();
             }else {

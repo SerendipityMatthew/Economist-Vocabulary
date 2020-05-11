@@ -84,6 +84,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            mPlayService = ((EconomistService.LocalBinder) service).getService();
 
         }
 

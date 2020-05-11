@@ -35,13 +35,11 @@ import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
-import com.xuwanjin.inchoate.events.AudioPlayerEvent;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.ArticleCategorySection;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.week.WeekFragment;
-import com.xuwanjin.inchoate.player.PlaybackController;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
@@ -143,7 +141,6 @@ public class WeeklyFragment extends Fragment {
     }
 
     public void initOnClickListener() {
-        PlaybackController playbackController = new PlaybackController(getActivity());
         streamAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,20 +152,9 @@ public class WeeklyFragment extends Fragment {
                         SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                         panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                         EventBus.getDefault().post(panelState);
-
-//                        playbackController.init();
-
-//                        EventBus.getDefault().post(audioPlayerEvent);
                     }
                 }).start();
-                AudioPlayerEvent audioPlayerEvent = new AudioPlayerEvent();
-                Article article = new Article();
-//                article.audioUrl = "/sdcard/Download/Issue_9188_20200404_The_Economist_Full_edition.m4a";
-                audioPlayerEvent.article = article;
-                if (article.audioUrl ==null || article.audioUrl.trim().isEmpty()){
-                    return;
-                }
-                playbackController.play(audioPlayerEvent);
+
             }
         });
 

@@ -20,6 +20,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 
 }
 
@@ -101,4 +105,5 @@ dependencies {
 
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
     implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'com.google.android.exoplayer:exoplayer:2.11.4'
 }

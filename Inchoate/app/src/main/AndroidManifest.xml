@@ -24,6 +24,9 @@
         <service android:name=".player.EconomistService">
 
         </service>
+        <service android:name=".timber_style.EconomistServiceTimberStyle">
+
+        </service>
     </application>
 
 

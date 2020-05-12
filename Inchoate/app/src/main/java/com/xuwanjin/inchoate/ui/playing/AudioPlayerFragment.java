@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,8 @@ import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.player.EconomistService;
 import com.xuwanjin.inchoate.player.IPlayer;
+import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
+import com.xuwanjin.inchoate.timber_style.IEconomistService;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -39,6 +42,7 @@ import java.util.List;
 
 public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     private IPlayer mPlayService;
+    private IEconomistService mEconomistService;
     private Context mContext;
     private List<Article> mArticleList;
     private boolean isPlayWholeIssue = false;
@@ -70,10 +74,10 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
             if (isDetached()) {
                 return;
             }
-            if (mPlayService.isPlaying()) {
-                int progress = (int) (seekBarProgress.getMax() * (float) mPlayService.getProgress() /
+            if (EconomistPlayerTimberStyle.isPlaying()) {
+                int progress = (int) (seekBarProgress.getMax() * (float) EconomistPlayerTimberStyle.getCurrentPosition() /
                         (float) getCurrentArticleDuration());
-                updateProgressText(mPlayService.getProgress());
+                updateProgressText(EconomistPlayerTimberStyle.getCurrentPosition());
                 if (progress >= 0 && progress <= seekBarProgress.getMax()) {
                     seekBarProgress.setProgress(progress);
                 }
@@ -84,7 +88,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            mPlayService = ((EconomistService.LocalBinder) service).getService();
+            mEconomistService = IEconomistService.Stub.asInterface(service);
 
         }
 
@@ -183,10 +187,14 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Log.d("Matthew", "onStopTrackingTouch: " + seekBar.getProgress());
-                mPlayService.seekTo(seekBar.getProgress());
-                if (mPlayService.isPlaying()) {
-                    mHandler.removeCallbacks(mProgressCallback);
-                    mHandler.post(mProgressCallback);
+                EconomistPlayerTimberStyle.seekToPosition(seekBar.getProgress());
+                try {
+                    if (mEconomistService.isPlaying()) {
+                        mHandler.removeCallbacks(mProgressCallback);
+                        mHandler.post(mProgressCallback);
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
             }
         });

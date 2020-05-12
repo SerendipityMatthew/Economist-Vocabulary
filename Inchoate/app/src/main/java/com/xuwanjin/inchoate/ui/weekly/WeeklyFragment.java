@@ -1,10 +1,13 @@
 package com.xuwanjin.inchoate.ui.weekly;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,6 +43,11 @@ import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.ArticleCategorySection;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.week.WeekFragment;
+import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
+
+import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.mEconomistService;
+
+import com.xuwanjin.inchoate.timber_style.IEconomistService;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
@@ -77,6 +85,7 @@ public class WeeklyFragment extends Fragment {
     WeeklyAdapter mWeeklyAdapter;
     StickHeaderDecoration mStickHeaderDecoration;
     View view;
+    private Issue mIssue;
     public static final int FETCH_DATA_AND_NOTIFY_MSG = 1000;
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
@@ -96,7 +105,19 @@ public class WeeklyFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_weekly, container, false);
         initView();
+        ServiceConnection serviceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                mEconomistService = IEconomistService.Stub.asInterface(service);
+                Log.d(TAG, "onServiceConnected: mEconomistService = " + mEconomistService);
+            }
 
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+        EconomistPlayerTimberStyle.binToService(getActivity(), serviceConnection);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         issueContentRecyclerView.setLayoutManager(linearLayoutManager);
@@ -122,7 +143,7 @@ public class WeeklyFragment extends Fragment {
         return view;
     }
 
-    public void initView(){
+    public void initView() {
         issueContentRecyclerView = view.findViewById(R.id.issue_content_recyclerView);
 
         // 这种 header 的出现, 他会 inflate 在 RecyclerView 的上面, 这个时候, 画第一个 item 的 header,
@@ -152,6 +173,9 @@ public class WeeklyFragment extends Fragment {
                         SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                         panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                         EventBus.getDefault().post(panelState);
+                        if (mIssue != null){
+                            EconomistPlayerTimberStyle.playWholeIssue(mIssue.containArticle.get(0), mIssue);
+                        }
                     }
                 }).start();
 
@@ -185,6 +209,7 @@ public class WeeklyFragment extends Fragment {
         final Issue issue;
         if (issueList != null && issueList.size() > 0) {
             issue = issueList.get(0);
+            mIssue = issue;
             articles = issue.containArticle;
             Log.d(TAG, "onResponse: use the cache ");
             getActivity().runOnUiThread(new Runnable() {

@@ -25,6 +25,7 @@ public class Article implements Parcelable {
     public Article(){
 
     }
+
     protected Article(Parcel in) {
         section = in.readString();
         headline = in.readString();
@@ -40,6 +41,31 @@ public class Article implements Parcelable {
         content = in.readString();
         imageUrl = in.readString();
         articleUrl = in.readString();
+        paragraphList = in.createTypedArrayList(Paragraph.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(section);
+        dest.writeString(headline);
+        dest.writeString(date);
+        dest.writeString(title);
+        dest.writeString(flyTitle);
+        dest.writeString(summary);
+        dest.writeString(mainArticleImage);
+        dest.writeInt(readTime);
+        dest.writeString(audioUrl);
+        dest.writeFloat(audioDuration);
+        dest.writeByte((byte) (isBookmark ? 1 : 0));
+        dest.writeString(content);
+        dest.writeString(imageUrl);
+        dest.writeString(articleUrl);
+        dest.writeTypedList(paragraphList);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Article> CREATOR = new Creator<Article>() {
@@ -75,26 +101,5 @@ public class Article implements Parcelable {
                 '}';
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(section);
-        dest.writeString(headline);
-        dest.writeString(date);
-        dest.writeString(title);
-        dest.writeString(flyTitle);
-        dest.writeString(summary);
-        dest.writeString(mainArticleImage);
-        dest.writeInt(readTime);
-        dest.writeString(audioUrl);
-        dest.writeFloat(audioDuration);
-        dest.writeByte((byte) (isBookmark ? 1 : 0));
-        dest.writeString(content);
-        dest.writeString(imageUrl);
-        dest.writeString(articleUrl);
-    }
 }

@@ -15,6 +15,7 @@
         app:itemTextAppearanceActive="@color/colorAccent"
         app:itemTextAppearanceInactive="@color/colorPrimary"
         app:itemTextColor="@color/selector_item_color"
+        app:itemBackground="@color/white"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_bottom_nav"
         >

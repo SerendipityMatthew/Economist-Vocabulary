@@ -42,9 +42,7 @@ public class InchoateActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
         initView();
-        bottomNavigationView.setBackgroundColor(Color.WHITE);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         controller = Navigation.findNavController(this, R.id.nav_host_fragment);
         InchoateApplication.NAVIGATION_CONTROLLER = controller;
         // 第一次启动的时候隐藏 SlidingUpLayout ,
@@ -97,9 +95,7 @@ public class InchoateActivity extends AppCompatActivity implements
         if (isShow) {
             bottomNavigationView = findViewById(R.id.bottom_navigation);
             bottomNavigationView.setVisibility(View.VISIBLE);
-            bottomNavigationView.setBackgroundColor(Color.WHITE);
             bottomNavigationView.setOnNavigationItemSelectedListener(this);
-            bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
 
         } else {
             bottomNavigationView.removeAllViews();

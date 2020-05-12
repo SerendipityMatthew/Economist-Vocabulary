@@ -115,7 +115,7 @@ public class Utils {
         issue.issueUrl = weekSection.url.canonical;
         issue.coverImageUrl = coverContent.url.canonical;
         issue.containArticle = getWholeArticle(weekFragment);
-        issue.issueDate = weekSection.datePublished.substring(0, 9);
+        issue.issueDate = weekSection.datePublished.substring(0, 10);
         List<String> sectionList = new ArrayList<>();
         for (Article a : issue.containArticle) {
             if (!sectionList.contains(a.section)) {

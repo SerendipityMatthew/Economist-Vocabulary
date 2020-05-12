@@ -19,7 +19,6 @@ import com.xuwanjin.inchoate.model.Issue;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class EconomistServiceTimberStyle extends Service {
@@ -89,7 +88,7 @@ public class EconomistServiceTimberStyle extends Service {
         ArrayDeque<Article> articleArrayDeque = new ArrayDeque<>();
         for (Article art : leftOverArticle) {
             if(art.audioUrl != null && !art.audioUrl.trim().equals("")){ // 去掉 漫画 这个特殊的, 他没有音频文件
-                Log.d(TAG, "playTheRestOfWholeIssue:  art.title = " + art.title);
+//                Log.d(TAG, "playTheRestOfWholeIssue:  art.title = " + art.title);
                 articleArrayDeque.addLast(art);
             }
         }

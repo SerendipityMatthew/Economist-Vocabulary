@@ -215,7 +215,6 @@ public class WeeklyFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "run: issue.coverImageUrl = " + issue.coverImageUrl);
                     Glide.with(mSectionHeaderView)
                             .load(issue.coverImageUrl)
                             .addListener(new RequestListener<Drawable>() {
@@ -301,9 +300,7 @@ public class WeeklyFragment extends Fragment {
 
             }
         });
-        Log.d(TAG, "parseJsonDataFromAsset: issue.containArticle.get(0) = " + issue.containArticle.get(0));
         InchoateApplication.setNewestIssueCache(issue);
-//        mArticlesList.clear();
         mArticlesList = issue.containArticle;
         mHandler.sendEmptyMessage(FETCH_DATA_AND_NOTIFY_MSG);
 

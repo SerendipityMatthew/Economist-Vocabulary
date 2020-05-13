@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="20dp"
             android:text="@string/weekly"
+            android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold"
             tools:ignore="MissingConstraints" />

@@ -1,6 +1,9 @@
 package com.xuwanjin.inchoate.ui.article;
 
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +18,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.Paragraph;
+import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
+import com.xuwanjin.inchoate.timber_style.IEconomistService;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
 import static com.xuwanjin.inchoate.Utils.getDurationFormat;
+import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.mEconomistService;
 
 public class ArticleFragment extends Fragment {
     RecyclerView mArticleContentRV;
@@ -46,6 +52,18 @@ public class ArticleFragment extends Fragment {
     ImageView fontSizeToolbar;
     ImageView bookmarkArticleToolbar;
     ImageView articleShareToolbar;
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mEconomistService = IEconomistService.Stub.asInterface(service);
+
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mEconomistService = null;
+        }
+    };
 
     @Nullable
     @Override
@@ -54,7 +72,7 @@ public class ArticleFragment extends Fragment {
         if (article != null) {
             mParagraphList = article.paragraphList;
         }
-
+        EconomistPlayerTimberStyle.binToService(getActivity(), mConnection);
         view = inflater.inflate(R.layout.fragment_article_detail, container, false);
         initView();
         mGridLayoutManager = new GridLayoutManager(getContext(), 1);
@@ -108,6 +126,9 @@ public class ArticleFragment extends Fragment {
                         SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                         panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                         EventBus.getDefault().post(panelState);
+                        List<Issue> issueList = InchoateApplication.getNewestIssueCache();
+
+                        EconomistPlayerTimberStyle.playWholeIssue(article, issueList.get(0));
                     }
                 }).start();
 

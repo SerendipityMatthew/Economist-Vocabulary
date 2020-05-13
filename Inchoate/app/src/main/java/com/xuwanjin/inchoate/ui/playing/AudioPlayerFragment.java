@@ -107,9 +107,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mContext = getContext();
-        mContext.bindService(
-                new Intent(getContext(), EconomistService.class),
-                mConnection, Context.BIND_AUTO_CREATE);
+
         view = inflater.inflate(R.layout.fragment_audio_play, container, false);
         mArticleList = InchoateApplication.getAudioPlayingArticleListCache();
         if (mArticleList == null || mArticleList.size() == 0) {
@@ -236,6 +234,11 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     public void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacks(mProgressCallback);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
         mContext.unbindService(mConnection);
     }
 

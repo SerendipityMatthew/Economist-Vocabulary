@@ -15,4 +15,5 @@ interface IEconomistService {
     boolean isPlaying();
     void seekToPosition(int position);
     int getCurrentPosition();
+    void releasePlayer();
 }

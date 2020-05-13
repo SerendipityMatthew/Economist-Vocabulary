@@ -19,6 +19,7 @@ import com.xuwanjin.inchoate.model.Issue;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EconomistServiceTimberStyle extends Service {
@@ -39,6 +40,7 @@ public class EconomistServiceTimberStyle extends Service {
         }
     };
     private EconomistPlayer mPlayer;
+    private List<EconomistPlayer> economistPlayerListCache = new ArrayList<>();
 
     @Nullable
     @Override
@@ -49,8 +51,21 @@ public class EconomistServiceTimberStyle extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mPlayer = new EconomistPlayer(EconomistServiceTimberStyle.this);
+        if (economistPlayerListCache!= null && economistPlayerListCache.size()>0){
+            mPlayer = economistPlayerListCache.get(0);
+        }else {
+            mPlayer = new EconomistPlayer(EconomistServiceTimberStyle.this);
+            economistPlayerListCache.add(0, mPlayer);
+        }
         setPlayerHandler(mServiceHandler);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onStartCommand: flags = " + flags);
+        Log.d(TAG, "onStartCommand: intent = " + intent);
+        Log.d(TAG, "onStartCommand: startId = " + startId);
+        return super.onStartCommand(intent, flags, startId);
     }
 
     public void setArticleArrayDeque(ArrayDeque<Article> deque) {
@@ -102,6 +117,16 @@ public class EconomistServiceTimberStyle extends Service {
 
     public int getCurrentPosition() {
         return mPlayer.getCurrentPosition();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
+        economistPlayerListCache.clear();
+    }
+    public void releasePlayer(){
+        mPlayer.releasePlayer();
     }
 
     public boolean isPlaying() {
@@ -166,6 +191,9 @@ public class EconomistServiceTimberStyle extends Service {
         public int getCurrentPosition() throws RemoteException {
             return mService.get().getCurrentPosition();
         }
+        public void releasePlayer() throws RemoteException {
+            mService.get().releasePlayer();
+        }
     }
 
     public void openFile(String filePath) throws RemoteException {
@@ -181,7 +209,7 @@ public class EconomistServiceTimberStyle extends Service {
     public static final class EconomistPlayer implements MediaPlayer.OnCompletionListener,
             MediaPlayer.OnErrorListener {
         private final WeakReference<EconomistServiceTimberStyle> mService;
-        private MediaPlayer mMediaPlayer = new MediaPlayer();
+        private MediaPlayer mMediaPlayer;
         private MediaPlayer mNextMediaPlayer;
         private ArrayDeque<Article> mArticlePlayingDeque;
         private Handler mHandler;
@@ -217,6 +245,7 @@ public class EconomistServiceTimberStyle extends Service {
         }
 
         public void setDataSource(String filePath) {
+            Log.d(TAG, "setDataSource: mMediaPlayer = " + mMediaPlayer);
             try {
                 mMediaPlayer.setDataSource(filePath);
             } catch (IOException e) {
@@ -228,11 +257,15 @@ public class EconomistServiceTimberStyle extends Service {
             Log.d(TAG, "EconomistPlayer: play: ");
             try {
                 Article article = mArticlePlayingDeque.poll();
-                Log.d(TAG, "play: article = " + article);
                 Log.d(TAG, "play: mArticlePlayingDeque.size() = " + mArticlePlayingDeque.size());
                 if (article == null) {
                     return;
                 }
+
+                if (mMediaPlayer != null){
+                    mMediaPlayer.reset();
+                }
+                mMediaPlayer = new MediaPlayer();
                 setDataSource(article.audioUrl);
                 mMediaPlayer.prepare();
                 mMediaPlayer.setOnCompletionListener(this);
@@ -256,7 +289,12 @@ public class EconomistServiceTimberStyle extends Service {
             if (mMediaPlayer != null) {
                 mMediaPlayer.seekTo(position);
             }
-
+        }
+        public void releasePlayer() {
+            if (mMediaPlayer != null){
+                mMediaPlayer.release();
+                mMediaPlayer = null;
+            }
         }
     }
 }

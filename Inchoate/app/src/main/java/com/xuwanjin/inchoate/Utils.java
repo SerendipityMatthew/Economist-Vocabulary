@@ -65,7 +65,7 @@ public class Utils {
             article.flyTitle = weekPart.print.flyTitle;
             article.articleUrl = articleUrl;
             article.mainArticleImage = imageUrl;
-            article.date = weekPart.published.substring(0, 9);
+            article.date = weekPart.published.substring(0, 10);
             article.paragraphList = new ArrayList<>();
             StringBuilder articleBuilder = new StringBuilder();
             for (WeekText weekText0 : weekPart.text) {

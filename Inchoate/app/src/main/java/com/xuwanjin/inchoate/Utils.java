@@ -65,7 +65,7 @@ public class Utils {
             article.flyTitle = weekPart.print.flyTitle;
             article.articleUrl = articleUrl;
             article.mainArticleImage = imageUrl;
-            article.date = weekPart.published.substring(0, 10);
+            article.date = Utils.digitalDateSwitchToEnglishFormat(weekPart.published.substring(0, 10));
             article.paragraphList = new ArrayList<>();
             StringBuilder articleBuilder = new StringBuilder();
             for (WeekText weekText0 : weekPart.text) {
@@ -115,7 +115,7 @@ public class Utils {
         issue.issueUrl = weekSection.url.canonical;
         issue.coverImageUrl = coverContent.url.canonical;
         issue.containArticle = getWholeArticle(weekFragment);
-        issue.issueDate = weekSection.datePublished.substring(0, 10);
+        issue.issueDate = Utils.digitalDateSwitchToEnglishFormat(weekSection.datePublished.substring(0, 10));
         List<String> sectionList = new ArrayList<>();
         for (Article a : issue.containArticle) {
             if (!sectionList.contains(a.section)) {
@@ -172,4 +172,92 @@ public class Utils {
         }
         return null;
     }
+    public static String digitalDateSwitchToEnglishFormat(String dateString) {
+        Log.d("Matthew", "digitalDateSwitchToEnglishFormat: dateString = " +dateString);
+        if (dateString.trim().equals("")){
+            return null;
+        }
+        //2020-05-09 ====>  May 9th 2020
+        String[] dateArray = dateString.split("-");
+        String year = dateArray[0];
+        String day ;
+        switch (dateArray[2]) {
+            case "01":
+                day = "1st";
+                break;
+            case "02":
+                day = "2nd";
+                break;
+            case "03":
+                day = "3rd";
+                break;
+            case "21":
+                day = "21st";
+                break;
+            case "22":
+                day = "22nd";
+                break;
+            case "23":
+                day = "23rd";
+                break;
+            case "31":
+                day = "31st";
+                break;
+            default:
+                String trimDay;
+                if (dateArray[2].startsWith("0")){
+                    trimDay = dateArray[2].substring(1,2);
+                    day = trimDay+"th";
+                }else {
+                    day = dateArray[2] + "th";
+                }
+                break;
+        }
+
+        String month ;
+        switch (dateArray[1]) {
+            case "01":
+                month = "Jan";
+                break;
+            case "02":
+                month = "Feb";
+                break;
+            case "03":
+                month = "Mar";
+                break;
+            case "04":
+                month = "Apr";
+                break;
+            case "05":
+                month = "May";
+                break;
+            case "06":
+                month = "Jun";
+                break;
+            case "07":
+                month = "Jul";
+                break;
+            case "08":
+                month = "Aug";
+                break;
+            case "09":
+                month = "Sep";
+                break;
+            case "10":
+                month = "Oct";
+                break;
+            case "11":
+                month = "Nov";
+                break;
+            case "12":
+                month = "Dec";
+                break;
+            default:
+                month = "";
+                break;
+        }
+
+        return month + " " + day + " " + year;
+    }
+
 }

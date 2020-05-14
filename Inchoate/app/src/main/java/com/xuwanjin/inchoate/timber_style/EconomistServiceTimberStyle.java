@@ -51,9 +51,9 @@ public class EconomistServiceTimberStyle extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (economistPlayerListCache!= null && economistPlayerListCache.size()>0){
+        if (economistPlayerListCache != null && economistPlayerListCache.size() > 0) {
             mPlayer = economistPlayerListCache.get(0);
-        }else {
+        } else {
             mPlayer = new EconomistPlayer(EconomistServiceTimberStyle.this);
             economistPlayerListCache.add(0, mPlayer);
         }
@@ -102,7 +102,7 @@ public class EconomistServiceTimberStyle extends Service {
         List<Article> leftOverArticle = articleList.subList(position, articleList.size());
         ArrayDeque<Article> articleArrayDeque = new ArrayDeque<>();
         for (Article art : leftOverArticle) {
-            if(art.audioUrl != null && !art.audioUrl.trim().equals("")){ // 去掉 漫画 这个特殊的, 他没有音频文件
+            if (art.audioUrl != null && !art.audioUrl.trim().equals("")) { // 去掉 漫画 这个特殊的, 他没有音频文件
 //                Log.d(TAG, "playTheRestOfWholeIssue:  art.title = " + art.title);
                 articleArrayDeque.addLast(art);
             }
@@ -118,6 +118,9 @@ public class EconomistServiceTimberStyle extends Service {
     public int getCurrentPosition() {
         return mPlayer.getCurrentPosition();
     }
+    public int getDuration() {
+        return mPlayer.getDuration();
+    }
 
     @Override
     public void onDestroy() {
@@ -125,14 +128,16 @@ public class EconomistServiceTimberStyle extends Service {
         releasePlayer();
         economistPlayerListCache.clear();
     }
-    public void releasePlayer(){
+
+    public void releasePlayer() {
         mPlayer.releasePlayer();
     }
 
     public boolean isPlaying() {
         return mPlayer.isPlaying();
     }
-    public void seekToPosition(int position){
+
+    public void seekToPosition(int position) {
         mPlayer.seekToPosition(position);
     }
 
@@ -184,13 +189,18 @@ public class EconomistServiceTimberStyle extends Service {
 
         @Override
         public void seekToPosition(int position) throws RemoteException {
-             mService.get().seekToPosition(position);
+            mService.get().seekToPosition(position);
         }
 
         @Override
         public int getCurrentPosition() throws RemoteException {
             return mService.get().getCurrentPosition();
         }
+        @Override
+        public int getDuration() throws RemoteException {
+            return mService.get().getDuration();
+        }
+
         public void releasePlayer() throws RemoteException {
             mService.get().releasePlayer();
         }
@@ -207,9 +217,12 @@ public class EconomistServiceTimberStyle extends Service {
     // 输入内容 Article, 产生效果 -- 播放
     //    播放结束之后是否要播放接下来的文章
     public static final class EconomistPlayer implements MediaPlayer.OnCompletionListener,
-            MediaPlayer.OnErrorListener {
+            MediaPlayer.OnErrorListener, MediaPlayer.OnBufferingUpdateListener,
+            MediaPlayer.OnPreparedListener
+    {
         private final WeakReference<EconomistServiceTimberStyle> mService;
         private MediaPlayer mMediaPlayer;
+        private boolean isNetworkBuffering = true;
         private MediaPlayer mNextMediaPlayer;
         private ArrayDeque<Article> mArticlePlayingDeque;
         private Handler mHandler;
@@ -254,35 +267,48 @@ public class EconomistServiceTimberStyle extends Service {
         }
 
         public void play() {
-            Log.d(TAG, "EconomistPlayer: play: ");
-            try {
-                Article article = mArticlePlayingDeque.poll();
-                Log.d(TAG, "play: mArticlePlayingDeque.size() = " + mArticlePlayingDeque.size());
-                if (article == null) {
-                    return;
-                }
+            synchronized (this) {
+                Log.d(TAG, "EconomistPlayer: play: ");
+                try {
+                    Article article = mArticlePlayingDeque.poll();
+                    Log.d(TAG, "play: mArticlePlayingDeque.size() = " + mArticlePlayingDeque.size());
+                    if (article == null) {
+                        return;
+                    }
 
-                if (mMediaPlayer != null){
-                    mMediaPlayer.reset();
+                    if (mMediaPlayer != null) {
+                        mMediaPlayer.reset();
+                    }
+                    mMediaPlayer = new MediaPlayer();
+                    setDataSource(article.audioUrl);
+                    isNetworkBuffering = true;
+                    mMediaPlayer.prepare();
+                    mMediaPlayer.setOnCompletionListener(this);
+                    mMediaPlayer.setOnErrorListener(this);
+                    mMediaPlayer.setOnBufferingUpdateListener(this);
+                    mMediaPlayer.setOnPreparedListener(this);
+                    mMediaPlayer.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                mMediaPlayer = new MediaPlayer();
-                setDataSource(article.audioUrl);
-                mMediaPlayer.prepare();
-                mMediaPlayer.setOnCompletionListener(this);
-                mMediaPlayer.setOnErrorListener(this);
-                mMediaPlayer.start();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-
         }
 
         public boolean isPlaying() {
             return mMediaPlayer != null && mMediaPlayer.isPlaying();
         }
 
+        public boolean isNetworkBuffering() {
+            return isNetworkBuffering;
+        }
+
         public int getCurrentPosition() {
+
             return mMediaPlayer == null ? 0 : mMediaPlayer.getCurrentPosition();
+        }
+        public int getDuration() {
+
+            return mMediaPlayer == null ? -1 : mMediaPlayer.getDuration();
         }
 
         public void seekToPosition(int position) {
@@ -290,11 +316,26 @@ public class EconomistServiceTimberStyle extends Service {
                 mMediaPlayer.seekTo(position);
             }
         }
+
         public void releasePlayer() {
-            if (mMediaPlayer != null){
+            if (mMediaPlayer != null) {
                 mMediaPlayer.release();
                 mMediaPlayer = null;
             }
+        }
+
+        @Override
+        public void onBufferingUpdate(MediaPlayer mp, int percent) {
+            // 这个 percent 有数字了表示就开始正在网络缓存当中
+            Log.d(TAG, "EconomistPlayer: onBufferingUpdate: percent = " + percent);
+            Log.d(TAG, "EconomistPlayer: onBufferingUpdate: mp = " + mp);
+        }
+
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+            // 这个 表示可以播放文件了
+            isNetworkBuffering = false;
+            Log.d(TAG, "EconomistPlayer: onPrepared: ");
         }
     }
 }

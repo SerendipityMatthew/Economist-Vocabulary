@@ -114,6 +114,7 @@ public class WeeklyFragment extends Fragment {
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
+                Log.d(TAG, "onServiceDisconnected: ");
 
             }
         };

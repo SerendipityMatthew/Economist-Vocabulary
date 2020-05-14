@@ -57,6 +57,14 @@ public class EconomistPlayerTimberStyle {
         }
         return -1;
     }
+    public static int getDuration(){
+        try {
+            return mEconomistService.getDuration();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
     public static void playWholeIssue(Article currentArticle, Issue currentIssue){
         try {
             mEconomistService.playTheRest(currentArticle, currentIssue);

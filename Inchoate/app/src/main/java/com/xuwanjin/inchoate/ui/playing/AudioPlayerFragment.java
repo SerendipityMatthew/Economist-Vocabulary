@@ -41,6 +41,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.List;
 
 public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
+    public static final String TAG = "AudioPlayerFragment";
     private IPlayer mPlayService;
     private IEconomistService mEconomistService;
     private Context mContext;
@@ -75,9 +76,10 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
                 return;
             }
             if (EconomistPlayerTimberStyle.isPlaying()) {
-                int progress = (int) (seekBarProgress.getMax() * (float) EconomistPlayerTimberStyle.getCurrentPosition() /
-                        (float) getCurrentArticleDuration());
-                updateProgressText(EconomistPlayerTimberStyle.getCurrentPosition());
+                int progress = EconomistPlayerTimberStyle.getCurrentPosition();
+                Log.d(TAG, "run: progress = " + progress);
+                Log.d(TAG, "run: seekBarProgress.getMax() = " + seekBarProgress.getMax());
+                updateProgressText(progress);
                 if (progress >= 0 && progress <= seekBarProgress.getMax()) {
                     seekBarProgress.setProgress(progress);
                 }
@@ -89,18 +91,20 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mEconomistService = IEconomistService.Stub.asInterface(service);
-
+            Log.d(TAG, "onServiceConnected: ");
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            Log.d(TAG, "onServiceDisconnected: ");
         }
     };
 
     public void updateProgressText(int progress) {
-        audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress));
-        audioPlayed.setText(Utils.getDurationFormat(progress));
+        Log.d(TAG, "updateProgressText: progress = " + progress);
+        Log.d(TAG, "updateProgressText: mAudioPlayingArticle.audioDuration = " + mAudioPlayingArticle.audioDuration);
+        audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress/1000));
+        audioPlayed.setText(Utils.getDurationFormat(progress/1000));
     }
 
     @Nullable
@@ -117,8 +121,17 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         initView();
         initData();
         initOnListener();
-
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EconomistPlayerTimberStyle.binToService(getContext(), mConnection);
+        if (mPlayService != null && mPlayService.isPlaying()) {
+            mHandler.removeCallbacks(mProgressCallback);
+            mHandler.post(mProgressCallback);
+        }
     }
 
     public void initView() {
@@ -153,7 +166,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         audioPlayTitle.setText(mAudioPlayingArticle.title);
         audioPlayed.setText(Utils.getDurationFormat(0));
         audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration));
-        seekBarProgress.setMax((int) mAudioPlayingArticle.audioDuration);
+        seekBarProgress.setMax((int) mAudioPlayingArticle.audioDuration*1000);
         playToggle.setImageResource(R.mipmap.pause);
     }
 
@@ -185,26 +198,27 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Log.d("Matthew", "onStopTrackingTouch: " + seekBar.getProgress());
+                Log.d("Matthew", "onStopTrackingTouch: getCurrentPosition = " + EconomistPlayerTimberStyle.getCurrentPosition());
+                Log.d("Matthew", "onStopTrackingTouch: getDuration = " + EconomistPlayerTimberStyle.getDuration());
                 EconomistPlayerTimberStyle.seekToPosition(seekBar.getProgress());
-                try {
-                    if (mEconomistService.isPlaying()) {
-                        mHandler.removeCallbacks(mProgressCallback);
-                        mHandler.post(mProgressCallback);
-                    }
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
             }
         });
         playToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPlayService != null && mPlayService.isPlaying()) {
-                    mPlayService.pause();
-                    playToggle.setImageResource(R.mipmap.play);
-                } else {
-                    mPlayService.play(mAudioPlayingArticle, isPlayWholeIssue);
-                    playToggle.setImageResource(R.mipmap.pause);
+                try {
+                    if (mEconomistService != null && mEconomistService.isPlaying()) {
+                        try {
+                            mEconomistService.pause();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        playToggle.setImageResource(R.mipmap.play);
+                    } else {
+                        playToggle.setImageResource(R.mipmap.pause);
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -224,10 +238,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     @Override
     public void onStart() {
         super.onStart();
-        if (mPlayService != null && mPlayService.isPlaying()) {
-            mHandler.removeCallbacks(mProgressCallback);
-            mHandler.post(mProgressCallback);
-        }
+
     }
 
     @Override
@@ -239,11 +250,11 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     @Override
     public void onDetach() {
         super.onDetach();
-        mContext.unbindService(mConnection);
+
     }
 
     private int getCurrentArticleDuration() {
-        Article article = mPlayService.getPlayingSong();
+        Article article = mAudioPlayingArticle;
         int duration = 0;
         if (article != null) {
             duration = (int) article.audioDuration;

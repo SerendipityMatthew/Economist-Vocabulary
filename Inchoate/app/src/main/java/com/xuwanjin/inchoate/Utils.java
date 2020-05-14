@@ -173,7 +173,6 @@ public class Utils {
         return null;
     }
     public static String digitalDateSwitchToEnglishFormat(String dateString) {
-        Log.d("Matthew", "digitalDateSwitchToEnglishFormat: dateString = " +dateString);
         if (dateString.trim().equals("")){
             return null;
         }

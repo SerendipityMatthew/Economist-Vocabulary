@@ -75,16 +75,16 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
             if (isDetached()) {
                 return;
             }
+
             if (EconomistPlayerTimberStyle.isPlaying()) {
                 int progress = EconomistPlayerTimberStyle.getCurrentPosition();
-                Log.d(TAG, "run: progress = " + progress);
-                Log.d(TAG, "run: seekBarProgress.getMax() = " + seekBarProgress.getMax());
                 updateProgressText(progress);
                 if (progress >= 0 && progress <= seekBarProgress.getMax()) {
                     seekBarProgress.setProgress(progress);
+                    barPlayingProgress.setProgress(progress);
                 }
-                mHandler.postDelayed(this, DELAY_TIME);
             }
+            mHandler.postDelayed(mProgressCallback, DELAY_TIME);
         }
     };
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -101,13 +101,12 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     };
 
     public void updateProgressText(int progress) {
-        Log.d(TAG, "updateProgressText: progress = " + progress);
-        Log.d(TAG, "updateProgressText: mAudioPlayingArticle.audioDuration = " + mAudioPlayingArticle.audioDuration);
-        audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress/1000));
-        audioPlayed.setText(Utils.getDurationFormat(progress/1000));
+        audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress / 1000));
+        audioPlayed.setText(Utils.getDurationFormat(progress / 1000));
     }
-    public View getAudioPlayingBar(){
-        if (getView() == null){
+
+    public View getAudioPlayingBar() {
+        if (getView() == null) {
             return null;
         }
         return getView().findViewById(R.id.audio_playing_bar);
@@ -134,10 +133,8 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     public void onResume() {
         super.onResume();
         EconomistPlayerTimberStyle.binToService(getContext(), mConnection);
-        if (mPlayService != null && mPlayService.isPlaying()) {
-            mHandler.removeCallbacks(mProgressCallback);
-            mHandler.post(mProgressCallback);
-        }
+        mHandler.removeCallbacks(mProgressCallback);
+        mHandler.post(mProgressCallback);
     }
 
     public void initView() {
@@ -172,8 +169,8 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         audioPlayTitle.setText(mAudioPlayingArticle.title);
         audioPlayed.setText(Utils.getDurationFormat(0));
         audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration));
-        seekBarProgress.setMax((int) mAudioPlayingArticle.audioDuration*1000);
-        barPlayingProgress.setMax((int) mAudioPlayingArticle.audioDuration*1000);
+        seekBarProgress.setMax((int) mAudioPlayingArticle.audioDuration * 1000);
+        barPlayingProgress.setMax((int) mAudioPlayingArticle.audioDuration * 1000);
         playToggle.setImageResource(R.mipmap.pause);
     }
 
@@ -191,7 +188,6 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 //fromUser 表示进度条被用户拖动着
-                Log.d("Matthew", "onProgressChanged: fromUser = " + fromUser);
                 if (fromUser) {
                     updateProgressText(progress);
                 }
@@ -199,21 +195,19 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                mHandler.removeCallbacks(mProgressCallback);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Log.d("Matthew", "onStopTrackingTouch: " + seekBar.getProgress());
-                Log.d("Matthew", "onStopTrackingTouch: getCurrentPosition = " + EconomistPlayerTimberStyle.getCurrentPosition());
-                Log.d("Matthew", "onStopTrackingTouch: getDuration = " + EconomistPlayerTimberStyle.getDuration());
                 EconomistPlayerTimberStyle.seekToPosition(seekBar.getProgress());
             }
         });
         barPlayingProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                if (fromUser) {
+                    updateProgressText(progress);
+                }
             }
 
             @Override

@@ -78,6 +78,9 @@ public class InchoateActivity extends AppCompatActivity implements
                 if (audioPlayerFragment.getAudioPlayingBar() != null){
                      audioPlayerFragment.getAudioPlayingBar().setVisibility(slideOffset > 0.3 ? View.GONE : View.VISIBLE);
                 }
+                if (slideOffset > 0.3){
+
+                }
             }
 
             @Override

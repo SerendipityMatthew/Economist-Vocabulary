@@ -100,7 +100,8 @@ public class Utils {
 
     public static Paragraph getParagraph(StringBuilder paragraphBuilder) {
         Paragraph paragraph = new Paragraph();
-        if (paragraphBuilder != null && !paragraphBuilder.toString().trim().isEmpty()) {
+        if (paragraphBuilder != null && !paragraphBuilder.toString().trim().isEmpty()
+            && !paragraphBuilder.toString().equalsIgnoreCase("null")) {
             paragraph.paragraph = paragraphBuilder.toString();
             return paragraph;
         }
@@ -152,8 +153,6 @@ public class Utils {
         }
         return sum;
     }
-
-
 
     public static String getDurationFormat(float duration) {
         int minute = (int) (duration / 60);  // 63

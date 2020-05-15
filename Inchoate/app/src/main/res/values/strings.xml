@@ -22,6 +22,7 @@
     <string name="contact_us">Contact us</string>
     <string name="notifications">Notifications</string>
     <string name="backgrounds_downloads">Backgrounds Downloads</string>
+    <string name="background_downloads">Background Downloads</string>
     <string name="audio_auto_download">Audio Auto Download</string>
     <string name="text_size">Text Size</string>
     <string name="dark_mode">Dark Mode</string>
@@ -31,6 +32,12 @@
     <string name="header_section">Sections</string>
     <string name="collect">collect</string>
     <string name="corral">corral</string>
-
+    <string name="dark_mode_preference">dark_mode_preference</string>
+    <string name="dark_mode_preference_title">Dark Mode</string>
+    <string name="about">About</string>
+    <string name="wifi_key">wifi_only</string>
+    <string name="wifi_and_mobile_date_key">wifi_and_mobile_data</string>
+    <string name="wifi">Wi-Fi only</string>
+    <string name="wifi_and_mobile_date">Wi-Fi and Mobile data</string>
 
 </resources>

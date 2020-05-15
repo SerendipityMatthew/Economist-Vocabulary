@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="list_background_download_values">
+        <item>@string/wifi_key</item>
+        <item>@string/wifi_and_mobile_date_key</item>
+    </string-array>
+    <string-array name="list_background_download_description">
+        <item>@string/wifi</item>
+        <item>@string/wifi_and_mobile_date</item>
+    </string-array>
+</resources>

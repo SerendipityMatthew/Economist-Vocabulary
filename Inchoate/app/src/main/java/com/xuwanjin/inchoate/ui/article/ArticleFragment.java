@@ -2,8 +2,12 @@ package com.xuwanjin.inchoate.ui.article;
 
 import android.content.ComponentName;
 import android.content.ServiceConnection;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -123,10 +127,16 @@ public class ArticleFragment extends Fragment {
         articleTitle.setText(article.title);
         articleFlyTitle.setText(article.flyTitle);
         articleRubric.setText(article.articleRubric);
-        sectionAndDate.setText(article.section + "  |  " + article.date);
+        String sectionAndDateStr = article.section + "  |  " + article.date;
+        SpannableString sectionSpannable = new SpannableString(sectionAndDateStr);
+        sectionSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, article.section.length(),
+                Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        sectionAndDate.setText(sectionSpannable);
+
         duration.setText(getDurationFormat(article.audioDuration));
         Glide.with(getContext()).load(article.imageUrl).into(articleCoverImage);
-        if (article.title.contains("KAL’s cartoon")){
+
+        if (article.title.contains("KAL’s cartoon")) {
             mLinearLayout.setVisibility(View.INVISIBLE);
             articlePlayBarDivider.setVisibility(View.INVISIBLE);
         }
@@ -136,7 +146,6 @@ public class ArticleFragment extends Fragment {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 new Thread(new Runnable() {
                     @Override
                     public void run() {

@@ -100,6 +100,26 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         }
     };
 
+    private AppCompatSeekBar.OnSeekBarChangeListener mSeekBarChangeListener = new AppCompatSeekBar.OnSeekBarChangeListener() {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            //fromUser 表示进度条被用户拖动着
+            if (fromUser) {
+                updateProgressText(progress);
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            EconomistPlayerTimberStyle.seekToPosition(seekBar.getProgress());
+        }
+    };
+
     public void updateProgressText(int progress) {
         audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress / 1000));
         audioPlayed.setText(Utils.getDurationFormat(progress / 1000));
@@ -184,42 +204,8 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
             }
         });
 
-        seekBarProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                //fromUser 表示进度条被用户拖动着
-                if (fromUser) {
-                    updateProgressText(progress);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                EconomistPlayerTimberStyle.seekToPosition(seekBar.getProgress());
-            }
-        });
-        barPlayingProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser) {
-                    updateProgressText(progress);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                EconomistPlayerTimberStyle.seekToPosition(seekBar.getProgress());
-            }
-        });
+        seekBarProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
+        barPlayingProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
         playToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

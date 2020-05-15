@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.ui.playing.AudioPlayerFragment;
@@ -25,11 +26,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 
-
-
 public class InchoateActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener,
         BottomNavigationController {
+    public static final String TAG = "InchoateActivity";
     NavController controller;
     BottomNavigationView bottomNavigationView;
     ConstraintLayout mConstraintLayout;
@@ -58,12 +58,13 @@ public class InchoateActivity extends AppCompatActivity implements
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSlidingPanel(SlidingUpControllerEvent event){
+    public void onSlidingPanel(SlidingUpControllerEvent event) {
         inflateAudioPlaying(event.panelState);
     }
+
     public void inflateAudioPlaying(SlidingUpPanelLayout.PanelState panelState) {
         Log.d("Matthew", "inflateAudioPlaying: ");
-        AudioPlayerFragment audioPlayerFragment = new AudioPlayerFragment();
+        final AudioPlayerFragment audioPlayerFragment = new AudioPlayerFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager
                 .beginTransaction()
@@ -71,6 +72,19 @@ public class InchoateActivity extends AppCompatActivity implements
                 .commitAllowingStateLoss();
         slidingUpPanelLayout.setPanelState(panelState);
         slidingUpPanelLayout.setTouchEnabled(true);
+        slidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                if (audioPlayerFragment.getAudioPlayingBar() != null){
+                     audioPlayerFragment.getAudioPlayingBar().setVisibility(slideOffset > 0.3 ? View.GONE : View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+
+            }
+        });
         slidingUpPanelLayout.setPanelHeight(400);
     }
 

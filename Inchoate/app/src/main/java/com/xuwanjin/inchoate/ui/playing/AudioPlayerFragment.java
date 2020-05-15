@@ -106,6 +106,12 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress/1000));
         audioPlayed.setText(Utils.getDurationFormat(progress/1000));
     }
+    public View getAudioPlayingBar(){
+        if (getView() == null){
+            return null;
+        }
+        return getView().findViewById(R.id.audio_playing_bar);
+    }
 
     @Nullable
     @Override

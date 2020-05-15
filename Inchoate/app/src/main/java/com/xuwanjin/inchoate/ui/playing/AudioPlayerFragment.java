@@ -167,6 +167,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         audioPlayed.setText(Utils.getDurationFormat(0));
         audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration));
         seekBarProgress.setMax((int) mAudioPlayingArticle.audioDuration*1000);
+        barPlayingProgress.setMax((int) mAudioPlayingArticle.audioDuration*1000);
         playToggle.setImageResource(R.mipmap.pause);
     }
 
@@ -200,6 +201,22 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
                 Log.d("Matthew", "onStopTrackingTouch: " + seekBar.getProgress());
                 Log.d("Matthew", "onStopTrackingTouch: getCurrentPosition = " + EconomistPlayerTimberStyle.getCurrentPosition());
                 Log.d("Matthew", "onStopTrackingTouch: getDuration = " + EconomistPlayerTimberStyle.getDuration());
+                EconomistPlayerTimberStyle.seekToPosition(seekBar.getProgress());
+            }
+        });
+        barPlayingProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
                 EconomistPlayerTimberStyle.seekToPosition(seekBar.getProgress());
             }
         });

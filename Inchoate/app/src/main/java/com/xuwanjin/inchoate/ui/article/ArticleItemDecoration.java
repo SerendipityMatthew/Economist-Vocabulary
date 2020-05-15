@@ -36,7 +36,8 @@ public class ArticleItemDecoration extends RecyclerView.ItemDecoration {
         this.mItemHeaderHeight = dip2px(mContext, 40);
 
         mItemHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mItemHeaderPaint.setColor(Color.WHITE);
+        // got the color of textview background, by color picker
+        mItemHeaderPaint.setColor(Color.parseColor("#FBFBFB"));
 //        mItemHeaderPaint.setAlpha(100);
 
         mTextRect = new Rect();

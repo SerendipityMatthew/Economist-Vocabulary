@@ -18,19 +18,19 @@
 
         <TextView
             android:id="@+id/article_title"
-            android:textColor="@color/black"
             android:layout_width="match_parent"
-            android:textSize="40sp"
             android:layout_height="wrap_content"
-            android:gravity="center" />
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="40sp" />
 
         <TextView
             android:id="@+id/section_and_date"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:textSize="20sp"
             android:layout_height="wrap_content"
-            android:gravity="center" />
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:textSize="20sp" />
 
         <View
             android:layout_width="fill_parent"
@@ -40,6 +40,7 @@
             android:background="@android:color/darker_gray" />
 
         <LinearLayout
+            android:id="@+id/article_play_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -55,21 +56,22 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center"
                 android:layout_marginLeft="10dp"
+                android:gravity="center"
                 android:text="@string/listen_to_this_story"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/duration"
-                android:layout_marginLeft="110dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="110dp"
                 android:gravity="center"
                 android:textSize="20sp" />
         </LinearLayout>
 
         <View
+            android:id="@+id/article_play_bar_divider"
             android:layout_width="fill_parent"
             android:layout_height="1px"
             android:layout_marginStart="5dp"

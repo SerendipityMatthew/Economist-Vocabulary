@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,6 +56,8 @@ public class ArticleFragment extends Fragment {
     ImageView fontSizeToolbar;
     ImageView bookmarkArticleToolbar;
     ImageView articleShareToolbar;
+    LinearLayout mLinearLayout;
+    View articlePlayBarDivider;
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -107,7 +110,8 @@ public class ArticleFragment extends Fragment {
         articleCoverImage = mArticleContentHeaderView.findViewById(R.id.article_cover_image);
         sectionAndDate = mArticleContentHeaderView.findViewById(R.id.section_and_date);
         articleTitle = mArticleContentHeaderView.findViewById(R.id.article_title);
-
+        mLinearLayout = mArticleContentHeaderView.findViewById(R.id.article_play_bar);
+        articlePlayBarDivider = mArticleContentHeaderView.findViewById(R.id.article_play_bar_divider);
     }
 
     public void initData() {
@@ -115,7 +119,10 @@ public class ArticleFragment extends Fragment {
         sectionAndDate.setText(article.section + "  |  " + article.date);
         duration.setText(getDurationFormat(article.audioDuration));
         Glide.with(getContext()).load(article.imageUrl).into(articleCoverImage);
-
+        if (article.title.contains("KAL’s cartoon")){
+            mLinearLayout.setVisibility(View.INVISIBLE);
+            articlePlayBarDivider.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void initOnClickListener() {

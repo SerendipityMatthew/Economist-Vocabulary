@@ -20,6 +20,7 @@ public class Article implements Parcelable {
     public String content;
     public String imageUrl;
     public String articleUrl;
+    public String articleRubric;
     public List<Paragraph> paragraphList;
 
     public Article(){
@@ -41,6 +42,7 @@ public class Article implements Parcelable {
         content = in.readString();
         imageUrl = in.readString();
         articleUrl = in.readString();
+        articleRubric = in.readString();
         paragraphList = in.createTypedArrayList(Paragraph.CREATOR);
     }
 
@@ -60,6 +62,7 @@ public class Article implements Parcelable {
         dest.writeString(content);
         dest.writeString(imageUrl);
         dest.writeString(articleUrl);
+        dest.writeString(articleRubric);
         dest.writeTypedList(paragraphList);
     }
 
@@ -97,6 +100,7 @@ public class Article implements Parcelable {
                 ", content='" + content + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", articleUrl='" + articleUrl + '\'' +
+                ", articleRubric='" + articleRubric + '\'' +
                 ", paragraphList=" + paragraphList +
                 '}';
     }

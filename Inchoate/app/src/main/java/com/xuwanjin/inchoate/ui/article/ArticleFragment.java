@@ -48,6 +48,8 @@ public class ArticleFragment extends Fragment {
     ImageView play;
     TextView duration;
     TextView articleTitle;
+    TextView articleFlyTitle;
+    TextView articleRubric;
     ImageView articleCoverImage;
     Article article;
     View view;
@@ -110,12 +112,17 @@ public class ArticleFragment extends Fragment {
         articleCoverImage = mArticleContentHeaderView.findViewById(R.id.article_cover_image);
         sectionAndDate = mArticleContentHeaderView.findViewById(R.id.section_and_date);
         articleTitle = mArticleContentHeaderView.findViewById(R.id.article_title);
+        articleFlyTitle = mArticleContentHeaderView.findViewById(R.id.article_fly_title);
+        articleRubric = mArticleContentHeaderView.findViewById(R.id.article_rubric);
+
         mLinearLayout = mArticleContentHeaderView.findViewById(R.id.article_play_bar);
         articlePlayBarDivider = mArticleContentHeaderView.findViewById(R.id.article_play_bar_divider);
     }
 
     public void initData() {
         articleTitle.setText(article.title);
+        articleFlyTitle.setText(article.flyTitle);
+        articleRubric.setText(article.articleRubric);
         sectionAndDate.setText(article.section + "  |  " + article.date);
         duration.setText(getDurationFormat(article.audioDuration));
         Glide.with(getContext()).load(article.imageUrl).into(articleCoverImage);

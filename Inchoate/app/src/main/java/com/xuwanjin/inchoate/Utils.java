@@ -63,6 +63,7 @@ public class Utils {
             article.section = articleSection;
             article.title = weekPart.print.title;
             article.flyTitle = weekPart.print.flyTitle;
+            article.articleRubric = weekPart.print.rubric;
             article.articleUrl = articleUrl;
             article.mainArticleImage = imageUrl;
             article.date = Utils.digitalDateSwitchToEnglishFormat(weekPart.published.substring(0, 10));

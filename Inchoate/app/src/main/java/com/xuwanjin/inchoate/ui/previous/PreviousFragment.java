@@ -19,6 +19,7 @@ import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.archive.Archive;
@@ -114,7 +115,7 @@ public class PreviousFragment extends Fragment {
                 for (int i = 0; i < partArray.length; i++) {
                     Issue issue = new Issue();
                     issue.isDownloaded = false;
-                    issue.issueDate = partArray[i].datePublished;
+                    issue.issueDate = Utils.digitalDateSwitchToEnglishFormat(partArray[i].datePublished.substring(0, 10));
                     issue.coverImageUrl = partArray[i].image.cover.get(0).url.canonical;
                     issueList.add(issue);
                 }

@@ -102,5 +102,6 @@ dependencies {
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
     implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'androidx.preference:preference:1.0.0'
+    implementation 'com.liulishuo.okdownload:okdownload:1.0.6'
 
 }

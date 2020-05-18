@@ -1,11 +1,15 @@
 package com.xuwanjin.inchoate.ui.weekly;
 
 import android.annotation.SuppressLint;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -32,6 +36,11 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
+import com.liulishuo.okdownload.DownloadListener;
+import com.liulishuo.okdownload.DownloadTask;
+import com.liulishuo.okdownload.core.breakpoint.BreakpointInfo;
+import com.liulishuo.okdownload.core.cause.EndCause;
+import com.liulishuo.okdownload.core.cause.ResumeFailedCause;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.InchoateActivity;
@@ -52,6 +61,7 @@ import com.xuwanjin.inchoate.timber_style.IEconomistService;
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,6 +69,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -77,8 +88,8 @@ public class WeeklyFragment extends Fragment {
     List<Article> mArticlesList;
     FloatingActionButton mFab;
     private HashMap<String, List<Article>> issueHashMap = new HashMap<>();
-    ImageView downloadAudio;
-    ImageView streamAudio;
+    View mDownloadAudio;
+    View mStreamAudio;
     TextView issueDate;
     TextView magazineHeadline;
     ImageView magazineCover;
@@ -154,16 +165,15 @@ public class WeeklyFragment extends Fragment {
 
         mFab = view.findViewById(R.id.issue_category_fab);
         previousEdition = mSectionHeaderView.findViewById(R.id.previous_edition);
-        downloadAudio = mSectionHeaderView.findViewById(R.id.download_audio);
-        streamAudio = mSectionHeaderView.findViewById(R.id.stream_audio);
+        mDownloadAudio = mSectionHeaderView.findViewById(R.id.download_audio);
+        mStreamAudio = mSectionHeaderView.findViewById(R.id.stream_audio);
         issueDate = mSectionHeaderView.findViewById(R.id.issue_date);
         magazineCover = mSectionHeaderView.findViewById(R.id.magazine_cover);
         magazineHeadline = mSectionHeaderView.findViewById(R.id.magazine_headline);
-
     }
 
     public void initOnClickListener() {
-        streamAudio.setOnClickListener(new View.OnClickListener() {
+        mStreamAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new Thread(new Runnable() {
@@ -174,12 +184,106 @@ public class WeeklyFragment extends Fragment {
                         SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                         panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                         EventBus.getDefault().post(panelState);
-                        if (mIssue != null){
+                        if (mIssue != null) {
                             EconomistPlayerTimberStyle.playWholeIssue(mIssue.containArticle.get(0), mIssue);
                         }
                     }
                 }).start();
 
+            }
+        });
+        final DownloadListener downloadListener = new DownloadListener() {
+            @Override
+            public void taskStart(@NonNull DownloadTask task) {
+                Log.d(TAG, "taskStart: task.getFilename = " + task.getFilename());
+
+            }
+
+            @Override
+            public void connectTrialStart(@NonNull DownloadTask task, @NonNull Map<String, List<String>> requestHeaderFields) {
+
+            }
+
+            @Override
+            public void connectTrialEnd(@NonNull DownloadTask task, int responseCode, @NonNull Map<String, List<String>> responseHeaderFields) {
+
+            }
+
+            @Override
+            public void downloadFromBeginning(@NonNull DownloadTask task, @NonNull BreakpointInfo info, @NonNull ResumeFailedCause cause) {
+
+            }
+
+            @Override
+            public void downloadFromBreakpoint(@NonNull DownloadTask task, @NonNull BreakpointInfo info) {
+
+            }
+
+            @Override
+            public void connectStart(@NonNull DownloadTask task, int blockIndex, @NonNull Map<String, List<String>> requestHeaderFields) {
+
+            }
+
+            @Override
+            public void connectEnd(@NonNull DownloadTask task, int blockIndex, int responseCode, @NonNull Map<String, List<String>> responseHeaderFields) {
+
+            }
+
+            @Override
+            public void fetchStart(@NonNull DownloadTask task, int blockIndex, long contentLength) {
+
+            }
+
+            @Override
+            public void fetchProgress(@NonNull DownloadTask task, int blockIndex, long increaseBytes) {
+
+            }
+
+            @Override
+            public void fetchEnd(@NonNull DownloadTask task, int blockIndex, long contentLength) {
+
+            }
+
+            @Override
+            public void taskEnd(@NonNull DownloadTask task, @NonNull EndCause cause, @Nullable Exception realCause) {
+
+            }
+        };
+
+        mDownloadAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ArrayList<Article> audioArticle = new ArrayList<>();
+                        for (Article article : mIssue.containArticle) {
+                            if (article.audioUrl != null
+                                    && !article.audioUrl.trim().equals("")) {
+                                audioArticle.add(article);
+                            }
+                        }
+
+                        File commonFile = getActivity().getExternalCacheDirs()[0];
+
+                        //     issueDate/Section/article_title
+                        //N 个     article_audio_url
+                        //
+                        String issueDate = mIssue.issueDate;
+                        for (Article article:mIssue.containArticle){
+                            String section = article.section;
+                            String audioFile = commonFile.getAbsolutePath() + "/" + issueDate + "/" + section;
+                            String noSpacePath = audioFile.replace(" ", "_");
+                            String noSpaceName = article.title.replace(" ", "_");
+                            DownloadTask task =
+                                    new DownloadTask
+                                            .Builder(article.audioUrl, noSpacePath, noSpaceName + ".mp3")
+                                            .build();
+                            task.execute(downloadListener);
+                        }
+
+                    }
+                }).start();
             }
         });
 

@@ -34,7 +34,6 @@
             android:gravity="center"
             android:textSize="20sp" />
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,60 +42,25 @@
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <LinearLayout
+            <Button
+                android:id="@+id/stream_audio"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginStart="70dp"
-                android:gravity="end|center_vertical"
-                android:orientation="horizontal"
-                android:paddingRight="15dp">
+                android:layout_height="match_parent"
+                android:layout_marginStart="40dp"
+                android:drawableStart="@mipmap/play_stream"
+                android:drawablePadding="10dp"
+                android:text="@string/stream_audio"
+                android:textAllCaps="false" />
 
-                <ImageView
-                    android:id="@+id/stream_audio"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@mipmap/play_stream"
-                    android:contentDescription="TODO"
-                    android:gravity="end|center_vertical" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingLeft="5dp"
-                    android:singleLine="true"
-                    android:text="@string/stream_audio"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    tools:ignore="NestedWeights" />
-            </LinearLayout>
-
-            <LinearLayout
+            <Button
+                android:id="@+id/download_audio"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:orientation="horizontal"
-                android:paddingLeft="15dp"
-                tools:ignore="UseCompoundDrawables">
-
-                <ImageView
-                    android:id="@+id/download_audio"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@mipmap/download"
-                    android:contentDescription="TODO" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:paddingLeft="5dp"
-                    android:singleLine="true"
-                    android:text="@string/download_audio"
-                    android:textColor="@color/black"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:drawableStart="@mipmap/download"
+                android:drawablePadding="10dp"
+                android:text="@string/download_audio"
+                android:textAllCaps="false" />
         </LinearLayout>
 
         <View

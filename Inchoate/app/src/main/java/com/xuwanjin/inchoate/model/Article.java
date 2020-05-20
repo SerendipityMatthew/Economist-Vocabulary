@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import java.util.List;
 
 public class Article implements Parcelable {
+    public int rowIdInDB;
     public String section;
     public String headline;
     public String date;
@@ -23,11 +24,12 @@ public class Article implements Parcelable {
     public String articleRubric;
     public List<Paragraph> paragraphList;
 
-    public Article(){
+    public Article() {
 
     }
 
     protected Article(Parcel in) {
+        rowIdInDB = in.readInt();
         section = in.readString();
         headline = in.readString();
         date = in.readString();
@@ -48,6 +50,7 @@ public class Article implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(rowIdInDB);
         dest.writeString(section);
         dest.writeString(headline);
         dest.writeString(date);
@@ -86,7 +89,8 @@ public class Article implements Parcelable {
     @Override
     public String toString() {
         return "Article{" +
-                "section='" + section + '\'' +
+                "rowIdInDB=" + rowIdInDB +
+                ", section='" + section + '\'' +
                 ", headline='" + headline + '\'' +
                 ", date='" + date + '\'' +
                 ", title='" + title + '\'' +
@@ -104,6 +108,4 @@ public class Article implements Parcelable {
                 ", paragraphList=" + paragraphList +
                 '}';
     }
-
-
 }

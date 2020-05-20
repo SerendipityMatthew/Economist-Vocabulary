@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.navigation.NavController;
 
+import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.Paragraph;
@@ -69,6 +70,7 @@ public class Utils {
             article.date = Utils.digitalDateSwitchToEnglishFormat(weekPart.published.substring(0, 10));
             article.paragraphList = new ArrayList<>();
             StringBuilder articleBuilder = new StringBuilder();
+            int theOrderOfParagraph = 0;
             for (WeekText weekText0 : weekPart.text) {
                 // weekText0.children 第一个 children列表里data 字段, 合并成一个段落
                 StringBuilder paragraphBuilder = new StringBuilder();
@@ -85,10 +87,12 @@ public class Utils {
                         }
                     }
                 }
-                Paragraph paragraph = getParagraph(paragraphBuilder);
+                Paragraph paragraph = filteredParagraph(paragraphBuilder);
 
                 if (paragraph != null) {
+                    theOrderOfParagraph ++;
                     paragraph.articleName = article.title;
+                    paragraph.theOrderOfParagraph = theOrderOfParagraph;
                     article.paragraphList.add(paragraph);
                 }
                 articleBuilder.append(paragraphBuilder);
@@ -99,10 +103,23 @@ public class Utils {
         return allArticleList;
     }
 
-    public static Paragraph getParagraph(StringBuilder paragraphBuilder) {
+    public static Paragraph filteredParagraph(StringBuilder paragraphBuilder) {
         Paragraph paragraph = new Paragraph();
+
         if (paragraphBuilder != null && !paragraphBuilder.toString().trim().isEmpty()
-            && !paragraphBuilder.toString().equalsIgnoreCase("null")) {
+                && !paragraphBuilder.toString().equalsIgnoreCase("null")) {
+            if (paragraphBuilder.toString().contains("Editor’s note")) {
+                paragraph.isEditorsNote = true;
+            }
+            /*
+                Dig deeper:
+                For our latest coverage of the covid-19 pandemic, register for The Economist Today, our daily newsletter,
+                or visit our coronavirus tracker and story hub
+             */
+            if (paragraphBuilder.toString().contains("For our latest")) {
+                paragraph.isRelatedSuggestion = true;
+            }
+
             paragraph.paragraph = paragraphBuilder.toString();
             return paragraph;
         }
@@ -128,14 +145,15 @@ public class Utils {
         sArticleLinkedHashMap = getArticleListBySection(issue);
         return issue;
     }
+
     public static LinkedHashMap<String, List<Article>> getArticleListBySection(Issue issue) {
-        LinkedHashMap<String, List<Article>> articleLinkedHashMap= new LinkedHashMap<>();
+        LinkedHashMap<String, List<Article>> articleLinkedHashMap = new LinkedHashMap<>();
         List<Article> articleList = issue.containArticle;
         List<Article> list = new ArrayList<>();
         for (Article article : articleList) {
-            if (articleLinkedHashMap.get(article.section) == null){
+            if (articleLinkedHashMap.get(article.section) == null) {
                 list = new ArrayList<>();
-            }else {
+            } else {
                 list = articleLinkedHashMap.get(article.section);
             }
             list.add(article);
@@ -143,11 +161,12 @@ public class Utils {
         }
         return articleLinkedHashMap;
     }
+
     public static int getArticleSumBySection(int sectionPosition) {
         LinkedHashMap<String, List<Article>> maps = sArticleLinkedHashMap;
         int i = 0;
         int sum = 0;
-        for(Iterator pairs = maps.entrySet().iterator(); pairs.hasNext() && i < sectionPosition; i++) {
+        for (Iterator pairs = maps.entrySet().iterator(); pairs.hasNext() && i < sectionPosition; i++) {
             Map.Entry pair = (Map.Entry) pairs.next();
             List<Article> articleList = (List<Article>) pair.getValue();
             sum += articleList.size();
@@ -165,21 +184,22 @@ public class Utils {
             return "0" + minute + ":" + seconds;
         }
         if (minute > 10 && seconds > 10) {
-            return  minute + ":" + seconds;
+            return minute + ":" + seconds;
         }
         if (minute > 10 && seconds < 10) {
             return minute + ":" + "0:" + seconds;
         }
         return null;
     }
+
     public static String digitalDateSwitchToEnglishFormat(String dateString) {
-        if (dateString.trim().equals("")){
+        if (dateString.trim().equals("")) {
             return null;
         }
         //2020-05-09 ====>  May 9th 2020
         String[] dateArray = dateString.split("-");
         String year = dateArray[0];
-        String day ;
+        String day;
         switch (dateArray[2]) {
             case "01":
                 day = "1st";
@@ -204,16 +224,16 @@ public class Utils {
                 break;
             default:
                 String trimDay;
-                if (dateArray[2].startsWith("0")){
-                    trimDay = dateArray[2].substring(1,2);
-                    day = trimDay+"th";
-                }else {
+                if (dateArray[2].startsWith("0")) {
+                    trimDay = dateArray[2].substring(1, 2);
+                    day = trimDay + "th";
+                } else {
                     day = dateArray[2] + "th";
                 }
                 break;
         }
 
-        String month ;
+        String month;
         switch (dateArray[1]) {
             case "01":
                 month = "Jan";

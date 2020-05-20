@@ -5,6 +5,7 @@ import android.os.StrictMode;
 
 import androidx.navigation.NavController;
 
+import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
 
@@ -19,13 +20,16 @@ public class InchoateApplication extends Application {
     public final static String ECONOMIST_URL = "";
     public static List<Issue> cacheNewestIssue = new ArrayList<>(1);
     public static LinkedHashMap<String, List<Article>> sArticleLinkedHashMap = new LinkedHashMap<>();
-    public static Article cacheDisplayArticle ;
-    public static List<Article> audioPlayingArticleListCache ;
-    public static int SCROLL_TO_POSITION = -1 ;
+    public static Article cacheDisplayArticle;
+    public static List<Article> audioPlayingArticleListCache;
+    public static int SCROLL_TO_POSITION = -1;
+
     @Override
 
     public void onCreate() {
         super.onCreate();
+        InchoateDBHelper helper = new InchoateDBHelper(getApplicationContext(), null, null);
+        helper.getReadableDatabase();
         inchoateApp = this;
 //        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy
 //                .Builder()
@@ -44,28 +48,35 @@ public class InchoateApplication extends Application {
 //                .build());
     }
 
-    public static void setNewestIssueCache(Issue issue){
+    public static void setNewestIssueCache(Issue issue) {
         cacheNewestIssue.add(issue);
     }
-    public static List<Issue> getNewestIssueCache(){
+
+    public static List<Issue> getNewestIssueCache() {
         return cacheNewestIssue;
     }
-    public static void setDisplayArticleCache(Article article){
+
+    public static void setDisplayArticleCache(Article article) {
         cacheDisplayArticle = article;
     }
-    public static Article getDisplayArticleCache(){
+
+    public static Article getDisplayArticleCache() {
         return cacheDisplayArticle;
     }
-    public static void setScrollToPosition(int position){
+
+    public static void setScrollToPosition(int position) {
         SCROLL_TO_POSITION = position;
     }
-    public static int getScrollToPosition(){
+
+    public static int getScrollToPosition() {
         return SCROLL_TO_POSITION;
     }
-    public static void setAudioPlayingArticleListCache(List<Article> list){
+
+    public static void setAudioPlayingArticleListCache(List<Article> list) {
         audioPlayingArticleListCache = list;
     }
-    public static List<Article> getAudioPlayingArticleListCache(){
+
+    public static List<Article> getAudioPlayingArticleListCache() {
         return audioPlayingArticleListCache;
     }
 }

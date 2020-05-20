@@ -47,6 +47,7 @@ import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.ArticleCategorySection;
@@ -406,6 +407,13 @@ public class WeeklyFragment extends Fragment {
             }
         });
         InchoateApplication.setNewestIssueCache(issue);
+        final InchoateDBHelper helper = new InchoateDBHelper(getActivity(), null, null);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                helper.insertWholeData(issue);
+            }
+        }).start();
         mArticlesList = issue.containArticle;
         mHandler.sendEmptyMessage(FETCH_DATA_AND_NOTIFY_MSG);
 

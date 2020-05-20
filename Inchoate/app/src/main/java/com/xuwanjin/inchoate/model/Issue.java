@@ -7,21 +7,25 @@ import java.util.List;
 
 public class Issue implements Parcelable {
     public String issueDate;
+    public int id;
     public boolean isDownloaded;
     public String coverImageUrl;
     public String headline;
     public String issueUrl;
     public List<Article> containArticle;
     public List<String> categorySection;
-    public Issue(){
+
+    public Issue() {
 
     }
+
     protected Issue(Parcel in) {
         issueDate = in.readString();
         isDownloaded = in.readByte() != 0;
         coverImageUrl = in.readString();
         headline = in.readString();
         issueUrl = in.readString();
+        id = in.readInt();
         containArticle = in.createTypedArrayList(Article.CREATOR);
         categorySection = in.createStringArrayList();
     }
@@ -42,6 +46,7 @@ public class Issue implements Parcelable {
     public String toString() {
         return "Issue{" +
                 "issueDate='" + issueDate + '\'' +
+                ", id=" + id +
                 ", isDownloaded=" + isDownloaded +
                 ", coverImageUrl='" + coverImageUrl + '\'' +
                 ", headline='" + headline + '\'' +
@@ -65,5 +70,6 @@ public class Issue implements Parcelable {
         dest.writeString(issueUrl);
         dest.writeTypedList(containArticle);
         dest.writeStringList(categorySection);
+        dest.writeInt(id);
     }
 }

@@ -35,8 +35,8 @@ public class Paragraph implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(articleName);
         dest.writeString(paragraph);
-        dest.writeBoolean(isEditorsNote);
-        dest.writeBoolean(isRelatedSuggestion);
+        dest.writeString(String.valueOf(isEditorsNote));
+        dest.writeString(String.valueOf(isRelatedSuggestion));
         dest.writeInt(belongedArticleID);
         dest.writeInt(theOrderOfParagraph);
         dest.writeInt(id);

@@ -439,11 +439,9 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             Article a = getArticleFromCursor(cursor);
             articleList.add(a);
         }
-        Log.d(TAG, "articleRowIDInDB: articleList.size() = " + articleList.size());
         if (articleList == null || articleList.size() == 0) {
             return RECORD_NOT_EXISTED_IN_DB;
         }
-        Log.d(TAG, "articleRowIDInDB: articleList.get(0) = " + articleList.get(0));
         if (articleList.size() == 1) {
             return articleList.get(0).rowIdInDB;
         }

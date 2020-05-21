@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.AssetManager;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,6 +50,7 @@ import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
+import com.xuwanjin.inchoate.download.DownloadService;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.ArticleCategorySection;
@@ -57,6 +60,7 @@ import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.mEconomistService;
 
+import com.xuwanjin.inchoate.timber_style.EconomistServiceTimberStyle;
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
 
 import org.greenrobot.eventbus.EventBus;
@@ -68,6 +72,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +102,19 @@ public class WeeklyFragment extends Fragment {
     WeeklyAdapter mWeeklyAdapter;
     StickHeaderDecoration mStickHeaderDecoration;
     View view;
+    public DownloadService mDownloadService;
     private Issue mIssue;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mDownloadService = ((DownloadService.LocalBinder) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
     public static final int FETCH_DATA_AND_NOTIFY_MSG = 1000;
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
@@ -193,105 +210,36 @@ public class WeeklyFragment extends Fragment {
 
             }
         });
-        final Runnable mRunnable = new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<Article> audioArticle = new ArrayList<>();
-                for (Article article : mIssue.containArticle) {
-                    if (article.audioUrl != null
-                            && !article.audioUrl.trim().equals("")) {
-                        audioArticle.add(article);
-                    }
-                }
-
-                File commonFile = getActivity().getExternalCacheDirs()[0];
-
-                //     issueDate/Section/article_title
-                //N 个     article_audio_url
-                //
-                final String issueDate = mIssue.issueDate;
-                for (final Article article : mIssue.containArticle) {
-                    String section = article.section;
-                    String audioFile = commonFile.getAbsolutePath() + "/" + issueDate + "/" + section;
-                    String noSpacePath = audioFile.replace(" ", "_");
-                    String noSpaceName = article.title.replace(" ", "_");
-                    DownloadTask task =
-                            new DownloadTask
-                                    .Builder(article.audioUrl, noSpacePath, noSpaceName + ".mp3")
-                                    .build();
-                    final DownloadListener downloadListener = new DownloadListener() {
-                        @Override
-                        public void taskStart(@NonNull DownloadTask task) {
-                            Log.d(TAG, "taskStart: task.getFilename = " + task.getFilename());
-
-                        }
-
-                        @Override
-                        public void connectTrialStart(@NonNull DownloadTask task, @NonNull Map<String, List<String>> requestHeaderFields) {
-
-                        }
-
-                        @Override
-                        public void connectTrialEnd(@NonNull DownloadTask task, int responseCode, @NonNull Map<String, List<String>> responseHeaderFields) {
-
-                        }
-
-                        @Override
-                        public void downloadFromBeginning(@NonNull DownloadTask task, @NonNull BreakpointInfo info, @NonNull ResumeFailedCause cause) {
-
-                        }
-
-                        @Override
-                        public void downloadFromBreakpoint(@NonNull DownloadTask task, @NonNull BreakpointInfo info) {
-
-                        }
-
-                        @Override
-                        public void connectStart(@NonNull DownloadTask task, int blockIndex, @NonNull Map<String, List<String>> requestHeaderFields) {
-
-                        }
-
-                        @Override
-                        public void connectEnd(@NonNull DownloadTask task, int blockIndex, int responseCode, @NonNull Map<String, List<String>> responseHeaderFields) {
-
-                        }
-
-                        @Override
-                        public void fetchStart(@NonNull DownloadTask task, int blockIndex, long contentLength) {
-
-                        }
-
-                        @Override
-                        public void fetchProgress(@NonNull DownloadTask task, int blockIndex, long increaseBytes) {
-
-                        }
-
-                        @Override
-                        public void fetchEnd(@NonNull DownloadTask task, int blockIndex, long contentLength) {
-
-                        }
-
-                        @Override
-                        public void taskEnd(@NonNull DownloadTask task, @NonNull EndCause cause, @Nullable Exception realCause) {
-                            String localeAudioUrl = task.getParentFile().getAbsolutePath()+ "/" + task.getFilename();
-                            InchoateDBHelper helper = new InchoateDBHelper(getContext(),null, null);
-                            article.localeAudioUrl = localeAudioUrl;
-                            Log.d(TAG, "taskEnd: localeAudioUrl = " + localeAudioUrl);
-                            helper.updateArticleAudioLocaleUrl(article, issueDate);
-                        }
-                    };
-                    task.execute(downloadListener);
-                }
-            }
-        };
-
         mDownloadAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread(mRunnable).start();
+                Intent intent = new Intent();
+                intent.setClass(getContext(), DownloadService.class);
+                Issue issue = null;
+
+                try {
+                    issue = mIssue.clone();
+                    for (Article article : issue.containArticle) {
+                        article.paragraphList = null;
+                    }
+                    intent.putExtra(Constants.DOWNLOAD_ISSUE, issue);
+                    getContext().startService(intent);
+                    getContext().bindService(new Intent().setClass(getContext(), DownloadService.class), serviceConnection, 0);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            while (true){
+                                if (mDownloadService !=null){
+                                    mDownloadService.getDownloadPercent();
+                                }
+                            }
+                        }
+                    }).start();
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
             }
         });
-
 
 
         mFab.setOnClickListener(new View.OnClickListener() {

@@ -3,9 +3,11 @@ package com.xuwanjin.inchoate.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
-public class Article implements Parcelable {
+public class Article implements Parcelable, Cloneable {
     public int rowIdInDB;
     public String section;
     public String headline;
@@ -88,6 +90,13 @@ public class Article implements Parcelable {
             return new Article[size];
         }
     };
+
+    @NonNull
+    @Override
+    public Article clone() throws CloneNotSupportedException {
+        Article article = (Article) super.clone();
+        return article;
+    }
 
     @Override
     public String toString() {

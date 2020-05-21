@@ -29,6 +29,10 @@
         <service android:name=".timber_style.EconomistServiceTimberStyle">
 
         </service>
+
+        <service android:name=".download.DownloadService">
+
+        </service>
     </application>
 
 

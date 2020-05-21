@@ -4,9 +4,11 @@ package com.xuwanjin.inchoate.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
-public class Issue implements Parcelable {
+public class Issue implements Parcelable, Cloneable {
     public String issueDate;
     public String issueFormatDate;
     public int id;
@@ -76,5 +78,12 @@ public class Issue implements Parcelable {
                 ", containArticle=" + containArticle +
                 ", categorySection=" + categorySection +
                 '}';
+    }
+
+    @NonNull
+    @Override
+    public Issue clone() throws CloneNotSupportedException {
+        Issue issue = (Issue) super.clone();
+        return issue;
     }
 }

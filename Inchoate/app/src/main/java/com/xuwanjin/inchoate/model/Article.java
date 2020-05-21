@@ -16,6 +16,7 @@ public class Article implements Parcelable {
     public String mainArticleImage;
     public int readTime;
     public String audioUrl;
+    public String localeAudioUrl;
     public float audioDuration;
     public boolean isBookmark;
     public String content;
@@ -39,6 +40,7 @@ public class Article implements Parcelable {
         mainArticleImage = in.readString();
         readTime = in.readInt();
         audioUrl = in.readString();
+        localeAudioUrl = in.readString();
         audioDuration = in.readFloat();
         isBookmark = in.readByte() != 0;
         content = in.readString();
@@ -60,6 +62,7 @@ public class Article implements Parcelable {
         dest.writeString(mainArticleImage);
         dest.writeInt(readTime);
         dest.writeString(audioUrl);
+        dest.writeString(localeAudioUrl);
         dest.writeFloat(audioDuration);
         dest.writeByte((byte) (isBookmark ? 1 : 0));
         dest.writeString(content);
@@ -99,6 +102,7 @@ public class Article implements Parcelable {
                 ", mainArticleImage='" + mainArticleImage + '\'' +
                 ", readTime=" + readTime +
                 ", audioUrl='" + audioUrl + '\'' +
+                ", localeAudioUrl='" + localeAudioUrl + '\'' +
                 ", audioDuration=" + audioDuration +
                 ", isBookmark=" + isBookmark +
                 ", content='" + content + '\'' +

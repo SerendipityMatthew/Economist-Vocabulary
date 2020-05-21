@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
@@ -102,8 +103,7 @@ public class EconomistServiceTimberStyle extends Service {
         List<Article> leftOverArticle = articleList.subList(position, articleList.size());
         ArrayDeque<Article> articleArrayDeque = new ArrayDeque<>();
         for (Article art : leftOverArticle) {
-            if (art.audioUrl != null && !art.audioUrl.trim().equals("")) { // 去掉 漫画 这个特殊的, 他没有音频文件
-//                Log.d(TAG, "playTheRestOfWholeIssue:  art.title = " + art.title);
+            if (art != null && !art.audioUrl.trim().equals("")) { // 去掉 漫画 这个特殊的, 他没有音频文件
                 articleArrayDeque.addLast(art);
             }
         }
@@ -118,6 +118,7 @@ public class EconomistServiceTimberStyle extends Service {
     public int getCurrentPosition() {
         return mPlayer.getCurrentPosition();
     }
+
     public int getDuration() {
         return mPlayer.getDuration();
     }
@@ -196,6 +197,7 @@ public class EconomistServiceTimberStyle extends Service {
         public int getCurrentPosition() throws RemoteException {
             return mService.get().getCurrentPosition();
         }
+
         @Override
         public int getDuration() throws RemoteException {
             return mService.get().getDuration();
@@ -218,8 +220,7 @@ public class EconomistServiceTimberStyle extends Service {
     //    播放结束之后是否要播放接下来的文章
     public static final class EconomistPlayer implements MediaPlayer.OnCompletionListener,
             MediaPlayer.OnErrorListener, MediaPlayer.OnBufferingUpdateListener,
-            MediaPlayer.OnPreparedListener
-    {
+            MediaPlayer.OnPreparedListener {
         private final WeakReference<EconomistServiceTimberStyle> mService;
         private MediaPlayer mMediaPlayer;
         private boolean isNetworkBuffering = true;
@@ -280,7 +281,18 @@ public class EconomistServiceTimberStyle extends Service {
                         mMediaPlayer.reset();
                     }
                     mMediaPlayer = new MediaPlayer();
-                    setDataSource(article.audioUrl);
+                    String localCommonPath = "/storage/emulated/0/Android/data/";
+                    if (article.localeAudioUrl != null
+                            && article.localeAudioUrl.startsWith(localCommonPath)) {
+                        File file = new File(article.localeAudioUrl);
+                        if (file.exists()) {
+                            setDataSource(article.localeAudioUrl);
+                        } else {
+                            setDataSource(article.audioUrl);
+                        }
+                    } else {
+                        setDataSource(article.audioUrl);
+                    }
                     isNetworkBuffering = true;
                     mMediaPlayer.prepare();
                     mMediaPlayer.setOnCompletionListener(this);
@@ -306,6 +318,7 @@ public class EconomistServiceTimberStyle extends Service {
 
             return mMediaPlayer == null ? 0 : mMediaPlayer.getCurrentPosition();
         }
+
         public int getDuration() {
 
             return mMediaPlayer == null ? -1 : mMediaPlayer.getDuration();

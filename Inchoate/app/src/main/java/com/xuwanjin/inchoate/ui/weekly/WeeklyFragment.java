@@ -193,100 +193,106 @@ public class WeeklyFragment extends Fragment {
 
             }
         });
-        final DownloadListener downloadListener = new DownloadListener() {
+        final Runnable mRunnable = new Runnable() {
             @Override
-            public void taskStart(@NonNull DownloadTask task) {
-                Log.d(TAG, "taskStart: task.getFilename = " + task.getFilename());
+            public void run() {
+                ArrayList<Article> audioArticle = new ArrayList<>();
+                for (Article article : mIssue.containArticle) {
+                    if (article.audioUrl != null
+                            && !article.audioUrl.trim().equals("")) {
+                        audioArticle.add(article);
+                    }
+                }
 
-            }
+                File commonFile = getActivity().getExternalCacheDirs()[0];
 
-            @Override
-            public void connectTrialStart(@NonNull DownloadTask task, @NonNull Map<String, List<String>> requestHeaderFields) {
+                //     issueDate/Section/article_title
+                //N 个     article_audio_url
+                //
+                final String issueDate = mIssue.issueDate;
+                for (final Article article : mIssue.containArticle) {
+                    String section = article.section;
+                    String audioFile = commonFile.getAbsolutePath() + "/" + issueDate + "/" + section;
+                    String noSpacePath = audioFile.replace(" ", "_");
+                    String noSpaceName = article.title.replace(" ", "_");
+                    DownloadTask task =
+                            new DownloadTask
+                                    .Builder(article.audioUrl, noSpacePath, noSpaceName + ".mp3")
+                                    .build();
+                    final DownloadListener downloadListener = new DownloadListener() {
+                        @Override
+                        public void taskStart(@NonNull DownloadTask task) {
+                            Log.d(TAG, "taskStart: task.getFilename = " + task.getFilename());
 
-            }
+                        }
 
-            @Override
-            public void connectTrialEnd(@NonNull DownloadTask task, int responseCode, @NonNull Map<String, List<String>> responseHeaderFields) {
+                        @Override
+                        public void connectTrialStart(@NonNull DownloadTask task, @NonNull Map<String, List<String>> requestHeaderFields) {
 
-            }
+                        }
 
-            @Override
-            public void downloadFromBeginning(@NonNull DownloadTask task, @NonNull BreakpointInfo info, @NonNull ResumeFailedCause cause) {
+                        @Override
+                        public void connectTrialEnd(@NonNull DownloadTask task, int responseCode, @NonNull Map<String, List<String>> responseHeaderFields) {
 
-            }
+                        }
 
-            @Override
-            public void downloadFromBreakpoint(@NonNull DownloadTask task, @NonNull BreakpointInfo info) {
+                        @Override
+                        public void downloadFromBeginning(@NonNull DownloadTask task, @NonNull BreakpointInfo info, @NonNull ResumeFailedCause cause) {
 
-            }
+                        }
 
-            @Override
-            public void connectStart(@NonNull DownloadTask task, int blockIndex, @NonNull Map<String, List<String>> requestHeaderFields) {
+                        @Override
+                        public void downloadFromBreakpoint(@NonNull DownloadTask task, @NonNull BreakpointInfo info) {
 
-            }
+                        }
 
-            @Override
-            public void connectEnd(@NonNull DownloadTask task, int blockIndex, int responseCode, @NonNull Map<String, List<String>> responseHeaderFields) {
+                        @Override
+                        public void connectStart(@NonNull DownloadTask task, int blockIndex, @NonNull Map<String, List<String>> requestHeaderFields) {
 
-            }
+                        }
 
-            @Override
-            public void fetchStart(@NonNull DownloadTask task, int blockIndex, long contentLength) {
+                        @Override
+                        public void connectEnd(@NonNull DownloadTask task, int blockIndex, int responseCode, @NonNull Map<String, List<String>> responseHeaderFields) {
 
-            }
+                        }
 
-            @Override
-            public void fetchProgress(@NonNull DownloadTask task, int blockIndex, long increaseBytes) {
+                        @Override
+                        public void fetchStart(@NonNull DownloadTask task, int blockIndex, long contentLength) {
 
-            }
+                        }
 
-            @Override
-            public void fetchEnd(@NonNull DownloadTask task, int blockIndex, long contentLength) {
+                        @Override
+                        public void fetchProgress(@NonNull DownloadTask task, int blockIndex, long increaseBytes) {
 
-            }
+                        }
 
-            @Override
-            public void taskEnd(@NonNull DownloadTask task, @NonNull EndCause cause, @Nullable Exception realCause) {
+                        @Override
+                        public void fetchEnd(@NonNull DownloadTask task, int blockIndex, long contentLength) {
 
+                        }
+
+                        @Override
+                        public void taskEnd(@NonNull DownloadTask task, @NonNull EndCause cause, @Nullable Exception realCause) {
+                            String localeAudioUrl = task.getParentFile().getAbsolutePath()+ "/" + task.getFilename();
+                            InchoateDBHelper helper = new InchoateDBHelper(getContext(),null, null);
+                            article.localeAudioUrl = localeAudioUrl;
+                            Log.d(TAG, "taskEnd: localeAudioUrl = " + localeAudioUrl);
+                            helper.updateArticleAudioLocaleUrl(article, issueDate);
+                        }
+                    };
+                    task.execute(downloadListener);
+                }
             }
         };
 
         mDownloadAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ArrayList<Article> audioArticle = new ArrayList<>();
-                        for (Article article : mIssue.containArticle) {
-                            if (article.audioUrl != null
-                                    && !article.audioUrl.trim().equals("")) {
-                                audioArticle.add(article);
-                            }
-                        }
-
-                        File commonFile = getActivity().getExternalCacheDirs()[0];
-
-                        //     issueDate/Section/article_title
-                        //N 个     article_audio_url
-                        //
-                        String issueDate = mIssue.issueDate;
-                        for (Article article:mIssue.containArticle){
-                            String section = article.section;
-                            String audioFile = commonFile.getAbsolutePath() + "/" + issueDate + "/" + section;
-                            String noSpacePath = audioFile.replace(" ", "_");
-                            String noSpaceName = article.title.replace(" ", "_");
-                            DownloadTask task =
-                                    new DownloadTask
-                                            .Builder(article.audioUrl, noSpacePath, noSpaceName + ".mp3")
-                                            .build();
-                            task.execute(downloadListener);
-                        }
-
-                    }
-                }).start();
+                new Thread(mRunnable).start();
             }
         });
+
+
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -314,8 +320,10 @@ public class WeeklyFragment extends Fragment {
         List<Issue> issueList = InchoateApplication.getNewestIssueCache();
         final Issue issue;
         if (issueList != null && issueList.size() > 0) {
-            issue = issueList.get(0);
-            mIssue = issue;
+            InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
+            String issueDateStr = "May 9th 2020";
+            issue = helper.queryIssueByIssueDate(issueDateStr).get(0);
+            mIssue = helper.queryIssueByIssueDate(issueDateStr).get(0);
             articles = issue.containArticle;
             Log.d(TAG, "onResponse: use the cache ");
             getActivity().runOnUiThread(new Runnable() {
@@ -434,7 +442,6 @@ public class WeeklyFragment extends Fragment {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 String jsonResult = response.body().string();
-//                Log.d(TAG, "onResponse: jsonResult: jsonResult = " + jsonResult);
                 Gson gson = new Gson()
                         .newBuilder()
                         .setFieldNamingStrategy(new FieldNamingStrategy() {
@@ -449,12 +456,9 @@ public class WeeklyFragment extends Fragment {
                         }) // setFieldNamingPolicy 有什么区别
                         .create();
                 WeekFragment weekFragment = gson.fromJson(jsonResult, WeekFragment.class);
-                Log.d(TAG, "onResponse: FETCH_DATA_AND_NOTIFY_MSG = ");
                 Issue issue = getIssue(weekFragment);
                 InchoateApplication.setNewestIssueCache(issue);
-                Log.d(TAG, "onResponse: fetch from economist.com ");
                 mArticlesList = issue.containArticle;
-//                Log.d(TAG, "onResponse: mArticlesList = " + mArticlesList.get(0));
                 mHandler.sendEmptyMessage(FETCH_DATA_AND_NOTIFY_MSG);
             }
         });

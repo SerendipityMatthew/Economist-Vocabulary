@@ -14,6 +14,7 @@ import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.Paragraph;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     private static final String KEY_COVER_IMAGE_URL = "cover_image_url";
     private static final String KEY_IS_DOWNLOADED = "is_downloaded";
     private static final String KEY_ISSUE_URL = "issue_url";
-
+    private static final String KEY_ISSUE_FORMAT_DATE = "issue_format_date";
     // paragraph of article
     // the main key of table article
     private static final String KEY_ISSUE_DATE = "issue_date";
@@ -67,7 +68,8 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             + KEY_ISSUE_DATE + " TEXT,"
             + KEY_COVER_IMAGE_URL + " TEXT,"
             + KEY_IS_DOWNLOADED + " TEXT,"
-            + KEY_ISSUE_URL + " TEXT"
+            + KEY_ISSUE_URL + " TEXT,"
+            + KEY_ISSUE_FORMAT_DATE + " DATE"
             + ")";
     private static final String CREATE_TABLE_ARTICLE = "CREATE TABLE IF NOT EXISTS "
             + TABLE_NAME_ARTICLE + " ( " + KEY_ID_PARA
@@ -155,6 +157,26 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         return issueList;
     }
 
+
+    public Cursor queryArticleByIssueDateResultCursor(String issueDate) {
+        // //        "May 9th 2020"
+        sDatabase = openInchoateDB();
+        // Select * from article where issue_date='' and section='' and title = '' ;
+        String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE "
+                + KEY_ISSUE_DATE + " =\'" + issueDate + "\'";
+        Cursor cursor = sDatabase.rawQuery(query, null);
+        return cursor;
+    }
+
+    public Cursor queryArticleByIssueDate(String issueDate) {
+        sDatabase = openInchoateDB();
+        // Select * from article where issue_date='' ;
+        String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE "
+                + KEY_ISSUE_DATE + " =\'" + issueDate + "\'";
+        Cursor cursor = sDatabase.rawQuery(query, null);
+        return cursor;
+    }
+
     public Cursor queryArticleByIssueDateSectionTitle(Article article, String issueDate) {
         sDatabase = openInchoateDB();
         // Select * from article where issue_date='' and section='' and title = '' ;
@@ -196,6 +218,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         contentValues.put(KEY_IS_DOWNLOADED, issue.isDownloaded);
         contentValues.put(KEY_ISSUE_URL, issue.issueUrl);
         contentValues.put(KEY_ISSUE_DATE, issue.issueDate);
+        contentValues.put(KEY_ISSUE_FORMAT_DATE, issue.issueFormatDate);
         long rowID = database.insert(TABLE_NAME_ISSUE, null, contentValues);
         if (database != null) {
             database.close();
@@ -235,6 +258,36 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         return rowID;
     }
 
+    public long updateArticleAudioLocaleUrl(Article article, String issueDate) {
+        if (!isArticleExistedInDB(article, issueDate)) {
+            Log.d(TAG, "updateArticleAudioLocaleUrl: ");
+            return RECORD_NOT_EXISTED_IN_DB;
+        }
+        SQLiteDatabase database = openInchoateDB();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_ISSUE_DATE, issueDate);
+        contentValues.put(KEY_SECTION, article.section);
+        contentValues.put(KEY_TITLE, article.title);
+
+        contentValues.put(KEY_FLYTITLE, article.flyTitle);
+        contentValues.put(KEY_ARTICLE_URL, article.articleUrl);
+        contentValues.put(KEY_AUDIO_URL, article.audioUrl);
+        contentValues.put(KEY_LOCALE_AUDIO_URL, article.localeAudioUrl);
+        contentValues.put(KEY_MAIN_ARTICLE_IMAGE, article.mainArticleImage);
+
+        contentValues.put(KEY_ARTICLE_RUBRIC, article.articleRubric);
+        contentValues.put(KEY_AUDIO_DURATION, article.audioDuration);
+        contentValues.put(KEY_IS_BOOKMARK, article.isBookmark);
+        String whereClause = KEY_ID + "=?";
+        Log.d(TAG, "updateArticleAudioLocaleUrl: localeAudioUrl = " + article.localeAudioUrl);
+        Log.d(TAG, "updateArticleAudioLocaleUrl: article.rowIdInDB = " + article.rowIdInDB);
+        long rowID = database.update(TABLE_NAME_ARTICLE, contentValues, whereClause, new String[]{String.valueOf(article.rowIdInDB)});
+        Log.d(TAG, "updateArticleAudioLocaleUrl: rowID = " + rowID);
+        if (database != null) {
+            database.close();
+        }
+        return rowID;
+    }
 
     public long insertParagraphData(Paragraph paragraph, long articleRowID) {
         SQLiteDatabase database = openInchoateDB();
@@ -286,6 +339,16 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         }
     }
 
+    private boolean isArticleExistedInDB(Article article, String issueDate) {
+        long rowID = articleRowIDInDB(article, issueDate);
+        Log.d(TAG, "isArticleExistedInDB: rowID = " + rowID);
+        if (rowID == RECORD_NOT_EXISTED_IN_DB) {
+            return false;
+        }
+        return true;
+    }
+
+
     private long articleRowIDInDB(Article article, String issueDate) {
         Cursor cursor = queryArticleByIssueDateSectionTitle(article, issueDate);
         List<Article> articleList = new ArrayList<>();
@@ -293,13 +356,15 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             Article a = getArticleFromCursor(cursor);
             articleList.add(a);
         }
+        Log.d(TAG, "articleRowIDInDB: articleList.size() = " + articleList.size());
         if (articleList == null || articleList.size() == 0) {
             return RECORD_NOT_EXISTED_IN_DB;
         }
+        Log.d(TAG, "articleRowIDInDB: articleList.get(0) = " + articleList.get(0));
         if (articleList.size() == 1) {
             return articleList.get(0).rowIdInDB;
         }
-        if (cursor != null){
+        if (cursor != null) {
             cursor.close();
         }
         return RECORD_NOT_EXISTED_IN_DB;
@@ -334,16 +399,20 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         int issueURLIndex = cursor.getColumnIndex(KEY_ISSUE_URL);
         int issueCoverImageUrlIndex = cursor.getColumnIndex(KEY_COVER_IMAGE_URL);
         int issueIsDownloadedIndex = cursor.getColumnIndex(KEY_IS_DOWNLOADED);
+        int issueFormatDateIndex = cursor.getColumnIndex(KEY_ISSUE_FORMAT_DATE);
         Issue issue = new Issue();
+        issue.id = cursor.getInt(issueIDIndex);
         issue.issueDate = cursor.getString(issueDateIndex);
         issue.issueUrl = cursor.getString(issueURLIndex);
         issue.coverImageUrl = cursor.getString(issueCoverImageUrlIndex);
         issue.isDownloaded = Boolean.getBoolean(cursor.getString(issueIsDownloadedIndex));
+        issue.issueFormatDate = cursor.getString(issueFormatDateIndex);
+        issue.containArticle = getArticleListByIssueDate(issue.issueDate);
         return issue;
     }
 
 
-    private Article getArticleFromCursor(Cursor cursor) {
+    public Article getArticleFromCursor(Cursor cursor) {
         Article article = new Article();
         int idIndex = cursor.getColumnIndex(KEY_ID);
         int issueDateIndex = cursor.getColumnIndex(KEY_ISSUE_DATE);
@@ -367,7 +436,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         article.flyTitle = cursor.getString(flytitleIndex);
         article.articleUrl = cursor.getString(articleUrlIndex);
         article.audioUrl = cursor.getString(audioUrlIndex);
-//        article. = cursor.getString(localeAudioUrlIndex);
+        article.localeAudioUrl = cursor.getString(localeAudioUrlIndex);
         article.mainArticleImage = cursor.getString(mainArticleImageIndex);
 //        article.date = cursor.getString(articleImageIndex);
         article.articleRubric = cursor.getString(articleRubricIndex);
@@ -375,7 +444,54 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         int bookmark = cursor.getInt(isBookmarkIndex);
         article.isBookmark = bookmark == 1;
 //        article. = cursor.getString(issueIDIndex);
+        article.paragraphList = queryParagraphListByArticleID(article.rowIdInDB);
         return article;
+    }
+
+    private List<Article> getArticleListByIssueDate(String issueDate) {
+        Cursor cursor = queryArticleByIssueDate(issueDate);
+        List<Article> articleList = new ArrayList<>();
+        while (cursor != null && cursor.moveToNext()) {
+            Article a = getArticleFromCursor(cursor);
+            articleList.add(a);
+        }
+        if (cursor != null){
+            cursor.close();
+        }
+        return articleList;
+    }
+
+    private List<Article> getIssueListByMonth(String issueDate) {
+        Cursor cursor = queryArticleByIssueDate(issueDate);
+        List<Article> articleList = new ArrayList<>();
+        while (cursor != null && cursor.moveToNext()) {
+            Article a = getArticleFromCursor(cursor);
+            articleList.add(a);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        Log.d(TAG, "articleRowIDInDB: articleList.size() = " + articleList.size());
+        return articleList;
+    }
+
+    private List<Paragraph> queryParagraphListByArticleID(int articleRowID) {
+        // 如果 Paragraph 的表里查不出一个含有 articleRowID 的数据,
+        // 表示这个 article 的 paragraph 没有被存入过
+        sDatabase = openInchoateDB();
+        // Select * from paragraph where belonged_article_id='' or paragraph_content='';
+        String queryByArticleID = "SELECT * FROM " + TABLE_NAME_PARAGRAPH + " WHERE "
+                + KEY_BELONGED_ARTICLE_ID + " =\'" + articleRowID + "\'";
+        Cursor cursor = sDatabase.rawQuery(queryByArticleID, null);
+        List<Paragraph> paragraphList = new ArrayList<>();
+        while (cursor != null && cursor.moveToNext()) {
+            Paragraph paragraph = getParagraphFromCursor(cursor);
+            paragraphList.add(paragraph);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return paragraphList;
     }
 
     private Paragraph getParagraphFromCursor(Cursor cursor) {

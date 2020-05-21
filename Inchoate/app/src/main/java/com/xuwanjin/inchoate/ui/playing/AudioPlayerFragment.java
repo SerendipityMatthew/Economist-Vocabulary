@@ -121,7 +121,11 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     };
 
     public void updateProgressText(int progress) {
-        audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress / 1000));
+        if (mAudioPlayingArticle!= null){
+            audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress / 1000));
+        }else {
+            audioLeft.setText(Utils.getDurationFormat(0));
+        }
         audioPlayed.setText(Utils.getDurationFormat(progress / 1000));
     }
 

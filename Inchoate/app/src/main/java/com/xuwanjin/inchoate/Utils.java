@@ -135,6 +135,7 @@ public class Utils {
         issue.coverImageUrl = coverContent.url.canonical;
         issue.containArticle = getWholeArticle(weekFragment);
         issue.issueDate = Utils.digitalDateSwitchToEnglishFormat(weekSection.datePublished.substring(0, 10));
+        issue.issueFormatDate = weekSection.datePublished.substring(0, 10);
         List<String> sectionList = new ArrayList<>();
         for (Article a : issue.containArticle) {
             if (!sectionList.contains(a.section)) {

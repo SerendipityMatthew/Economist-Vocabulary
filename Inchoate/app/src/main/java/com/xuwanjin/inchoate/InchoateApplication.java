@@ -28,8 +28,13 @@ public class InchoateApplication extends Application {
 
     public void onCreate() {
         super.onCreate();
-        InchoateDBHelper helper = new InchoateDBHelper(getApplicationContext(), null, null);
-        helper.getReadableDatabase();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                InchoateDBHelper helper = new InchoateDBHelper(getApplicationContext(), null, null);
+                helper.getReadableDatabase();
+            }
+        }).start();
         inchoateApp = this;
 //        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy
 //                .Builder()

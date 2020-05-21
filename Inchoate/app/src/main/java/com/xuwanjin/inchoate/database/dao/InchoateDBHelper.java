@@ -13,8 +13,8 @@ import androidx.annotation.Nullable;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.Paragraph;
+import com.xuwanjin.inchoate.model.Vocabulary;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +24,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     static final String TABLE_NAME_ISSUE = "issue";
     static final String TABLE_NAME_ARTICLE = "article";
     static final String TABLE_NAME_PARAGRAPH = "paragraph";
+    static final String TABLE_NAME_VOCABULARY = "vocabulary";
     public Context mContext;
     private static volatile SQLiteDatabase sDatabase;
 
@@ -53,13 +54,24 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     private static final String KEY_ISSUE_ID = "issue_id";
 
 
-    // paragraph of table
+    //  table  of paragraph
     private static final String KEY_IS_EDITORS_NOTE = "is_editors_note";
     private static final String KEY_IS_RELATED_SUGGESTION = "is_related_suggestion";
     private static final String KEY_PARAGRAPH_CONTENT = "paragraph_content";
     private static final String KEY_ORDER_OF_PARAGRAPH = "order_of_paragraph";
     private static final String KEY_BELONGED_ARTICLE_ID = "belonged_article_id";
 
+
+    //  table of Vocabulary
+    private static final String KEY_VOCABULARY_CONTENT = "vocabulary_content";
+    private static final String KEY_COLLECTED_DATE = "collected_date";
+    private static final String KEY_COLLECTED_TIME = "collected_time";
+    private static final String KEY_BELONGED_SENTENCE = "belonged_sentence";
+    private static final String KEY_BELONGED_PARAGRAPH = "belonged_paragraph";
+    private static final String KEY_BELONGED_ARTICLE_TITLE = "belonged_article_title";
+    private static final String KEY_BELONGED_SECTION_NAME = "belonged_section_name";
+    private static final String KEY_BELONGED_ISSUE_DATE = "belonged_issue_date";
+    private static final String KEY_BELONGED_ARTICLE_URL = "belonged_article_url";
 
     private static final String KEY_ID_PARA = KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,";
 
@@ -94,6 +106,19 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             + KEY_PARAGRAPH_CONTENT + " TEXT,"
             + KEY_ORDER_OF_PARAGRAPH + " INTEGER,"
             + KEY_BELONGED_ARTICLE_ID + " INTEGER"
+            + ");";
+
+    private static final String CREATE_TABLE_VOCABULARY = "CREATE TABLE IF NOT EXISTS "
+            + TABLE_NAME_VOCABULARY + " ( " + KEY_ID_PARA
+            + KEY_VOCABULARY_CONTENT + " TEXT,"
+            + KEY_COLLECTED_DATE + " TEXT,"
+            + KEY_COLLECTED_TIME + " TEXT,"
+            + KEY_BELONGED_SENTENCE + " TEXT,"
+            + KEY_BELONGED_PARAGRAPH + " TEXT,"
+            + KEY_BELONGED_ARTICLE_TITLE + " TEXT,"
+            + KEY_BELONGED_SECTION_NAME + " TEXT,"
+            + KEY_BELONGED_ISSUE_DATE + " TEXT,"
+            + KEY_BELONGED_ARTICLE_URL + " TEXT"
             + ");";
 
     // 创建索引
@@ -258,6 +283,64 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         return rowID;
     }
 
+    public List<Vocabulary> getVocabularyList(String vocabularyContent) {
+        SQLiteDatabase database = openInchoateDB();
+        // Select * from vocabulary where vocabulary_content='';
+        String queryByArticleID = "SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE "
+                + KEY_VOCABULARY_CONTENT + " =\'" + vocabularyContent + "\'";
+        Cursor cursor = sDatabase.rawQuery(queryByArticleID, null);
+        List<Vocabulary> vocabularyList = new ArrayList<>();
+        while (cursor != null && cursor.moveToNext()) {
+            Vocabulary vocabulary = getVocabularyFromCursor(cursor);
+            vocabularyList.add(vocabulary);
+        }
+        if (database != null) {
+            database.close();
+        }
+        return vocabularyList;
+    }
+
+    public boolean isVocabularyExistedInDB(String vocabularyContent, int limit) {
+        SQLiteDatabase database = openInchoateDB();
+        // Select * from vocabulary where vocabulary_content='';
+        String queryByArticleID = "SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE "
+                + KEY_VOCABULARY_CONTENT + " =\'" + vocabularyContent + "\'"
+                + " LIMIT " + limit
+                ;
+        Cursor cursor = sDatabase.rawQuery(queryByArticleID, null);
+        List<Vocabulary> vocabularyList = new ArrayList<>();
+        while (cursor != null && cursor.moveToNext()) {
+            Vocabulary vocabulary = getVocabularyFromCursor(cursor);
+            vocabularyList.add(vocabulary);
+        }
+        if (database != null) {
+            database.close();
+        }
+        if (vocabularyList != null && vocabularyList.size()>0){
+            return true;
+        }
+        return false;
+    }
+
+    public long insertVocabulary(Vocabulary vocabulary) {
+        SQLiteDatabase database = openInchoateDB();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_VOCABULARY_CONTENT, vocabulary.vocabularyContent);
+        contentValues.put(KEY_COLLECTED_DATE, vocabulary.collectedDate);
+        contentValues.put(KEY_COLLECTED_TIME, vocabulary.collectedTime);
+        contentValues.put(KEY_BELONGED_SENTENCE, vocabulary.belongedSentence);
+        contentValues.put(KEY_BELONGED_PARAGRAPH, vocabulary.belongedParagraph);
+        contentValues.put(KEY_BELONGED_ARTICLE_TITLE, vocabulary.belongedArticleTitle);
+        contentValues.put(KEY_BELONGED_SECTION_NAME, vocabulary.belongedSectionName);
+        contentValues.put(KEY_BELONGED_ISSUE_DATE, vocabulary.belongedIssueDate);
+        contentValues.put(KEY_BELONGED_ARTICLE_URL, vocabulary.belongedArticleUrl);
+        long rowID = database.insert(TABLE_NAME_ARTICLE, null, contentValues);
+        if (database != null) {
+            database.close();
+        }
+        return rowID;
+    }
+
     public long updateArticleAudioLocaleUrl(Article article, String issueDate) {
         if (!isArticleExistedInDB(article, issueDate)) {
             Log.d(TAG, "updateArticleAudioLocaleUrl: ");
@@ -411,6 +494,33 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         return issue;
     }
 
+    public Vocabulary getVocabularyFromCursor(Cursor cursor) {
+        Vocabulary vocabulary = new Vocabulary();
+
+        int idIndex = cursor.getColumnIndex(KEY_ID);
+        int vocabularyContentIndex = cursor.getColumnIndex(KEY_VOCABULARY_CONTENT);
+        int collectedDateIndex = cursor.getColumnIndex(KEY_COLLECTED_DATE);
+        int collectedTimeIndex = cursor.getColumnIndex(KEY_COLLECTED_TIME);
+        int belongedSentenceIndex = cursor.getColumnIndex(KEY_BELONGED_SENTENCE);
+        int belongedParagraphIndex = cursor.getColumnIndex(KEY_BELONGED_PARAGRAPH);
+        int belongedArticleTitleIndex = cursor.getColumnIndex(KEY_BELONGED_ARTICLE_TITLE);
+        int belongedSectionNameIndex = cursor.getColumnIndex(KEY_BELONGED_SECTION_NAME);
+        int belongedIssueDateIndex = cursor.getColumnIndex(KEY_BELONGED_ISSUE_DATE);
+        int belongedArticleUrlIndex = cursor.getColumnIndex(KEY_BELONGED_ARTICLE_URL);
+
+        vocabulary.rowId = cursor.getInt(idIndex);
+        vocabulary.vocabularyContent = cursor.getString(vocabularyContentIndex);
+        vocabulary.collectedDate = cursor.getString(collectedDateIndex);
+        vocabulary.collectedTime = cursor.getString(collectedTimeIndex);
+        vocabulary.belongedSentence = cursor.getString(belongedSentenceIndex);
+        vocabulary.belongedParagraph = cursor.getString(belongedParagraphIndex);
+        vocabulary.belongedArticleTitle = cursor.getString(belongedArticleTitleIndex);
+        vocabulary.belongedSectionName = cursor.getString(belongedSectionNameIndex);
+        vocabulary.belongedIssueDate = cursor.getString(belongedIssueDateIndex);
+        vocabulary.belongedArticleUrl = cursor.getString(belongedArticleUrlIndex);
+
+        return vocabulary;
+    }
 
     public Article getArticleFromCursor(Cursor cursor) {
         Article article = new Article();
@@ -455,7 +565,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             Article a = getArticleFromCursor(cursor);
             articleList.add(a);
         }
-        if (cursor != null){
+        if (cursor != null) {
             cursor.close();
         }
         return articleList;
@@ -512,6 +622,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_ISSUE);
         db.execSQL(CREATE_TABLE_ARTICLE);
         db.execSQL(CREATE_TABLE_PARAGRAPH);
+        db.execSQL(CREATE_TABLE_VOCABULARY);
     }
 
     @Override

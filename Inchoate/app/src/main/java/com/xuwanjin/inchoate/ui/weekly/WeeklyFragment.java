@@ -229,8 +229,10 @@ public class WeeklyFragment extends Fragment {
                         @Override
                         public void run() {
                             while (true){
-                                if (mDownloadService !=null){
+                                if (mDownloadService != null){
                                     mDownloadService.getDownloadPercent();
+                                }else {
+                                    break;
                                 }
                             }
                         }

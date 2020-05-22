@@ -67,7 +67,23 @@ public class EconomistPlayerTimberStyle {
     }
     public static void playWholeIssue(Article currentArticle, Issue currentIssue){
         try {
-            mEconomistService.playTheRest(currentArticle, currentIssue);
+            mEconomistService.playTheRestByIssueDate(currentArticle, currentIssue.issueDate);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void playWholeIssueByIssueDate(Article currentArticle, String issueDate){
+        try {
+            mEconomistService.playTheRestByIssueDate(currentArticle, issueDate);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void playOrPause(){
+        try {
+            mEconomistService.playOrPause();
         } catch (RemoteException e) {
             e.printStackTrace();
         }

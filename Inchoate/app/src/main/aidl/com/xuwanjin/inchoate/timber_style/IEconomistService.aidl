@@ -10,7 +10,9 @@ interface IEconomistService {
     void stop();
     void pause();
     void play();
+    void playOrPause();
     void playTheRest(in Article article, in Issue issue);
+    void playTheRestByIssueDate(in Article article, in String issueDate);
     void next();
     boolean isPlaying();
     void seekToPosition(int position);

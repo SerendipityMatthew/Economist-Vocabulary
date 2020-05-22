@@ -1,5 +1,6 @@
 package com.xuwanjin.inchoate.ui.playing;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -29,14 +31,18 @@ import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.events.PlayEvent;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.player.EconomistService;
 import com.xuwanjin.inchoate.player.IPlayer;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
+import com.xuwanjin.inchoate.timber_style.EconomistServiceTimberStyle;
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -69,6 +75,12 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     private AppCompatSeekBar barPlayingProgress;
     private ImageView barSkip;
     private ImageView barPlayingClose;
+    private View.OnClickListener playOrPauseListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            EconomistPlayerTimberStyle.playOrPause();
+        }
+    };
     private Runnable mProgressCallback = new Runnable() {
         @Override
         public void run() {
@@ -121,9 +133,9 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     };
 
     public void updateProgressText(int progress) {
-        if (mAudioPlayingArticle!= null){
+        if (mAudioPlayingArticle != null) {
             audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress / 1000));
-        }else {
+        } else {
             audioLeft.setText(Utils.getDurationFormat(0));
         }
         audioPlayed.setText(Utils.getDurationFormat(progress / 1000));
@@ -134,6 +146,17 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
             return null;
         }
         return getView().findViewById(R.id.audio_playing_bar);
+    }
+
+    public ImageView getPlayButton() {
+        View view = getAudioPlayingBar();
+        int visibility = view.getVisibility();
+        if (visibility == View.GONE) {
+            return playToggle;
+        } else if (visibility == View.INVISIBLE) {
+            return barPlay;
+        }
+        return null;
     }
 
     @Nullable
@@ -150,6 +173,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         initView();
         initData();
         initOnListener();
+        EventBus.getDefault().register(this);
         return view;
     }
 
@@ -196,50 +220,30 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         seekBarProgress.setMax((int) mAudioPlayingArticle.audioDuration * 1000);
         barPlayingProgress.setMax((int) mAudioPlayingArticle.audioDuration * 1000);
         playToggle.setImageResource(R.mipmap.pause);
+        barPlay.setImageResource(R.mipmap.pause);
     }
 
     public void initOnListener() {
-        barPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
-                panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
-                EventBus.getDefault().post(panelState);
-            }
-        });
+        barPlay.setOnClickListener(playOrPauseListener);
 
         seekBarProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
         barPlayingProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
-        playToggle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (mEconomistService != null && mEconomistService.isPlaying()) {
-                        try {
-                            mEconomistService.pause();
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                        playToggle.setImageResource(R.mipmap.play);
-                    } else {
-                        playToggle.setImageResource(R.mipmap.pause);
-                    }
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
+        playToggle.setOnClickListener(playOrPauseListener);
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public void updatePlayToggle(boolean isPlaying) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPlayEvent(PlayEvent playEvent) {
+        updatePlayButton(playEvent.isPlaying);
+    }
+
+    public void updatePlayButton(boolean isPlaying) {
         playToggle.setImageResource(isPlaying ? R.mipmap.pause : R.mipmap.play);
+        barPlay.setImageResource(isPlaying ? R.mipmap.pause : R.mipmap.play);
     }
 
     @Override
@@ -252,6 +256,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     public void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacks(mProgressCallback);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -286,7 +291,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
 
     @Override
     public void onPlayStatusChanged(boolean isPlaying) {
-        updatePlayToggle(isPlaying);
+//        updatePlayToggle(isPlaying);
         if (isPlaying) {
             mHandler.removeCallbacks(mProgressCallback);
             mHandler.post(mProgressCallback);
@@ -294,4 +299,5 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
             mHandler.removeCallbacks(mProgressCallback);
         }
     }
+
 }

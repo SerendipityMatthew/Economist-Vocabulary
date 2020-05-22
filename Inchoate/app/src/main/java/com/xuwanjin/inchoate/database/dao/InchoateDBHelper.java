@@ -362,14 +362,12 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         contentValues.put(KEY_AUDIO_DURATION, article.audioDuration);
         contentValues.put(KEY_IS_BOOKMARK, article.isBookmark);
         String whereClause = KEY_ID + "=?";
-        Log.d(TAG, "updateArticleAudioLocaleUrl: localeAudioUrl = " + article.localeAudioUrl);
-        Log.d(TAG, "updateArticleAudioLocaleUrl: article.rowIdInDB = " + article.rowIdInDB);
-        long rowID = database.update(TABLE_NAME_ARTICLE, contentValues, whereClause, new String[]{String.valueOf(article.rowIdInDB)});
-        Log.d(TAG, "updateArticleAudioLocaleUrl: rowID = " + rowID);
+        long affectedRowCount = database.update(TABLE_NAME_ARTICLE, contentValues, whereClause, new String[]{String.valueOf(article.rowIdInDB)});
+        Log.d(TAG, "updateArticleAudioLocaleUrl: affectedRowCount = " + affectedRowCount);
         if (database != null) {
             database.close();
         }
-        return rowID;
+        return affectedRowCount;
     }
 
     public long insertParagraphData(Paragraph paragraph, long articleRowID) {

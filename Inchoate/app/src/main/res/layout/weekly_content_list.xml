@@ -27,14 +27,12 @@
                     android:id="@+id/article_fly_title"
                     android:layout_width="200dp"
                     android:layout_height="match_parent"
-                    android:text="@string/article_text"
                     android:textColor="@color/red" />
 
                 <TextView
                     android:id="@+id/article_title"
                     android:layout_width="200dp"
                     android:layout_height="match_parent"
-                    android:text="@string/article_text"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
             </LinearLayout>

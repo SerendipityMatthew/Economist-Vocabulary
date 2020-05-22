@@ -158,13 +158,22 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         sDatabase.close();
     }
 
-    public Cursor getBookmarkedArticle() {
+    private Cursor getBookmarkedArticle() {
         sDatabase = openInchoateDB();
         // Select * from article where is_bookmark='true';
-        String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE " + KEY_IS_BOOKMARK + " =\'true\'";
+        String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE " + KEY_IS_BOOKMARK + " =\'0\'";
         Cursor cursor = sDatabase.rawQuery(query, null);
-//        sDatabase.close();
         return cursor;
+    }
+
+    public List<Article> queryBookmarkedArticle() {
+        Cursor cursor = getBookmarkedArticle();
+        List<Article> articleList = new ArrayList<>();
+        while (cursor != null && cursor.moveToNext()) {
+            Article article = getArticleFromCursor(cursor);
+            articleList.add(article);
+        }
+        return articleList;
     }
 
     public List<Issue> queryIssueByIssueDate(String issueDate) {
@@ -204,7 +213,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor queryArticleByIssueDateSectionTitle(Article article, String issueDate) {
+    private Cursor queryArticleByIssueDateSectionTitle(Article article, String issueDate) {
         sDatabase = openInchoateDB();
         // Select * from article where issue_date='' and section='' and title = '' ;
         String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE "
@@ -218,7 +227,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     // Editor’s note: The Economist is making some of its most important coverage of the covid-19 pandemic freely
     // available to readers of The Economist Today
     //对于像这样的段落, 机会每一篇文章都有. 需要 articleRowID 和 Paragraph 内容同时确定
-    public List<Paragraph> queryParagraphByContentAndArticleID(String content, long articleRowID) {
+    private List<Paragraph> queryParagraphByContentAndArticleID(String content, long articleRowID) {
         // 如果 Paragraph 的表里查不出一个含有 articleRowID 的数据,
         // 表示这个 article 的 paragraph 没有被存入过
         sDatabase = openInchoateDB();
@@ -238,7 +247,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         return paragraphList;
     }
 
-    public long insertIssueData(Issue issue) {
+    private long insertIssueData(Issue issue) {
         SQLiteDatabase database = openInchoateDB();
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_COVER_IMAGE_URL, issue.coverImageUrl);
@@ -308,8 +317,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         // Select * from vocabulary where vocabulary_content='';
         String queryByArticleID = "SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE "
                 + KEY_VOCABULARY_CONTENT + " =\'" + vocabularyContent + "\'"
-                + " LIMIT " + limit
-                ;
+                + " LIMIT " + limit;
         Cursor cursor = sDatabase.rawQuery(queryByArticleID, null);
         List<Vocabulary> vocabularyList = new ArrayList<>();
         while (cursor != null && cursor.moveToNext()) {
@@ -319,7 +327,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         if (database != null) {
             database.close();
         }
-        if (vocabularyList != null && vocabularyList.size()>0){
+        if (vocabularyList != null && vocabularyList.size() > 0) {
             return true;
         }
         return false;

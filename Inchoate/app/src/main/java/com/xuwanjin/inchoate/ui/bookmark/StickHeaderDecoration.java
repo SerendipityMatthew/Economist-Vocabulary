@@ -68,7 +68,7 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
                 }
                 canvas.translate(layoutParams.leftMargin, sectionPinOffset);
                 canvas.clipRect(0, 0, parent.getWidth(), pinnedHeaderView.getMeasuredHeight());
-                pinnedHeaderView.draw(canvas);
+//                pinnedHeaderView.draw(canvas);
                 canvas.restoreToCount(saveCount);
             } else {
 //                mPinnedHeaderRect = null;

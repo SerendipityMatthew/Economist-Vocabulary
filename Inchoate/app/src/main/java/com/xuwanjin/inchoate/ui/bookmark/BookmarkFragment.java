@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.model.Issue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.List;
 public class BookmarkFragment extends Fragment {
     RecyclerView bookmarkRecycleView;
     TextView mTextView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -31,16 +34,12 @@ public class BookmarkFragment extends Fragment {
         gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         bookmarkRecycleView.setLayoutManager(gridLayoutManager);
         mTextView = view.findViewById(R.id.bookmark);
-        List<Article> articles = new ArrayList<>();
-        for (int i = 0; i < 60; i++) {
-            Article article = new Article();
-            article.summary = "Matthew" + i;
-            article.headline = "Matthew = " + i;
-            articles.add(article);
-        }
-        BookmarkAdapter adapter = new BookmarkAdapter(articles, getContext(), this);
+        List<Article> articleList = new ArrayList<>();
+        InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
+        articleList = helper.queryBookmarkedArticle();
+        BookmarkAdapter adapter = new BookmarkAdapter(articleList, getContext(), this);
         bookmarkRecycleView.setAdapter(adapter);
-        bookmarkRecycleView.addItemDecoration(new StickHeaderDecoration(bookmarkRecycleView));
+//        bookmarkRecycleView.addItemDecoration(new StickHeaderDecoration(bookmarkRecycleView));
         return view;
     }
 

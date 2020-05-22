@@ -36,6 +36,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     private static final String KEY_IS_DOWNLOADED = "is_downloaded";
     private static final String KEY_ISSUE_URL = "issue_url";
     private static final String KEY_ISSUE_FORMAT_DATE = "issue_format_date";
+    private static final String KEY_ISSUE_HEADLINE = "issue_headline";
     // paragraph of article
     // the main key of table article
     private static final String KEY_ISSUE_DATE = "issue_date";
@@ -81,6 +82,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             + KEY_COVER_IMAGE_URL + " TEXT,"
             + KEY_IS_DOWNLOADED + " TEXT,"
             + KEY_ISSUE_URL + " TEXT,"
+            + KEY_ISSUE_HEADLINE + " TEXT,"
             + KEY_ISSUE_FORMAT_DATE + " DATE"
             + ")";
     private static final String CREATE_TABLE_ARTICLE = "CREATE TABLE IF NOT EXISTS "
@@ -244,6 +246,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         contentValues.put(KEY_ISSUE_URL, issue.issueUrl);
         contentValues.put(KEY_ISSUE_DATE, issue.issueDate);
         contentValues.put(KEY_ISSUE_FORMAT_DATE, issue.issueFormatDate);
+        contentValues.put(KEY_ISSUE_HEADLINE, issue.headline);
         long rowID = database.insert(TABLE_NAME_ISSUE, null, contentValues);
         if (database != null) {
             database.close();
@@ -479,6 +482,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         int issueCoverImageUrlIndex = cursor.getColumnIndex(KEY_COVER_IMAGE_URL);
         int issueIsDownloadedIndex = cursor.getColumnIndex(KEY_IS_DOWNLOADED);
         int issueFormatDateIndex = cursor.getColumnIndex(KEY_ISSUE_FORMAT_DATE);
+        int headlinIndex = cursor.getColumnIndex(KEY_ISSUE_HEADLINE);
         Issue issue = new Issue();
         issue.id = cursor.getInt(issueIDIndex);
         issue.issueDate = cursor.getString(issueDateIndex);
@@ -486,6 +490,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         issue.coverImageUrl = cursor.getString(issueCoverImageUrlIndex);
         issue.isDownloaded = Boolean.getBoolean(cursor.getString(issueIsDownloadedIndex));
         issue.issueFormatDate = cursor.getString(issueFormatDateIndex);
+        issue.headline = cursor.getString(headlinIndex);
         issue.containArticle = getArticleListByIssueDate(issue.issueDate);
         return issue;
     }

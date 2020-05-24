@@ -33,6 +33,7 @@ public class EconomistServiceTimberStyle extends Service {
     public static final int PLAY_NEXT_ARTICLE_AUDIO = 1000;
     private ArrayDeque<Article> articleArrayDeque = new ArrayDeque<>();
     private Issue mCurrentIssue;
+    private static Article mCurrentPlayingArticle;
 
     @SuppressLint("HandlerLeak")
     private Handler mServiceHandler = new Handler() {
@@ -171,6 +172,10 @@ public class EconomistServiceTimberStyle extends Service {
         return mPlayer.isPlaying();
     }
 
+    public void playNext() {
+        mPlayer.playNext();
+    }
+
     public void playTheRestByIssueDate(Article article, String issueDate) {
         Log.d(TAG, "playTheRestByIssueDate: ");
         InchoateDBHelper helper = new InchoateDBHelper(getBaseContext(), null, null);
@@ -235,6 +240,11 @@ public class EconomistServiceTimberStyle extends Service {
 
         @Override
         public void next() throws RemoteException {
+            mService.get().playNext();
+        }
+
+        @Override
+        public void previous() throws RemoteException {
 
         }
 
@@ -349,6 +359,7 @@ public class EconomistServiceTimberStyle extends Service {
                     } else {
                         audioPath = article.audioUrl;
                     }
+                    mCurrentPlayingArticle = article;
                     Log.d(TAG, "play: audioPath = " + audioPath);
                     setDataSource(audioPath);
                     isNetworkBuffering = true;
@@ -374,6 +385,20 @@ public class EconomistServiceTimberStyle extends Service {
 
         public boolean isPlaying() {
             return mMediaPlayer != null && mMediaPlayer.isPlaying();
+        }
+
+        public void playNext() {
+            stop();
+            play();
+            PlayEvent playEvent = new PlayEvent();
+            playEvent.isPlaySkip = true;
+            playEvent.mArticle = mCurrentPlayingArticle;
+            EventBus.getDefault().post(playEvent);
+        }
+        public void stop() {
+            if (mMediaPlayer != null){
+                mMediaPlayer.stop();
+            }
         }
 
         public boolean isNetworkBuffering() {

@@ -86,7 +86,7 @@ public class ArticleFragment extends Fragment {
         if (article != null) {
             mParagraphList = article.paragraphList;
         }
-        EconomistPlayerTimberStyle.binToService(getActivity(), mConnection);
+//        EconomistPlayerTimberStyle.binToService(getActivity(), mConnection);
         view = inflater.inflate(R.layout.fragment_article_detail, container, false);
         initView();
         mGridLayoutManager = new GridLayoutManager(getContext(), 1);
@@ -175,6 +175,6 @@ public class ArticleFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EconomistPlayerTimberStyle.unbindToService(getActivity(), mConnection);
+//        EconomistPlayerTimberStyle.unbindToService(getActivity(), mConnection);
     }
 }

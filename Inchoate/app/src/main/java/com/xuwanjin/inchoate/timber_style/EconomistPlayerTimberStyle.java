@@ -94,6 +94,14 @@ public class EconomistPlayerTimberStyle {
         }
     }
 
+    public static void playNext(){
+        try {
+            mEconomistService.next();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static final class ServiceToken {
         public ContextWrapper mContextWrapper;
 

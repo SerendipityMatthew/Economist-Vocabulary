@@ -134,6 +134,8 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
 
     public void updateProgressText(int progress) {
         if (mAudioPlayingArticle != null) {
+            Log.d(TAG, "updateProgressText: mAudioPlayingArticle.audioDuration = " + mAudioPlayingArticle.audioDuration);
+            Log.d(TAG, "updateProgressText: progress / 1000 = " + progress / 1000);
             audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress / 1000));
         } else {
             audioLeft.setText(Utils.getDurationFormat(0));
@@ -163,7 +165,6 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mContext = getContext();
-
         view = inflater.inflate(R.layout.fragment_audio_play, container, false);
         mArticleList = InchoateApplication.getAudioPlayingArticleListCache();
         if (mArticleList == null || mArticleList.size() == 0) {
@@ -180,7 +181,6 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     @Override
     public void onResume() {
         super.onResume();
-        EconomistPlayerTimberStyle.binToService(getContext(), mConnection);
         mHandler.removeCallbacks(mProgressCallback);
         mHandler.post(mProgressCallback);
     }
@@ -208,6 +208,14 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         audioIssueCategoryRV = view.findViewById(R.id.audio_issue_category_rv);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPlayNextUpdateUI(PlayEvent playEvent) {
+        if (playEvent.isPlaySkip) {
+            mAudioPlayingArticle = playEvent.mArticle;
+            initData();
+        }
+    }
+
     private void initData() {
         if (mAudioPlayingArticle == null) {
             return;
@@ -231,6 +239,20 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         seekBarProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
         barPlayingProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
         playToggle.setOnClickListener(playOrPauseListener);
+
+        last.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EconomistPlayerTimberStyle.playNext();
+            }
+        });
     }
 
     @Override
@@ -258,7 +280,6 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     public void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacks(mProgressCallback);
-        EconomistPlayerTimberStyle.unbindToService(mContext, mConnection);
         EventBus.getDefault().unregister(this);
     }
 

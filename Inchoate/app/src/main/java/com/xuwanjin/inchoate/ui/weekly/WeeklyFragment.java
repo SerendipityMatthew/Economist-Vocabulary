@@ -129,25 +129,27 @@ public class WeeklyFragment extends Fragment {
         }
     };
 
+    ServiceConnection economistServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mEconomistService = IEconomistService.Stub.asInterface(service);
+            Log.d(TAG, "onServiceConnected: mEconomistService = " + mEconomistService);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d(TAG, "onServiceDisconnected: ");
+
+        }
+    };
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_weekly, container, false);
         initView();
-        ServiceConnection serviceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                mEconomistService = IEconomistService.Stub.asInterface(service);
-                Log.d(TAG, "onServiceConnected: mEconomistService = " + mEconomistService);
-            }
 
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                Log.d(TAG, "onServiceDisconnected: ");
-
-            }
-        };
-        EconomistPlayerTimberStyle.binToService(getActivity(), serviceConnection);
+        EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         issueContentRecyclerView.setLayoutManager(linearLayoutManager);
@@ -414,4 +416,9 @@ public class WeeklyFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
+    }
 }

@@ -3,19 +3,15 @@ package com.xuwanjin.inchoate.timber_style;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
 
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.events.PlayEvent;
@@ -90,6 +86,7 @@ public class EconomistServiceTimberStyle extends Service {
     }
 
     public void setCurrentIssue(Issue issue) {
+        Log.d(TAG, "setCurrentIssue: ");
         InchoateDBHelper helper = new InchoateDBHelper(getBaseContext(), null, null);
         List<Issue> issueList = helper.queryIssueByIssueDate(issue.issueDate);
         mCurrentIssue = issueList.get(0);
@@ -175,6 +172,7 @@ public class EconomistServiceTimberStyle extends Service {
     }
 
     public void playTheRestByIssueDate(Article article, String issueDate) {
+        Log.d(TAG, "playTheRestByIssueDate: ");
         InchoateDBHelper helper = new InchoateDBHelper(getBaseContext(), null, null);
         List<Issue> issueList = helper.queryIssueByIssueDate(issueDate);
         if (helper != null) {

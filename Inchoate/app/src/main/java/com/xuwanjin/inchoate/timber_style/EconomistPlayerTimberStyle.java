@@ -23,6 +23,11 @@ public class EconomistPlayerTimberStyle {
         }
         return null;
     }
+    public static final void unbindToService(Context context, ServiceConnection serviceConnection) {
+        if (serviceConnection != null){
+            context.unbindService(serviceConnection);
+        }
+    }
     public static void play(String audioPath){
         try {
             mEconomistService.openFile(audioPath);

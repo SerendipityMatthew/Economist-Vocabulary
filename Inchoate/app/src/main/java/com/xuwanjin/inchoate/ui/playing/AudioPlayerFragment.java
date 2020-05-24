@@ -256,6 +256,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     public void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacks(mProgressCallback);
+        EconomistPlayerTimberStyle.unbindToService(mContext, mConnection);
         EventBus.getDefault().unregister(this);
     }
 

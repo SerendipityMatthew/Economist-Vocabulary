@@ -1,6 +1,8 @@
 package com.xuwanjin.inchoate.ui.bookmark;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +40,53 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
         return mFragment;
     }
 
+    //Item header 按照 section, issueDate, bookmarkDate, Topic,
+    public String getGroupName(int position) {
+        Article article = mArticleList.get(position);
+        String groupName;
+        String groupPolicy = bookmarkGroupPolicy();
+        switch (groupPolicy) {
+            case "issue_date":
+            case "bookmark_date":
+                groupName = article.date;
+                break;
+            case "section":
+            default:
+                groupName = article.section;
+                break;
+        }
+        return groupName;
+    }
+
+    private String bookmarkGroupPolicy() {
+        @SuppressLint("CommitPrefEdits") SharedPreferences editor =
+                mContext.getSharedPreferences("inchoate", Context.MODE_PRIVATE);
+        String bookmark_group_policy = editor.getString("bookmark_group_policy", "section");
+        return bookmark_group_policy;
+    }
+
+
+    public boolean isItemHeader(int position) {
+
+        // position == 0 ,是inflater 进去的 HeaderView,
+        // HeaderView 上面不能画一个 ItemHeaderView, 所以, 返回的是 false
+        // 因为第一项是 HeaderView
+        if (position == 0) {
+            return false;
+        }
+        if (position == getItemCount() - 1) {
+            return false;
+        }
+
+        // 因为我们有一个 HeaderView, 这个 Position 是
+        // RecyclerView 里的是 List.size() +1 项, 为了数据对应. 这里的需要  position -2
+        String lastGroupName = mArticleList.get(position - 1).section;
+        String currentGroupName = mArticleList.get(position).section;
+        if (lastGroupName.equals(currentGroupName)) {
+            return false;
+        }
+        return true;
+    }
 
     @NonNull
     @Override
@@ -50,7 +99,6 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         Article article = mArticleList.get(position);
-        Log.d(TAG, "onBindViewHolder: article.mainArticleImage = " + article.mainArticleImage);
         Glide.with(mContext)
 
                 .load(article.mainArticleImage)

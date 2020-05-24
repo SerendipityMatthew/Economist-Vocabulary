@@ -39,7 +39,7 @@ public class BookmarkFragment extends Fragment {
         articleList = helper.queryBookmarkedArticle();
         BookmarkAdapter adapter = new BookmarkAdapter(articleList, getContext(), this);
         bookmarkRecycleView.setAdapter(adapter);
-//        bookmarkRecycleView.addItemDecoration(new StickHeaderDecoration(bookmarkRecycleView));
+        bookmarkRecycleView.addItemDecoration(new StickHeaderDecoration(bookmarkRecycleView, getContext()));
         return view;
     }
 

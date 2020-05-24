@@ -179,16 +179,16 @@ public class Utils {
         int minute = (int) (duration / 60);  // 63
         int seconds = (int) (duration % 60);
         if (minute < 10 && seconds < 10) {
-            return "0" + minute + ":" + "0" + seconds;
+            return minute + ":" + "0" + seconds;
         }
-        if (minute < 10 && seconds > 10) {
-            return "0" + minute + ":" + seconds;
-        }
-        if (minute > 10 && seconds > 10) {
+        if (minute < 10 && seconds >= 10) {
             return minute + ":" + seconds;
         }
-        if (minute > 10 && seconds < 10) {
-            return minute + ":" + "0:" + seconds;
+        if (minute >= 10 && seconds >= 10) {
+            return minute + ":" + seconds;
+        }
+        if (minute >= 10 && seconds < 10) {
+            return minute + ":" + "0" + seconds;
         }
         return null;
     }

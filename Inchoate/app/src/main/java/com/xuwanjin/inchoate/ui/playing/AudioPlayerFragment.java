@@ -212,7 +212,9 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         if (mAudioPlayingArticle == null) {
             return;
         }
-        Glide.with(getContext()).load(mAudioPlayingArticle.imageUrl).into(articleCoverImage);
+        Glide.with(getContext())
+                .load(mAudioPlayingArticle.mainArticleImage)
+                .into(articleCoverImage);
         playFlyTitle.setText(mAudioPlayingArticle.flyTitle);
         audioPlayTitle.setText(mAudioPlayingArticle.title);
         audioPlayed.setText(Utils.getDurationFormat(0));

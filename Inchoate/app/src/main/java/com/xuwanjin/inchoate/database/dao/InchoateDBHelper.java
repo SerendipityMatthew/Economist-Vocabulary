@@ -158,34 +158,39 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         sDatabase.close();
     }
 
-    private Cursor getBookmarkedArticle() {
-        sDatabase = openInchoateDB();
+    public List<Article> queryBookmarkedArticle() {
+        SQLiteDatabase database = openInchoateDB();
         // Select * from article where is_bookmark='true';
         String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE " + KEY_IS_BOOKMARK + " =\'0\'";
-        Cursor cursor = sDatabase.rawQuery(query, null);
-        return cursor;
-    }
+        Cursor cursor = database.rawQuery(query, null);
 
-    public List<Article> queryBookmarkedArticle() {
-        Cursor cursor = getBookmarkedArticle();
         List<Article> articleList = new ArrayList<>();
         while (cursor != null && cursor.moveToNext()) {
             Article article = getArticleFromCursor(cursor);
             articleList.add(article);
+        }
+        if (database != null) {
+            database.close();
+        }
+        if (cursor != null) {
+            cursor.close();
         }
         return articleList;
     }
 
     public List<Issue> queryIssueByIssueDate(String issueDate) {
         List<Issue> issueList = new ArrayList<>();
-        sDatabase = openInchoateDB();
+        SQLiteDatabase database = openInchoateDB();
         // Select * from article where issue_date='';
         String query = "SELECT * FROM " + TABLE_NAME_ISSUE + " WHERE " + KEY_ISSUE_DATE + " =\'" + issueDate + "\'";
-        Cursor cursor = sDatabase.rawQuery(query, null);
+        Cursor cursor = database.rawQuery(query, null);
         while (cursor != null && cursor.moveToNext()) {
             Issue issue = new Issue();
             issue = getIssueFromCursor(cursor);
             issueList.add(issue);
+        }
+        if (database != null) {
+            database.close();
         }
         if (cursor != null) {
             cursor.close();
@@ -205,11 +210,12 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     }
 
     public Cursor queryArticleByIssueDate(String issueDate) {
-        sDatabase = openInchoateDB();
+        SQLiteDatabase database = openInchoateDB();
         // Select * from article where issue_date='' ;
         String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE "
                 + KEY_ISSUE_DATE + " =\'" + issueDate + "\'";
-        Cursor cursor = sDatabase.rawQuery(query, null);
+        Cursor cursor = database.rawQuery(query, null);
+
         return cursor;
     }
 
@@ -230,16 +236,19 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     private List<Paragraph> queryParagraphByContentAndArticleID(String content, long articleRowID) {
         // 如果 Paragraph 的表里查不出一个含有 articleRowID 的数据,
         // 表示这个 article 的 paragraph 没有被存入过
-        sDatabase = openInchoateDB();
+        SQLiteDatabase database = openInchoateDB();
         // Select * from paragraph where belonged_article_id='' or paragraph_content='';
         String queryByArticleID = "SELECT * FROM " + TABLE_NAME_PARAGRAPH + " WHERE "
                 + KEY_BELONGED_ARTICLE_ID + " =\'" + articleRowID + "\'" + " AND "
                 + KEY_PARAGRAPH_CONTENT + "=\'" + content + "\'";
-        Cursor cursor = sDatabase.rawQuery(queryByArticleID, null);
+        Cursor cursor = database.rawQuery(queryByArticleID, null);
         List<Paragraph> paragraphList = new ArrayList<>();
         while (cursor != null && cursor.moveToNext()) {
             Paragraph paragraph = getParagraphFromCursor(cursor);
             paragraphList.add(paragraph);
+        }
+        if (database != null) {
+            database.close();
         }
         if (cursor != null) {
             cursor.close();
@@ -300,7 +309,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         // Select * from vocabulary where vocabulary_content='';
         String queryByArticleID = "SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE "
                 + KEY_VOCABULARY_CONTENT + " =\'" + vocabularyContent + "\'";
-        Cursor cursor = sDatabase.rawQuery(queryByArticleID, null);
+        Cursor cursor = database.rawQuery(queryByArticleID, null);
         List<Vocabulary> vocabularyList = new ArrayList<>();
         while (cursor != null && cursor.moveToNext()) {
             Vocabulary vocabulary = getVocabularyFromCursor(cursor);
@@ -318,7 +327,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         String queryByArticleID = "SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE "
                 + KEY_VOCABULARY_CONTENT + " =\'" + vocabularyContent + "\'"
                 + " LIMIT " + limit;
-        Cursor cursor = sDatabase.rawQuery(queryByArticleID, null);
+        Cursor cursor = database.rawQuery(queryByArticleID, null);
         List<Vocabulary> vocabularyList = new ArrayList<>();
         while (cursor != null && cursor.moveToNext()) {
             Vocabulary vocabulary = getVocabularyFromCursor(cursor);
@@ -326,6 +335,9 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         }
         if (database != null) {
             database.close();
+        }
+        if (cursor != null) {
+            cursor.close();
         }
         if (vocabularyList != null && vocabularyList.size() > 0) {
             return true;
@@ -389,11 +401,11 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         contentValues.put(KEY_PARAGRAPH_CONTENT, paragraph.paragraph);
         contentValues.put(KEY_ORDER_OF_PARAGRAPH, paragraph.theOrderOfParagraph);
         contentValues.put(KEY_BELONGED_ARTICLE_ID, articleRowID);
-        long rowID = database.insert(TABLE_NAME_PARAGRAPH, null, contentValues);
+        long affectedRowCount = database.insert(TABLE_NAME_PARAGRAPH, null, contentValues);
         if (database != null) {
             database.close();
         }
-        return rowID;
+        return affectedRowCount;
     }
 
     // 查看是否存在, 如果存在,                获取 rowID
@@ -442,7 +454,13 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
 
 
     private long articleRowIDInDB(Article article, String issueDate) {
-        Cursor cursor = queryArticleByIssueDateSectionTitle(article, issueDate);
+        SQLiteDatabase database = openInchoateDB();
+        // Select * from article where issue_date='' and section='' and title = '' ;
+        String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE "
+                + KEY_ISSUE_DATE + " =\'" + issueDate + "\'" + " AND "
+                + KEY_SECTION + " =\'" + article.section + "\'" + " AND "
+                + KEY_TITLE + " =\'" + article.title + "\' ";
+        Cursor cursor = database.rawQuery(query, null);
         List<Article> articleList = new ArrayList<>();
         while (cursor != null && cursor.moveToNext()) {
             Article a = getArticleFromCursor(cursor);
@@ -453,6 +471,9 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         }
         if (articleList.size() == 1) {
             return articleList.get(0).rowIdInDB;
+        }
+        if (database != null) {
+            database.close();
         }
         if (cursor != null) {
             cursor.close();
@@ -490,7 +511,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         int issueCoverImageUrlIndex = cursor.getColumnIndex(KEY_COVER_IMAGE_URL);
         int issueIsDownloadedIndex = cursor.getColumnIndex(KEY_IS_DOWNLOADED);
         int issueFormatDateIndex = cursor.getColumnIndex(KEY_ISSUE_FORMAT_DATE);
-        int headlinIndex = cursor.getColumnIndex(KEY_ISSUE_HEADLINE);
+        int headlineIndex = cursor.getColumnIndex(KEY_ISSUE_HEADLINE);
         Issue issue = new Issue();
         issue.id = cursor.getInt(issueIDIndex);
         issue.issueDate = cursor.getString(issueDateIndex);
@@ -498,7 +519,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         issue.coverImageUrl = cursor.getString(issueCoverImageUrlIndex);
         issue.isDownloaded = Boolean.getBoolean(cursor.getString(issueIsDownloadedIndex));
         issue.issueFormatDate = cursor.getString(issueFormatDateIndex);
-        issue.headline = cursor.getString(headlinIndex);
+        issue.headline = cursor.getString(headlineIndex);
         issue.containArticle = getArticleListByIssueDate(issue.issueDate);
         return issue;
     }
@@ -568,11 +589,19 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     }
 
     private List<Article> getArticleListByIssueDate(String issueDate) {
-        Cursor cursor = queryArticleByIssueDate(issueDate);
+        SQLiteDatabase database = openInchoateDB();
+        // Select * from article where issue_date='' ;
+        String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE "
+                + KEY_ISSUE_DATE + " =\'" + issueDate + "\'";
+        Cursor cursor = database.rawQuery(query, null);
+
         List<Article> articleList = new ArrayList<>();
         while (cursor != null && cursor.moveToNext()) {
             Article a = getArticleFromCursor(cursor);
             articleList.add(a);
+        }
+        if (database != null) {
+            database.close();
         }
         if (cursor != null) {
             cursor.close();
@@ -597,15 +626,18 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     private List<Paragraph> queryParagraphListByArticleID(int articleRowID) {
         // 如果 Paragraph 的表里查不出一个含有 articleRowID 的数据,
         // 表示这个 article 的 paragraph 没有被存入过
-        sDatabase = openInchoateDB();
+        SQLiteDatabase database = openInchoateDB();
         // Select * from paragraph where belonged_article_id='' or paragraph_content='';
         String queryByArticleID = "SELECT * FROM " + TABLE_NAME_PARAGRAPH + " WHERE "
                 + KEY_BELONGED_ARTICLE_ID + " =\'" + articleRowID + "\'";
-        Cursor cursor = sDatabase.rawQuery(queryByArticleID, null);
+        Cursor cursor = database.rawQuery(queryByArticleID, null);
         List<Paragraph> paragraphList = new ArrayList<>();
         while (cursor != null && cursor.moveToNext()) {
             Paragraph paragraph = getParagraphFromCursor(cursor);
             paragraphList.add(paragraph);
+        }
+        if (database != null) {
+            database.close();
         }
         if (cursor != null) {
             cursor.close();

@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 
 
@@ -96,11 +98,10 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
         Article article = mArticleList.get(position);
         Glide.with(mContext)
-
                 .load(article.mainArticleImage)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.mipmap.the_economist)
@@ -109,6 +110,14 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
         holder.article_title.setText(article.title);
         holder.articleFlyTitle.setText(article.flyTitle);
         holder.dateAndReadTime.setText(article.date);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InchoateApplication.setDisplayArticleCache(mArticleList.get(position));
+                Utils.navigationController(
+                        InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_article);
+            }
+        });
     }
 
 

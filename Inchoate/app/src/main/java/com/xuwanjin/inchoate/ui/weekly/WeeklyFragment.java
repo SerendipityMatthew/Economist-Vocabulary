@@ -419,6 +419,6 @@ public class WeeklyFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
+        EconomistPlayerTimberStyle.unbindToService(getActivity(), economistServiceConnection);
     }
 }

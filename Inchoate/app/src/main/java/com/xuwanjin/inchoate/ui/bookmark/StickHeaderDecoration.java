@@ -91,14 +91,11 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
 
             boolean isHeader = adapter.isItemHeader(position);
             // position 为零表示, 这个是 HeaderView, 不需要再 HeaderView 上面画一个 itemHeader
-            if (position == 0) {
-                return;
-            }
             if (position == adapter.getItemCount() - 1) {
                 return;
             }
 
-            String groupName = adapter.getGroupName(position - 1);
+            String groupName = adapter.getGroupName(position);
             int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
             if (isHeader) {
                 int bottom = Math.min(mItemHeaderHeight, view.getBottom());
@@ -125,7 +122,7 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
             if (isHeader) {
                 //draw left 矩形的左边位置, top 矩形的上边位置, right 矩形的右边位置, bottom 矩形的下边位置
                 int y = view.getTop() - mItemHeaderHeight;
-                String groupName = adapter.getGroupName(position - 1);
+                String groupName = adapter.getGroupName(position);
                 canvas.drawRect(0, y, parent.getWidth(), view.getTop(), mItemHeaderPaint);
                 mTextPaint.getTextBounds(groupName, 0, groupName.length(), mTextRect);
                 canvas.drawText(groupName, 50,

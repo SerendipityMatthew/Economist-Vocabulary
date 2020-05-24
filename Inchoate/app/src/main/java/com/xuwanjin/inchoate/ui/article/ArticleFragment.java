@@ -134,7 +134,9 @@ public class ArticleFragment extends Fragment {
         sectionAndDate.setText(sectionSpannable);
 
         duration.setText(getDurationFormat(article.audioDuration));
-        Glide.with(getContext()).load(article.imageUrl).into(articleCoverImage);
+        Glide.with(getContext())
+                .load(article.mainArticleImage)
+                .into(articleCoverImage);
 
         if (article.title.contains("KAL’s cartoon")) {
             mLinearLayout.setVisibility(View.INVISIBLE);

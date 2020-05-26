@@ -11,4 +11,9 @@ public class Constants {
 
     public static final String DOWNLOAD_ISSUE = "download_issue";
     public static final String DOWNLOAD_ARTICLE = "download_article";
+
+    public static final int WEEKLY_PLAYING_SOURCE = 1;
+    public static final int BOOKMARK_PLAYING_SOURCE = 2;
+    public static final int TODAY_PLAYING_SOURCE = 3;
+    public static final int ARTICLE_DETAIL_PLAYING_SOURCE = 4;
 }

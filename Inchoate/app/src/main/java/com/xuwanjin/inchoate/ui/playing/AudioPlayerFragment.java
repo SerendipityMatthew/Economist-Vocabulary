@@ -243,7 +243,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         last.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                EconomistPlayerTimberStyle.playPrevious();
             }
         });
 

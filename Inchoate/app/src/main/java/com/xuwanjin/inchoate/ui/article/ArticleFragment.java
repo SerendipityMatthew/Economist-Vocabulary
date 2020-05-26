@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
@@ -158,7 +159,7 @@ public class ArticleFragment extends Fragment {
                         EventBus.getDefault().post(panelState);
                         List<Issue> issueList = InchoateApplication.getNewestIssueCache();
 
-                        EconomistPlayerTimberStyle.playWholeIssue(article, issueList.get(0));
+                        EconomistPlayerTimberStyle.playWholeIssue(article, issueList.get(0), Constants.ARTICLE_DETAIL_PLAYING_SOURCE);
                     }
                 }).start();
 

@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
 
@@ -70,9 +71,9 @@ public class EconomistPlayerTimberStyle {
         }
         return -1;
     }
-    public static void playWholeIssue(Article currentArticle, Issue currentIssue){
+    public static void playWholeIssue(Article currentArticle, Issue currentIssue, int sourceFlag){
         try {
-            mEconomistService.playTheRestByIssueDate(currentArticle, currentIssue.issueDate);
+            mEconomistService.playTheRestByIssueDate(currentArticle, currentIssue.issueDate, sourceFlag );
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -80,7 +81,7 @@ public class EconomistPlayerTimberStyle {
 
     public static void playWholeIssueByIssueDate(Article currentArticle, String issueDate){
         try {
-            mEconomistService.playTheRestByIssueDate(currentArticle, issueDate);
+            mEconomistService.playTheRestByIssueDate(currentArticle, issueDate, Constants.WEEKLY_PLAYING_SOURCE);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -97,6 +98,13 @@ public class EconomistPlayerTimberStyle {
     public static void playNext(){
         try {
             mEconomistService.next();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void playPrevious(){
+        try {
+            mEconomistService.previous();
         } catch (RemoteException e) {
             e.printStackTrace();
         }

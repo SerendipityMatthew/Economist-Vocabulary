@@ -99,9 +99,9 @@
                 <ImageView
                     android:id="@+id/last"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="80dp"
                     android:layout_marginStart="10dp"
-                    android:background="@mipmap/last" />
+                    android:src="@mipmap/last" />
 
                 <ImageView
                     android:id="@+id/article_cover_image"
@@ -112,9 +112,9 @@
                 <ImageView
                     android:id="@+id/next"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="80dp"
                     android:layout_marginStart="10dp"
-                    android:background="@mipmap/next" />
+                    android:src="@mipmap/next" />
             </LinearLayout>
 
             <LinearLayout

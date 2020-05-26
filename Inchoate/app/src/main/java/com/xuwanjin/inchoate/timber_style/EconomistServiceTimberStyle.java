@@ -13,6 +13,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.events.PlayEvent;
 import com.xuwanjin.inchoate.model.Article;
@@ -26,14 +27,34 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import static com.xuwanjin.inchoate.Constants.ARTICLE_DETAIL_PLAYING_SOURCE;
+import static com.xuwanjin.inchoate.Constants.BOOKMARK_PLAYING_SOURCE;
+import static com.xuwanjin.inchoate.Constants.TODAY_PLAYING_SOURCE;
+import static com.xuwanjin.inchoate.Constants.WEEKLY_PLAYING_SOURCE;
 
 public class EconomistServiceTimberStyle extends Service {
     public static final String TAG = "EconomistServiceTimberStyle";
     private final IBinder mBinder = new ServiceStub(this);
     public static final int PLAY_NEXT_ARTICLE_AUDIO = 1000;
-    private ArrayDeque<Article> articleArrayDeque = new ArrayDeque<>();
     private Issue mCurrentIssue;
+    private static int mArticleInPlayingListIndex;
     private static Article mCurrentPlayingArticle;
+    static ThreadPoolExecutor sAudioPlayingPoolExecutor =
+            new ThreadPoolExecutor(1, 1, 5,
+            TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>());
+
+    // 播放的列表, ① ArticleFragment 界面的 整个当前的一篇文章内容, 但是有 previous, next;
+    //           ② BookmarkFragment 界面 bookmark 列表的内容, 从第一篇文章开始播放到最后一篇文章
+    //           ③ TodayFragment 界面的单篇文章播放, 播放的列表是, Today 界面的所有能播放音频的文章.
+    //           ④ WeeklyFragment 界面的播放整期内容
+    // 数据都要从数据库里获取
+    // 传递过来的标志从哪获取.
+    private static List<Article> mCurrentPlayingArticleList = new ArrayList<>();
+
 
     @SuppressLint("HandlerLeak")
     private Handler mServiceHandler = new Handler() {
@@ -74,17 +95,37 @@ public class EconomistServiceTimberStyle extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public void setArticleArrayDeque(ArrayDeque<Article> deque) {
-        articleArrayDeque = deque;
-    }
-
     public void setPlayerHandler(Handler handler) {
         mPlayer.setHandler(handler);
     }
 
-    public void setPlayerArticlePlayingDeque() {
-        mPlayer.setArticleAudioPlayingDeque(articleArrayDeque);
+    public void setCurrentPlayingArticleListBySource(int sourceFlag) {
+        InchoateDBHelper helper = new InchoateDBHelper(getApplicationContext(), null, null);
+        if (sourceFlag == WEEKLY_PLAYING_SOURCE) {
+            mCurrentPlayingArticleList = helper.queryIssueByIssueDate("").get(0).containArticle;
+        }
+        if (sourceFlag == BOOKMARK_PLAYING_SOURCE) {
+            mCurrentPlayingArticleList = helper.queryBookmarkedArticle();
+        }
+        if (sourceFlag == TODAY_PLAYING_SOURCE) {
+
+        }
+        if (sourceFlag == ARTICLE_DETAIL_PLAYING_SOURCE) {
+
+        }
+        mPlayer.setArticleAudioPlayingList();
     }
+
+    public void setArticleInPlayingListIndex(Article article) {
+        for (int i = 0; i < mCurrentPlayingArticleList.size(); i++) {
+            Article art = mCurrentPlayingArticleList.get(i);
+            if (art.section.equals(article.section)
+                    && art.title.equals(article.title)) {
+                mArticleInPlayingListIndex = i;
+            }
+        }
+    }
+
 
     public void setCurrentIssue(Issue issue) {
         Log.d(TAG, "setCurrentIssue: ");
@@ -93,30 +134,13 @@ public class EconomistServiceTimberStyle extends Service {
         mCurrentIssue = issueList.get(0);
     }
 
-    // 找出当前播放的文章在整个期刊里的位置, 然后取出后面的所有文章(包括当前的期刊) 作为一个播放列表,
-    // 上一个播放结束之后, 在播放列表里取下一个播放文件
     public void playTheRestOfWholeIssue(Article article) {
-        List<Article> articleList = mCurrentIssue.containArticle;
-        if (articleList == null || articleList.size() == 0) {
-            return;
-        }
-        int position = -1;
-        for (int i = 0; i < articleList.size(); i++) {
-            Article iterArticle = articleList.get(i);
-            if (iterArticle.section.equals(article.section)
-                    && iterArticle.title.equals(article.title)) {
-                position = i;
-            }
-        }
-        List<Article> leftOverArticle = articleList.subList(position, articleList.size());
-        ArrayDeque<Article> articleArrayDeque = new ArrayDeque<>();
-        for (Article art : leftOverArticle) {
+        for (Article art : mCurrentIssue.containArticle) {
             if (art != null && !art.audioUrl.trim().equals("")) { // 去掉 漫画 这个特殊的, 他没有音频文件
-                articleArrayDeque.addLast(art);
+                mCurrentPlayingArticleList.add(art);
             }
         }
-        setArticleArrayDeque(articleArrayDeque);
-        setPlayerArticlePlayingDeque();
+        setArticleInPlayingListIndex(article);
     }
 
     public void play() {
@@ -176,7 +200,11 @@ public class EconomistServiceTimberStyle extends Service {
         mPlayer.playNext();
     }
 
-    public void playTheRestByIssueDate(Article article, String issueDate) {
+    public void playPrevious() {
+        mPlayer.playPrevious();
+    }
+
+    public void playTheRestByIssueDate(Article article, String issueDate, int sourceFlag) {
         Log.d(TAG, "playTheRestByIssueDate: ");
         InchoateDBHelper helper = new InchoateDBHelper(getBaseContext(), null, null);
         List<Issue> issueList = helper.queryIssueByIssueDate(issueDate);
@@ -185,6 +213,8 @@ public class EconomistServiceTimberStyle extends Service {
         }
         mCurrentIssue = issueList.get(0);
         playTheRestOfWholeIssue(article);
+        setCurrentPlayingArticleListBySource(sourceFlag);
+        setArticleInPlayingListIndex(article);
     }
 
     public void seekToPosition(int position) {
@@ -233,8 +263,9 @@ public class EconomistServiceTimberStyle extends Service {
         }
 
         @Override
-        public void playTheRestByIssueDate(Article article, String issueDate) throws RemoteException {
-            mService.get().playTheRestByIssueDate(article, issueDate);
+        public void playTheRestByIssueDate(Article article, String issueDate, int sourceFlag) throws RemoteException {
+
+            mService.get().playTheRestByIssueDate(article, issueDate, sourceFlag);
             play();
         }
 
@@ -245,7 +276,7 @@ public class EconomistServiceTimberStyle extends Service {
 
         @Override
         public void previous() throws RemoteException {
-
+            mService.get().playPrevious();
         }
 
         @Override
@@ -289,25 +320,25 @@ public class EconomistServiceTimberStyle extends Service {
         private final WeakReference<EconomistServiceTimberStyle> mService;
         private MediaPlayer mMediaPlayer;
         private boolean isNetworkBuffering = true;
-        private MediaPlayer mNextMediaPlayer;
-        private ArrayDeque<Article> mArticlePlayingDeque;
+        private List<Article> mArticleList;
         private Handler mHandler;
 
         @Override
         public void onCompletion(MediaPlayer mp) {
             Log.d(TAG, "onCompletion: ");
             if (mp == mMediaPlayer) {
-                if (mArticlePlayingDeque != null) {
+                if (mArticleList != null) {
                     mMediaPlayer.release();
                     mMediaPlayer = null;
                     mMediaPlayer = new MediaPlayer();
+                    mArticleInPlayingListIndex++;
                     mHandler.obtainMessage(PLAY_NEXT_ARTICLE_AUDIO).sendToTarget();
                 }
             }
         }
 
-        public void setArticleAudioPlayingDeque(ArrayDeque<Article> deque) {
-            mArticlePlayingDeque = deque;
+        public void setArticleAudioPlayingList() {
+            mArticleList = mCurrentPlayingArticleList;
         }
 
         public void setHandler(Handler handler) {
@@ -328,22 +359,27 @@ public class EconomistServiceTimberStyle extends Service {
             try {
                 mMediaPlayer.setDataSource(filePath);
             } catch (IOException e) {
+                Log.d(TAG, "setDataSource: exception ");
                 e.printStackTrace();
             }
         }
 
         public void play() {
-            synchronized (this) {
-                Log.d(TAG, "EconomistPlayer: play: ");
-                try {
-                    Article article = mArticlePlayingDeque.poll();
+            Runnable audioPlayingTask = new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "EconomistPlayer: play: ");
+                    if (mArticleInPlayingListIndex < 0 || mArticleInPlayingListIndex >= mArticleList.size()) {
+                        return;
+                    }
+                    Article article = mArticleList.get(mArticleInPlayingListIndex);
+
                     if (article == null) {
                         return;
                     }
 
                     if (mMediaPlayer != null) {
                         mMediaPlayer.reset();
-
                     }
                     mMediaPlayer = new MediaPlayer();
                     String localCommonPath = "/storage/emulated/0/Android/data/";
@@ -361,25 +397,36 @@ public class EconomistServiceTimberStyle extends Service {
                     }
                     mCurrentPlayingArticle = article;
                     Log.d(TAG, "play: audioPath = " + audioPath);
-                    setDataSource(audioPath);
                     isNetworkBuffering = true;
-                    mMediaPlayer.prepare();
-                    mMediaPlayer.setOnCompletionListener(this);
-                    mMediaPlayer.setOnErrorListener(this);
-                    mMediaPlayer.setOnBufferingUpdateListener(this);
-                    mMediaPlayer.setOnPreparedListener(this);
-                    mMediaPlayer.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    try {
+                        mMediaPlayer.setDataSource(audioPath);
+                        mMediaPlayer.prepare();
+                        mMediaPlayer.setOnCompletionListener(EconomistPlayer.this);
+                        mMediaPlayer.setOnErrorListener(EconomistPlayer.this);
+                        mMediaPlayer.setOnBufferingUpdateListener(EconomistPlayer.this);
+                        mMediaPlayer.setOnPreparedListener(EconomistPlayer.this);
+                        mMediaPlayer.start();
+                        PlayEvent playEvent = new PlayEvent();
+                        playEvent.isPlaySkip = true;
+                        playEvent.mArticle = mCurrentPlayingArticle;
+                        EventBus.getDefault().post(playEvent);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
+
+            };
+            sAudioPlayingPoolExecutor.submit(audioPlayingTask);
         }
 
         public void playFromPause() {
-            synchronized (this) {
-                Log.d(TAG, "EconomistPlayer: play: ");
-                mMediaPlayer.start();
-            }
+            Runnable audioPauseRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    mMediaPlayer.start();
+                }
+            };
+            sAudioPlayingPoolExecutor.submit(audioPauseRunnable);
         }
 
 
@@ -388,15 +435,20 @@ public class EconomistServiceTimberStyle extends Service {
         }
 
         public void playNext() {
+            mArticleInPlayingListIndex++;
             stop();
             play();
-            PlayEvent playEvent = new PlayEvent();
-            playEvent.isPlaySkip = true;
-            playEvent.mArticle = mCurrentPlayingArticle;
-            EventBus.getDefault().post(playEvent);
+
         }
+
+        public void playPrevious() {
+            mArticleInPlayingListIndex--;
+            stop();
+            play();
+        }
+
         public void stop() {
-            if (mMediaPlayer != null){
+            if (mMediaPlayer != null) {
                 mMediaPlayer.stop();
             }
         }

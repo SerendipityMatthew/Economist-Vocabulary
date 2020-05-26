@@ -205,7 +205,7 @@ public class WeeklyFragment extends Fragment {
                         panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                         EventBus.getDefault().post(panelState);
                         if (mIssue != null) {
-                            EconomistPlayerTimberStyle.playWholeIssue(mIssue.containArticle.get(0), mIssue);
+                            EconomistPlayerTimberStyle.playWholeIssue(mIssue.containArticle.get(0), mIssue, Constants.WEEKLY_PLAYING_SOURCE);
                         }
                     }
                 }).start();

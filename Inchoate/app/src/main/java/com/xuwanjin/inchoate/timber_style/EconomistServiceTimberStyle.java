@@ -474,10 +474,16 @@ public class EconomistServiceTimberStyle extends Service {
             return mMediaPlayer == null ? -1 : mMediaPlayer.getDuration();
         }
 
-        public void seekToPosition(int position) {
-            if (mMediaPlayer != null) {
-                mMediaPlayer.seekTo(position);
-            }
+        public void seekToPosition(final int position) {
+            Runnable seekToPositionRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (mMediaPlayer != null) {
+                        mMediaPlayer.seekTo(position);
+                    }
+                }
+            };
+            sAudioPlayingPoolExecutor.submit(seekToPositionRunnable);
         }
 
         public void releasePlayer() {

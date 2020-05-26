@@ -16,4 +16,8 @@ public class Constants {
     public static final int BOOKMARK_PLAYING_SOURCE = 2;
     public static final int TODAY_PLAYING_SOURCE = 3;
     public static final int ARTICLE_DETAIL_PLAYING_SOURCE = 4;
+
+    public static final String SKIP_DURATION_PREFERENCE = "skip_duration";
+    public static final String REWIND_OR_FORWARD_DURATION_PREFERENCE = "rewind_or_forward";
+    public static final String INCHOATE_PREFERENCE_FILE_NAME = "inchoate";
 }

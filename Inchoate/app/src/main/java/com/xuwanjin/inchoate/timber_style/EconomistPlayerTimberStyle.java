@@ -87,6 +87,14 @@ public class EconomistPlayerTimberStyle {
         }
     }
 
+    public static void seekToIncrementPosition(){
+        try {
+            mEconomistService.seekToIncrementPosition();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void playOrPause(){
         try {
             mEconomistService.playOrPause();

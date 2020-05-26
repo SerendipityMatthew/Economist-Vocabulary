@@ -2,7 +2,9 @@ package com.xuwanjin.inchoate.timber_style;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.IBinder;
@@ -33,6 +35,9 @@ import java.util.concurrent.TimeUnit;
 
 import static com.xuwanjin.inchoate.Constants.ARTICLE_DETAIL_PLAYING_SOURCE;
 import static com.xuwanjin.inchoate.Constants.BOOKMARK_PLAYING_SOURCE;
+import static com.xuwanjin.inchoate.Constants.INCHOATE_PREFERENCE_FILE_NAME;
+import static com.xuwanjin.inchoate.Constants.REWIND_OR_FORWARD_DURATION_PREFERENCE;
+import static com.xuwanjin.inchoate.Constants.SKIP_DURATION_PREFERENCE;
 import static com.xuwanjin.inchoate.Constants.TODAY_PLAYING_SOURCE;
 import static com.xuwanjin.inchoate.Constants.WEEKLY_PLAYING_SOURCE;
 
@@ -45,7 +50,7 @@ public class EconomistServiceTimberStyle extends Service {
     private static Article mCurrentPlayingArticle;
     static ThreadPoolExecutor sAudioPlayingPoolExecutor =
             new ThreadPoolExecutor(1, 1, 5,
-            TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>());
+                    TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>());
 
     // 播放的列表, ① ArticleFragment 界面的 整个当前的一篇文章内容, 但是有 previous, next;
     //           ② BookmarkFragment 界面 bookmark 列表的内容, 从第一篇文章开始播放到最后一篇文章
@@ -153,10 +158,10 @@ public class EconomistServiceTimberStyle extends Service {
 
     //
     public void playOrPause() {
-        boolean isPlaying ;
+        boolean isPlaying;
         if (mPlayer == null) {
             isPlaying = false;
-        }else {
+        } else {
             isPlaying = mPlayer.isPlaying();
             Log.d(TAG, "playOrPause: isPlaying 1 = " + isPlaying);
             // 调用 pause 之后, started ---> paused 是异步的, 需要过一段时间 isPlaying 状态才会转变过来
@@ -227,6 +232,27 @@ public class EconomistServiceTimberStyle extends Service {
         mPlayer.seekToPosition(position);
     }
 
+    public void seekToIncrementPosition() {
+        int currentPosition = mPlayer.getCurrentPosition();
+        int totalDuration = mPlayer.getDuration();
+        SharedPreferences preferences = getSharedPreferences(INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+        int skipDuration = preferences.getInt(SKIP_DURATION_PREFERENCE, 30000);
+        String rewindOrForward = preferences.getString(REWIND_OR_FORWARD_DURATION_PREFERENCE, "forward");
+        Log.d(TAG, "seekToIncrementPosition: rewindOrForward = " + rewindOrForward);
+        if (rewindOrForward.equals("rewind")) {
+            skipDuration = 0 - skipDuration;
+        }
+        int skipTo = currentPosition + skipDuration;
+        Log.d(TAG, "seekToIncrementPosition: skipDuration = " + skipDuration);
+        if (skipTo <= 0) {
+            skipTo = 0;
+        }
+        if (skipTo > totalDuration) {
+            skipTo = totalDuration;
+        }
+        mPlayer.seekToPosition(skipTo);
+    }
+
     private static final class ServiceStub extends IEconomistService.Stub {
         private final WeakReference<EconomistServiceTimberStyle> mService;
 
@@ -293,6 +319,11 @@ public class EconomistServiceTimberStyle extends Service {
         @Override
         public void seekToPosition(int position) throws RemoteException {
             mService.get().seekToPosition(position);
+        }
+
+        @Override
+        public void seekToIncrementPosition() throws RemoteException {
+            mService.get().seekToIncrementPosition();
         }
 
         @Override
@@ -474,6 +505,7 @@ public class EconomistServiceTimberStyle extends Service {
             return mMediaPlayer == null ? -1 : mMediaPlayer.getDuration();
         }
 
+
         public void seekToPosition(final int position) {
             Runnable seekToPositionRunnable = new Runnable() {
                 @Override
@@ -485,6 +517,7 @@ public class EconomistServiceTimberStyle extends Service {
             };
             sAudioPlayingPoolExecutor.submit(seekToPositionRunnable);
         }
+
 
         public void releasePlayer() {
             if (mMediaPlayer != null) {

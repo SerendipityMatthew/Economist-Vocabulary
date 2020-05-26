@@ -17,6 +17,7 @@ interface IEconomistService {
     void playTheRestByIssueDate(in Article article, in String issueDate, int sourceFlag);
     boolean isPlaying();
     void seekToPosition(int position);
+    void seekToIncrementPosition();
     int getCurrentPosition();
     int getDuration();
     void releasePlayer();

@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -27,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.InchoateActivity;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
@@ -45,6 +47,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
+
+import static com.xuwanjin.inchoate.Constants.INCHOATE_PREFERENCE_FILE_NAME;
 
 public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     public static final String TAG = "AudioPlayerFragment";
@@ -88,14 +92,13 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
                 return;
             }
 
-            if (EconomistPlayerTimberStyle.isPlaying()) {
-                int progress = EconomistPlayerTimberStyle.getCurrentPosition();
-                updateProgressText(progress);
-                if (progress >= 0 && progress <= seekBarProgress.getMax()) {
-                    seekBarProgress.setProgress(progress);
-                    barPlayingProgress.setProgress(progress);
-                }
+            int progress = EconomistPlayerTimberStyle.getCurrentPosition();
+            updateProgressText(progress);
+            if (progress >= 0 && progress <= seekBarProgress.getMax()) {
+                seekBarProgress.setProgress(progress);
+                barPlayingProgress.setProgress(progress);
             }
+
             mHandler.postDelayed(mProgressCallback, DELAY_TIME);
         }
     };
@@ -134,8 +137,6 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
 
     public void updateProgressText(int progress) {
         if (mAudioPlayingArticle != null) {
-            Log.d(TAG, "updateProgressText: mAudioPlayingArticle.audioDuration = " + mAudioPlayingArticle.audioDuration);
-            Log.d(TAG, "updateProgressText: progress / 1000 = " + progress / 1000);
             audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress / 1000));
         } else {
             audioLeft.setText(Utils.getDurationFormat(0));
@@ -200,8 +201,10 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         issueCategoryMenu = view.findViewById(R.id.issue_category_menu);
         audioPlayed = view.findViewById(R.id.audio_played);
         audioLeft = view.findViewById(R.id.audio_left);
+
         replay = view.findViewById(R.id.replay);
         forward = view.findViewById(R.id.forward);
+
         playToggle = view.findViewById(R.id.play_toggle);
         seekBarProgress = view.findViewById(R.id.playing_progress);
         playSpeed = view.findViewById(R.id.play_speed);
@@ -239,6 +242,24 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         seekBarProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
         barPlayingProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
         playToggle.setOnClickListener(playOrPauseListener);
+
+        replay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EconomistPlayerTimberStyle.seekToIncrementPosition();
+                SharedPreferences preferences = getContext().getSharedPreferences(INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+                preferences.edit().putString(Constants.REWIND_OR_FORWARD_DURATION_PREFERENCE, "rewind").apply();
+            }
+        });
+
+        forward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences preferences = getContext().getSharedPreferences(INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+                preferences.edit().putString(Constants.REWIND_OR_FORWARD_DURATION_PREFERENCE, "forward").apply();
+                EconomistPlayerTimberStyle.seekToIncrementPosition();
+            }
+        });
 
         last.setOnClickListener(new View.OnClickListener() {
             @Override

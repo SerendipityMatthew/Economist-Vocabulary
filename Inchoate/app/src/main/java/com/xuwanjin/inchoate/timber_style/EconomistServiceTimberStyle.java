@@ -153,16 +153,22 @@ public class EconomistServiceTimberStyle extends Service {
 
     //
     public void playOrPause() {
+        boolean isPlaying ;
         if (mPlayer == null) {
-            return;
+            isPlaying = false;
+        }else {
+            isPlaying = mPlayer.isPlaying();
+            Log.d(TAG, "playOrPause: isPlaying 1 = " + isPlaying);
+            // 调用 pause 之后, started ---> paused 是异步的, 需要过一段时间 isPlaying 状态才会转变过来
+            if (isPlaying) {
+                mPlayer.pause();
+                isPlaying = false;
+            } else {
+                mPlayer.playFromPause();
+                isPlaying = true;
+            }
+            Log.d(TAG, "playOrPause: isPlaying 2 = " + isPlaying);
         }
-        boolean isPlaying = mPlayer.isPlaying();
-        if (isPlaying) {
-            mPlayer.pause();
-        } else {
-            mPlayer.playFromPause();
-        }
-        isPlaying = mPlayer.isPlaying();
         updatePlayButtonAppearance(isPlaying);
     }
 
@@ -420,13 +426,14 @@ public class EconomistServiceTimberStyle extends Service {
         }
 
         public void playFromPause() {
-            Runnable audioPauseRunnable = new Runnable() {
+            Runnable audioStartRunnable = new Runnable() {
                 @Override
                 public void run() {
+                    Log.d(TAG, "run: audioStartRunnable ");
                     mMediaPlayer.start();
                 }
             };
-            sAudioPlayingPoolExecutor.submit(audioPauseRunnable);
+            sAudioPlayingPoolExecutor.submit(audioStartRunnable);
         }
 
 
@@ -481,9 +488,14 @@ public class EconomistServiceTimberStyle extends Service {
         }
 
         public void pause() {
-            if (mMediaPlayer != null) {
-                mMediaPlayer.pause();
-            }
+            Runnable audioPauseRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "run: audioPauseRunnable ");
+                    mMediaPlayer.pause();
+                }
+            };
+            sAudioPlayingPoolExecutor.submit(audioPauseRunnable);
         }
 
         @Override

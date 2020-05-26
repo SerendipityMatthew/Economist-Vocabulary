@@ -273,7 +273,7 @@ public class WeeklyFragment extends Fragment {
         final Issue issue;
         if (issueList != null && issueList.size() > 0) {
             InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
-            String issueDateStr = "May 9th 2020";
+            String issueDateStr = "May 23rd 2020";
             issue = helper.queryIssueByIssueDate(issueDateStr).get(0);
             mIssue = helper.queryIssueByIssueDate(issueDateStr).get(0);
             articles = issue.containArticle;

@@ -108,7 +108,8 @@ public class Utils {
 
         if (paragraphBuilder != null && !paragraphBuilder.toString().trim().isEmpty()
                 && !paragraphBuilder.toString().equalsIgnoreCase("null")) {
-            if (paragraphBuilder.toString().contains("Editor’s note")) {
+            String paragraphString = paragraphBuilder.toString();
+            if (paragraphString.contains("Editor’s note")) {
                 paragraph.isEditorsNote = true;
             }
             /*
@@ -116,11 +117,10 @@ public class Utils {
                 For our latest coverage of the covid-19 pandemic, register for The Economist Today, our daily newsletter,
                 or visit our coronavirus tracker and story hub
              */
-            if (paragraphBuilder.toString().contains("For our latest")) {
+            if (paragraphString.contains("For our latest")) {
                 paragraph.isRelatedSuggestion = true;
             }
-
-            paragraph.paragraph = paragraphBuilder.toString();
+            paragraph.paragraph = paragraphString;
             return paragraph;
         }
         return null;

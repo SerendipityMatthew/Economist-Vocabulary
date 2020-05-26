@@ -237,6 +237,9 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         // 如果 Paragraph 的表里查不出一个含有 articleRowID 的数据,
         // 表示这个 article 的 paragraph 没有被存入过
         SQLiteDatabase database = openInchoateDB();
+        if (content.contains("'")) {
+            content = content.replace("'", "''");
+        }
         // Select * from paragraph where belonged_article_id='' or paragraph_content='';
         String queryByArticleID = "SELECT * FROM " + TABLE_NAME_PARAGRAPH + " WHERE "
                 + KEY_BELONGED_ARTICLE_ID + " =\'" + articleRowID + "\'" + " AND "

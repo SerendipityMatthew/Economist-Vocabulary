@@ -1,7 +1,9 @@
 package com.xuwanjin.inchoate.ui.today;
 
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,21 +14,44 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.google.gson.FieldNamingStrategy;
+import com.google.gson.Gson;
+import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.model.Issue;
+import com.xuwanjin.inchoate.model.today.TodayJson;
+import com.xuwanjin.inchoate.model.week.WeekFragment;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.xuwanjin.inchoate.Utils.getIssue;
+import static com.xuwanjin.inchoate.Utils.getTodayArticleList;
+
 public class TodayFragment extends Fragment {
+    public static final String TAG = "TodayFragment";
     View view = null;
     RecyclerView recyclerViewTodayNews;
     public TodayViewModel todayViewModel = new TodayViewModel();
+    List<Article> todayArticleList;
+    TodayNewsAdapter mTodayNewsAdapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_today, container, false);
+        parseJsonDataFromAsset();
         return view;
     }
 
@@ -34,28 +59,34 @@ public class TodayFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         recyclerViewTodayNews = view.findViewById(R.id.today_news_recyclerView);
         GridLayoutManager manager = new GridLayoutManager(getContext(), 1);
         manager.setOrientation(GridLayoutManager.VERTICAL);
         recyclerViewTodayNews.setLayoutManager(manager);
-        List<Article> articles = new ArrayList<>();
-        for (int i =0; i< 21 ;i ++){
-            Article article =  new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.headline= "Matthew = " + i;
-            articles.add(article);
+        mTodayNewsAdapter = new TodayNewsAdapter(getContext(), todayArticleList);
+        recyclerViewTodayNews.setAdapter(mTodayNewsAdapter);
+    }
 
-        }
-        recyclerViewTodayNews.setAdapter(new TodayNewsAdapter(getContext(),articles ));
-        recyclerViewTodayNews.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                outRect.bottom = 30;
-                if (parent.getChildPosition(view) == 0)
-                    outRect.top = 10;
-            }
-        });
-    };
+    public void parseJsonDataFromAsset() {
+        Gson gson = new Gson()
+                .newBuilder()
+                .setFieldNamingStrategy(new FieldNamingStrategy() {
+                    @Override
+                    public String translateName(Field f) {
+                        String name = f.getName();
+                        if (name.contains("-")) {
+                            return name.replaceAll("-", "");
+                        }
+                        return name;
+                    }
+                }) // setFieldNamingPolicy 有什么区别
+                .create();
+
+        InputStream jsonStream = getContext().getResources().openRawResource(R.raw.today_fragment_query);
+        InputStreamReader reader = new InputStreamReader(jsonStream);
+        TodayJson todayJson = gson.fromJson(reader, TodayJson.class);
+        todayArticleList = getTodayArticleList(todayJson);
+    }
 }
 

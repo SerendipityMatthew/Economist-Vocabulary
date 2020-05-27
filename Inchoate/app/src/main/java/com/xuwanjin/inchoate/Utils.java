@@ -6,9 +6,13 @@ import androidx.navigation.NavController;
 
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.model.Internal;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.Paragraph;
 import com.xuwanjin.inchoate.model.archive.CoverContent;
+import com.xuwanjin.inchoate.model.today.TodayFirstParts;
+import com.xuwanjin.inchoate.model.today.TodayJson;
+import com.xuwanjin.inchoate.model.today.TodaySecondParts;
 import com.xuwanjin.inchoate.model.week.WeekFragment;
 import com.xuwanjin.inchoate.model.week.WeekPart;
 import com.xuwanjin.inchoate.model.week.WeekSection;
@@ -90,7 +94,7 @@ public class Utils {
                 Paragraph paragraph = filteredParagraph(paragraphBuilder);
 
                 if (paragraph != null) {
-                    theOrderOfParagraph ++;
+                    theOrderOfParagraph++;
                     paragraph.articleName = article.title;
                     paragraph.theOrderOfParagraph = theOrderOfParagraph;
                     article.paragraphList.add(paragraph);
@@ -145,6 +149,61 @@ public class Utils {
         issue.categorySection = sectionList;
         sArticleLinkedHashMap = getArticleListBySection(issue);
         return issue;
+    }
+
+    public static List<Article> getTodayArticleList(TodayJson todayJson) {
+        List<Article> articleList = new ArrayList<>();
+        List<TodayFirstParts> todayFirstPartsList = todayJson.data.canonical.hasPart.parts;
+        for (TodayFirstParts firstParts:todayFirstPartsList){
+            List<TodaySecondParts> todaySecondPartsList = firstParts.hasPart.parts;
+            for (TodaySecondParts secondParts : todaySecondPartsList) {
+                Article article = new Article();
+                article.articleRubric = secondParts.rubric;
+                article.title = secondParts.title;
+                article.flyTitle = secondParts.flyTitle;
+                List<Internal> internalList = secondParts.articleSection.internal;
+                if (internalList != null) {
+                    article.section = internalList.get(0).sectionName;
+                }
+                if (secondParts.audio != null) {
+                    article.audioDuration = secondParts.audio.main.duration;
+                    article.audioUrl = secondParts.audio.main.url.canonical;
+                }
+                article.mainArticleImage = secondParts.image.main.url.canonical;
+                article.date = secondParts.published.substring(0,10);
+                article.paragraphList = new ArrayList<>();
+                int theOrderOfParagraph = 0;
+                StringBuilder articleBuilder = new StringBuilder();
+                for (WeekText weekText : secondParts.text) {
+                    // weekText0.children 第一个 children列表里data 字段, 合并成一个段落
+                    StringBuilder paragraphBuilder = new StringBuilder();
+                    // 3. 获取段落的所有数据
+                    for (WeekText weekText1 : weekText.children) {
+                        if (weekText1.children != null) {
+                            List<WeekText> children = weekText1.children;
+                            for (WeekText w : children) {
+                                paragraphBuilder.append(w.data);
+                            }
+                        } else { //(weekText1.children == null)
+                            if (weekText1.type.equals("text")) {
+                                paragraphBuilder.append(weekText1.data);
+                            }
+                        }
+                    }
+                    Paragraph paragraph = filteredParagraph(paragraphBuilder);
+
+                    if (paragraph != null) {
+                        theOrderOfParagraph++;
+                        paragraph.articleName = article.title;
+                        paragraph.theOrderOfParagraph = theOrderOfParagraph;
+                        article.paragraphList.add(paragraph);
+                    }
+                    articleBuilder.append(paragraphBuilder);
+                }
+                articleList.add(article);
+            }
+        }
+        return articleList;
     }
 
     public static LinkedHashMap<String, List<Article>> getArticleListBySection(Issue issue) {

@@ -1,6 +1,7 @@
 package com.xuwanjin.inchoate.ui.today;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.xuwanjin.inchoate.model.Article;
 import java.util.List;
 
 public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.ViewHolder> {
+    public static final String TAG = "TodayNewsAdapter";
     private List<Article> mArticleList;
     private Context mContext;
 
@@ -35,10 +37,11 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(mContext).load(R.mipmap.article_image).into(holder.articleImage);
-        LottieAnimationView lottieAnimationView = new LottieAnimationView(mContext);
-//        lottieAnimationView.setAnimationFromJson(Animation);
-//        Glide.with(mContext).load()
+        Article article = mArticleList.get(position);
+        Glide.with(mContext).load(article.mainArticleImage).into(holder.articleImage);
+        Log.d(TAG, "onBindViewHolder: article = " + article);
+        holder.sectionText.setText(article.section);
+        holder.title.setText(article.title);
     }
 
     @Override
@@ -49,7 +52,7 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView articleImage;
         TextView sectionText;
-        TextView summaryText;
+        TextView title;
         TextView readTime;
         ImageView play;
         ImageView bookmark;
@@ -58,7 +61,7 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
             super(itemView);
             articleImage = itemView.findViewById(R.id.article_image);
             sectionText = itemView.findViewById(R.id.section);
-            summaryText = itemView.findViewById(R.id.summary);
+            title = itemView.findViewById(R.id.title);
             readTime = itemView.findViewById(R.id.read_time);
             play = itemView.findViewById(R.id.play);
             bookmark = itemView.findViewById(R.id.bookmark);

@@ -21,8 +21,8 @@ public class Constants {
     public static final String INCHOATE_PREFERENCE_FILE_NAME = "inchoate";
     // rewind_to_previous_article forward_to_next_article forward_to_next_paragraph rewind_to_previous_paragraph
     public static final String REWIND_OR_FORWARD_PREFERENCE = "rewind_or_forward";
-    public static final String REWIND_ARTICLE_PREFERENCE = "rewind_by_seconds";
-    public static final String FORWARD_ARTICLE_PREFERENCE = "forward_by_seconds";
+    public static final String REWIND_BY_SECONDS_PREFERENCE = "rewind_by_seconds";
+    public static final String FORWARD_BY_SECONDS_PREFERENCE = "forward_by_seconds";
     public static final String REWIND_PARAGRAPH_PREFERENCE = "rewind_by_paragraph";
     public static final String FORWARD_PARAGRAPH_PREFERENCE = "forward_by_paragraph";
 

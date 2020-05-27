@@ -35,9 +35,9 @@ import java.util.concurrent.TimeUnit;
 
 import static com.xuwanjin.inchoate.Constants.ARTICLE_DETAIL_PLAYING_SOURCE;
 import static com.xuwanjin.inchoate.Constants.BOOKMARK_PLAYING_SOURCE;
-import static com.xuwanjin.inchoate.Constants.FORWARD_ARTICLE_PREFERENCE;
+import static com.xuwanjin.inchoate.Constants.FORWARD_BY_SECONDS_PREFERENCE;
 import static com.xuwanjin.inchoate.Constants.INCHOATE_PREFERENCE_FILE_NAME;
-import static com.xuwanjin.inchoate.Constants.REWIND_ARTICLE_PREFERENCE;
+import static com.xuwanjin.inchoate.Constants.REWIND_BY_SECONDS_PREFERENCE;
 import static com.xuwanjin.inchoate.Constants.REWIND_OR_FORWARD_PREFERENCE;
 import static com.xuwanjin.inchoate.Constants.SKIP_DURATION_DEFAULT_VALUE_PREFERENCE;
 import static com.xuwanjin.inchoate.Constants.SKIP_DURATION_PREFERENCE;
@@ -240,9 +240,9 @@ public class EconomistServiceTimberStyle extends Service {
         int totalDuration = mPlayer.getDuration();
         SharedPreferences preferences = getSharedPreferences(INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
         int skipDuration = preferences.getInt(SKIP_DURATION_PREFERENCE, SKIP_DURATION_DEFAULT_VALUE_PREFERENCE);
-        String rewindOrForward = preferences.getString(REWIND_OR_FORWARD_PREFERENCE, "Matthew");
+        String rewindOrForward = preferences.getString(REWIND_OR_FORWARD_PREFERENCE, FORWARD_BY_SECONDS_PREFERENCE);
         Log.d(TAG, "seekToIncrementPosition: rewindOrForward = " + rewindOrForward);
-        if (REWIND_ARTICLE_PREFERENCE.equals(rewindOrForward)) {
+        if (REWIND_BY_SECONDS_PREFERENCE.equals(rewindOrForward)) {
             skipDuration = 0 - skipDuration;
         }
         int skipTo = currentPosition + skipDuration;

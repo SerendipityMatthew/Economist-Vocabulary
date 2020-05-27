@@ -160,10 +160,10 @@
 
                 <ImageView
                     android:id="@+id/replay"
-                    android:layout_width="30dp"
+                    android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="40dp"
-                    android:background="@mipmap/replay" />
+                    android:src="@mipmap/replay" />
 
                 <ImageView
                     android:id="@+id/play_toggle"
@@ -176,16 +176,16 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="40dp"
-                    android:background="@mipmap/forward" />
+                    android:src="@mipmap/forward" />
 
                 <TextView
                     android:id="@+id/play_speed"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginStart="40dp"
+                    android:layout_marginStart="30dp"
                     android:gravity="center"
                     android:text="1X"
-                    android:textSize="20sp" />
+                    android:textSize="30sp" />
             </LinearLayout>
         </LinearLayout>
 

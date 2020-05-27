@@ -46,7 +46,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:ignore="MissingConstraints"
             tools:itemCount="20"
-            tools:listitem="@layout/today_news"
+            tools:listitem="@layout/today_news_item"
             tools:spanCount="2" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

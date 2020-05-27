@@ -249,10 +249,10 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         replay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EconomistPlayerTimberStyle.seekToIncrementPosition();
                 SharedPreferences preferences =
-                        getContext().getSharedPreferences(INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+                        getActivity().getSharedPreferences(INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
                 preferences.edit().putString(REWIND_OR_FORWARD_PREFERENCE, REWIND_ARTICLE_PREFERENCE).apply();
+                EconomistPlayerTimberStyle.seekToIncrementPosition();
             }
         });
 
@@ -260,7 +260,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
             @Override
             public void onClick(View v) {
                 SharedPreferences preferences =
-                        getContext().getSharedPreferences(INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+                        getActivity().getSharedPreferences(INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
                 preferences.edit().putString(REWIND_OR_FORWARD_PREFERENCE, FORWARD_ARTICLE_PREFERENCE).apply();
                 EconomistPlayerTimberStyle.seekToIncrementPosition();
             }

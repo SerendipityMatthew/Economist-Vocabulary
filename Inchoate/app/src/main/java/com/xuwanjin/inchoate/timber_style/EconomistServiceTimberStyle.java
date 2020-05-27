@@ -104,10 +104,10 @@ public class EconomistServiceTimberStyle extends Service {
         mPlayer.setHandler(handler);
     }
 
-    public void setCurrentPlayingArticleListBySource(int sourceFlag) {
+    public void setCurrentPlayingArticleListBySource(int sourceFlag, String issueDateStr) {
         InchoateDBHelper helper = new InchoateDBHelper(getApplicationContext(), null, null);
         if (sourceFlag == WEEKLY_PLAYING_SOURCE) {
-            mCurrentPlayingArticleList = helper.queryIssueByIssueDate("").get(0).containArticle;
+            mCurrentPlayingArticleList = helper.queryIssueByIssueDate(issueDateStr).get(0).containArticle;
         }
         if (sourceFlag == BOOKMARK_PLAYING_SOURCE) {
             mCurrentPlayingArticleList = helper.queryBookmarkedArticle();
@@ -224,7 +224,7 @@ public class EconomistServiceTimberStyle extends Service {
         }
         mCurrentIssue = issueList.get(0);
         playTheRestOfWholeIssue(article);
-        setCurrentPlayingArticleListBySource(sourceFlag);
+        setCurrentPlayingArticleListBySource(sourceFlag, issueDate);
         setArticleInPlayingListIndex(article);
     }
 

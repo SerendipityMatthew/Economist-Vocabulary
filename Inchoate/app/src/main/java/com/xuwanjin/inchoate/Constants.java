@@ -18,6 +18,11 @@ public class Constants {
     public static final int ARTICLE_DETAIL_PLAYING_SOURCE = 4;
 
     public static final String SKIP_DURATION_PREFERENCE = "skip_duration";
-    public static final String REWIND_OR_FORWARD_DURATION_PREFERENCE = "rewind_or_forward";
     public static final String INCHOATE_PREFERENCE_FILE_NAME = "inchoate";
+    // rewind_to_previous_article forward_to_next_article forward_to_next_paragraph rewind_to_previous_paragraph
+    public static final String REWIND_OR_FORWARD_PREFERENCE = "rewind_or_forward";
+    public static final String REWIND_ARTICLE_PREFERENCE = "rewind_article";
+    public static final String FORWARD_ARTICLE_PREFERENCE = "forward_article";
+    public static final String REWIND_PARAGRAPH_PREFERENCE = "rewind_paragraph";
+    public static final String FORWARD_PARAGRAPH_PREFERENCE = "forward_paragraph";
 }

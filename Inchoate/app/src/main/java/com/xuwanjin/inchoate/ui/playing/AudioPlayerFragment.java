@@ -48,7 +48,10 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
+import static com.xuwanjin.inchoate.Constants.FORWARD_ARTICLE_PREFERENCE;
 import static com.xuwanjin.inchoate.Constants.INCHOATE_PREFERENCE_FILE_NAME;
+import static com.xuwanjin.inchoate.Constants.REWIND_ARTICLE_PREFERENCE;
+import static com.xuwanjin.inchoate.Constants.REWIND_OR_FORWARD_PREFERENCE;
 
 public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     public static final String TAG = "AudioPlayerFragment";
@@ -247,16 +250,18 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
             @Override
             public void onClick(View v) {
                 EconomistPlayerTimberStyle.seekToIncrementPosition();
-                SharedPreferences preferences = getContext().getSharedPreferences(INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
-                preferences.edit().putString(Constants.REWIND_OR_FORWARD_DURATION_PREFERENCE, "rewind").apply();
+                SharedPreferences preferences =
+                        getContext().getSharedPreferences(INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+                preferences.edit().putString(REWIND_OR_FORWARD_PREFERENCE, REWIND_ARTICLE_PREFERENCE).apply();
             }
         });
 
         forward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences preferences = getContext().getSharedPreferences(INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
-                preferences.edit().putString(Constants.REWIND_OR_FORWARD_DURATION_PREFERENCE, "forward").apply();
+                SharedPreferences preferences =
+                        getContext().getSharedPreferences(INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+                preferences.edit().putString(REWIND_OR_FORWARD_PREFERENCE, FORWARD_ARTICLE_PREFERENCE).apply();
                 EconomistPlayerTimberStyle.seekToIncrementPosition();
             }
         });

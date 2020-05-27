@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 
 import java.util.List;
@@ -36,12 +38,20 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Article article = mArticleList.get(position);
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        final Article article = mArticleList.get(position);
         Glide.with(mContext).load(article.mainArticleImage).into(holder.articleImage);
         Log.d(TAG, "onBindViewHolder: article = " + article);
         holder.sectionText.setText(article.section);
         holder.title.setText(article.title);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InchoateApplication.setDisplayArticleCache(article);
+                Utils.navigationController(
+                        InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_article);
+            }
+        });
     }
 
     @Override

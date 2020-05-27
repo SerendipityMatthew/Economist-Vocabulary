@@ -33,7 +33,7 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.today_news, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.today_news_item, parent, false);
         return new ViewHolder(view);
     }
 

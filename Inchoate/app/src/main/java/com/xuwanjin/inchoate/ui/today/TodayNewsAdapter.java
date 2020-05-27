@@ -41,7 +41,6 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final Article article = mArticleList.get(position);
         Glide.with(mContext).load(article.mainArticleImage).into(holder.articleImage);
-        Log.d(TAG, "onBindViewHolder: article = " + article);
         holder.sectionText.setText(article.section);
         holder.title.setText(article.title);
         holder.itemView.setOnClickListener(new View.OnClickListener() {

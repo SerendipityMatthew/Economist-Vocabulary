@@ -1,9 +1,6 @@
 package com.xuwanjin.inchoate.ui.today;
 
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,29 +11,17 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
-import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
-import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
-import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.today.TodayJson;
-import com.xuwanjin.inchoate.model.week.WeekFragment;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.xuwanjin.inchoate.Utils.getIssue;
 import static com.xuwanjin.inchoate.Utils.getTodayArticleList;
 
 public class TodayFragment extends Fragment {

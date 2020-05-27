@@ -16,14 +16,29 @@
             />
         <TextView
             android:id="@+id/section"
-            android:hint="@string/section_hint"
+            android:paddingStart="20dp"
+            android:gravity="center_vertical"
+            android:textAllCaps="true"
+            android:textColor="@color/red"
+            android:textSize="20sp"
+            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="40dp"/>
 
         <TextView
             android:id="@+id/title"
+            android:textSize="15sp"
+            android:paddingStart="20dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"/>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@android:color/darker_gray"
+            tools:ignore="MissingConstraints" />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -32,6 +47,7 @@
                 android:id="@+id/read_time"
                 android:text="@string/read_time_hint"
                 android:layout_width="150dp"
+                android:paddingStart="20dp"
                 android:layout_gravity="center_vertical"
                 android:layout_height="match_parent"/>
 

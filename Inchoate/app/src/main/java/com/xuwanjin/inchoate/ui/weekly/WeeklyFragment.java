@@ -38,6 +38,8 @@ import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.week.WeekFragment;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 
+import static com.xuwanjin.inchoate.Constants.DOWNLOAD_ISSUE;
+import static com.xuwanjin.inchoate.Constants.WEEKLY_PLAYING_SOURCE;
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.mEconomistService;
 
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
@@ -52,6 +54,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
@@ -89,6 +93,20 @@ public class WeeklyFragment extends Fragment {
     private Issue mIssue;
     private Disposable mDisposable;
     public static String issueDateStr = "May 23rd 2020";
+    private ExecutorService mExecutorService = Executors.newFixedThreadPool(1);
+
+    public Runnable mGetDownloadPercentRunnable = new Runnable() {
+        @Override
+        public void run() {
+            while (true) {
+                if (mDownloadService != null) {
+                    mDownloadService.getDownloadPercent();
+                } else {
+                    break;
+                }
+            }
+        }
+    };
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -100,8 +118,6 @@ public class WeeklyFragment extends Fragment {
 
         }
     };
-    public static final int FETCH_DATA_AND_NOTIFY_MSG = 1000;
-
 
     ServiceConnection economistServiceConnection = new ServiceConnection() {
         @Override
@@ -201,22 +217,23 @@ public class WeeklyFragment extends Fragment {
     }
 
     public void initOnClickListener() {
+        Runnable mStreamAudioRunnable = new Runnable() {
+            @Override
+            public void run() {
+                InchoateApplication.setAudioPlayingArticleListCache(InchoateApplication.getNewestIssueCache().get(0).containArticle);
+                SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
+                panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
+                EventBus.getDefault().post(panelState);
+                if (mIssue != null) {
+                    EconomistPlayerTimberStyle.playWholeIssue(mIssue.containArticle.get(0), mIssue, WEEKLY_PLAYING_SOURCE);
+                }
+            }
+        };
+
         mStreamAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        InchoateApplication.setAudioPlayingArticleListCache(InchoateApplication.getNewestIssueCache().get(0).containArticle);
-                        SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
-                        panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
-                        EventBus.getDefault().post(panelState);
-                        if (mIssue != null) {
-                            EconomistPlayerTimberStyle.playWholeIssue(mIssue.containArticle.get(0), mIssue, Constants.WEEKLY_PLAYING_SOURCE);
-                        }
-                    }
-                }).start();
-
+                mExecutorService.submit(mStreamAudioRunnable);
             }
         });
         mDownloadAudio.setOnClickListener(new View.OnClickListener() {
@@ -231,21 +248,10 @@ public class WeeklyFragment extends Fragment {
                     for (Article article : issue.containArticle) {
                         article.paragraphList = null;
                     }
-                    intent.putExtra(Constants.DOWNLOAD_ISSUE, issue);
+                    intent.putExtra(DOWNLOAD_ISSUE, issue);
                     getContext().startService(intent);
-                    getContext().bindService(new Intent().setClass(getContext(), DownloadService.class), serviceConnection, 0);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            while (true) {
-                                if (mDownloadService != null) {
-                                    mDownloadService.getDownloadPercent();
-                                } else {
-                                    break;
-                                }
-                            }
-                        }
-                    }).start();
+                    Intent newIntent = new Intent().setClass(getContext(), DownloadService.class);
+                    getContext().bindService(newIntent, serviceConnection, 0);
                 } catch (CloneNotSupportedException e) {
                     e.printStackTrace();
                 }

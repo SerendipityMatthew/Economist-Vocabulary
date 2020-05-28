@@ -163,8 +163,10 @@ public class Utils {
                     article.section = internalList.get(0).sectionName;
                 }
                 if (secondParts.audio != null) {
-                    article.audioDuration = secondParts.audio.main.duration;
-                    article.audioUrl = secondParts.audio.main.url.canonical;
+                    if (secondParts.audio.main != null){
+                        article.audioDuration = secondParts.audio.main.duration;
+                        article.audioUrl = secondParts.audio.main.url.canonical;
+                    }
                 }
                 article.mainArticleImage = secondParts.image.main.url.canonical;
                 article.date = secondParts.published.substring(0,10);

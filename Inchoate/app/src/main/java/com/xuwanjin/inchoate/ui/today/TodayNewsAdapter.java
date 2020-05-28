@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.xuwanjin.inchoate.InchoateApplication;
+import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
@@ -49,9 +49,9 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InchoateApplication.setDisplayArticleCache(article);
+                InchoateApp.setDisplayArticleCache(article);
                 Utils.navigationController(
-                        InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_article);
+                        InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
             }
         });
     }

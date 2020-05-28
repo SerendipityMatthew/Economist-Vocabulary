@@ -25,9 +25,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.Constants;
-import com.xuwanjin.inchoate.InchoateApplication;
+import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
-import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
@@ -83,7 +82,7 @@ public class ArticleFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        article = InchoateApplication.getDisplayArticleCache();
+        article = InchoateApp.getDisplayArticleCache();
         if (article != null) {
             mParagraphList = article.paragraphList;
         }
@@ -152,12 +151,12 @@ public class ArticleFragment extends Fragment {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        InchoateApplication.setDisplayArticleCache(article);
-                        InchoateApplication.setAudioPlayingArticleListCache(InchoateApplication.getNewestIssueCache().get(0).containArticle);
+                        InchoateApp.setDisplayArticleCache(article);
+                        InchoateApp.setAudioPlayingArticleListCache(InchoateApp.getNewestIssueCache().get(0).containArticle);
                         SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                         panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                         EventBus.getDefault().post(panelState);
-                        List<Issue> issueList = InchoateApplication.getNewestIssueCache();
+                        List<Issue> issueList = InchoateApp.getNewestIssueCache();
 
                         EconomistPlayerTimberStyle.playWholeIssue(article, issueList.get(0), Constants.ARTICLE_DETAIL_PLAYING_SOURCE);
                     }

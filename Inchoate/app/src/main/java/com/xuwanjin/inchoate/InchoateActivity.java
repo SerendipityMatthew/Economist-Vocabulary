@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
@@ -44,7 +42,7 @@ public class InchoateActivity extends AppCompatActivity implements
         initView();
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         controller = Navigation.findNavController(this, R.id.nav_host_fragment);
-        InchoateApplication.NAVIGATION_CONTROLLER = controller;
+        InchoateApp.NAVIGATION_CONTROLLER = controller;
         // 第一次启动的时候隐藏 SlidingUpLayout ,
         slidingUpPanelLayout.setPanelHeight(30);
     }

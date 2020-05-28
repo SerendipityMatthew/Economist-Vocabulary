@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.xuwanjin.inchoate.InchoateApplication;
+import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class FloatActionFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         RecyclerView recyclerView = view.findViewById(R.id.float_action_recyclerView);
         recyclerView.setLayoutManager(linearLayoutManager);
-        sectionList.addAll(InchoateApplication.getNewestIssueCache().get(0).categorySection);
+        sectionList.addAll(InchoateApp.getNewestIssueCache().get(0).categorySection);
         sectionList.add(0, "This week");
         IssueCategoryAdapter categoryAdapter = new IssueCategoryAdapter(
                 getContext(), sectionList);

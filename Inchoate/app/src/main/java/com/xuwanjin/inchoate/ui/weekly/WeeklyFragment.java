@@ -26,7 +26,7 @@ import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.Constants;
-import com.xuwanjin.inchoate.InchoateApplication;
+import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
@@ -146,7 +146,7 @@ public class WeeklyFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         issueContentRecyclerView.setLayoutManager(linearLayoutManager);
-        int sectionToPosition = InchoateApplication.getScrollToPosition();
+        int sectionToPosition = InchoateApp.getScrollToPosition();
         if (sectionToPosition > 0) {
             int scrollToPosition = Utils.getArticleSumBySection(sectionToPosition - 2);
             linearLayoutManager.scrollToPosition(scrollToPosition);
@@ -220,7 +220,8 @@ public class WeeklyFragment extends Fragment {
         Runnable mStreamAudioRunnable = new Runnable() {
             @Override
             public void run() {
-                InchoateApplication.setAudioPlayingArticleListCache(InchoateApplication.getNewestIssueCache().get(0).containArticle);
+                List<Article> articleList = InchoateApp.getNewestIssueCache().get(0).containArticle;
+                InchoateApp.setAudioPlayingArticleListCache(articleList);
                 SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                 panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                 EventBus.getDefault().post(panelState);
@@ -262,7 +263,7 @@ public class WeeklyFragment extends Fragment {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_float_action);
+                Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_float_action);
             }
         });
 
@@ -270,7 +271,7 @@ public class WeeklyFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: previousEdition = " + previousEdition);
-                Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_previous_edition);
+                Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_previous_edition);
             }
         });
     }
@@ -302,7 +303,7 @@ public class WeeklyFragment extends Fragment {
 
     private Issue initData() {
         List<Article> articles = new ArrayList<>();
-        List<Issue> issueList = InchoateApplication.getNewestIssueCache();
+        List<Issue> issueList = InchoateApp.getNewestIssueCache();
         Issue issue = new Issue();
         if (issueList != null && issueList.size() > 0) {
             InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
@@ -340,7 +341,7 @@ public class WeeklyFragment extends Fragment {
         InputStreamReader reader = new InputStreamReader(jsonStream);
         WeekFragment weekFragment = gson.fromJson(reader, WeekFragment.class);
         final Issue issue = getIssue(weekFragment);
-        InchoateApplication.setNewestIssueCache(issue);
+        InchoateApp.setNewestIssueCache(issue);
         mIssue = issue;
         final InchoateDBHelper helper = new InchoateDBHelper(getActivity(), null, null);
         new Thread(new Runnable() {
@@ -383,7 +384,7 @@ public class WeeklyFragment extends Fragment {
                         .create();
                 WeekFragment weekFragment = gson.fromJson(jsonResult, WeekFragment.class);
                 Issue issue = getIssue(weekFragment);
-                InchoateApplication.setNewestIssueCache(issue);
+                InchoateApp.setNewestIssueCache(issue);
                 mArticlesList = issue.containArticle;
             }
         });

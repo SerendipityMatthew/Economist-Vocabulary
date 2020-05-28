@@ -1,24 +1,19 @@
 package com.xuwanjin.inchoate.ui.playing;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.PixelCopy;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,19 +22,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.xuwanjin.inchoate.Constants;
-import com.xuwanjin.inchoate.InchoateActivity;
-import com.xuwanjin.inchoate.InchoateApplication;
+import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.events.PlayEvent;
-import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
-import com.xuwanjin.inchoate.player.EconomistService;
 import com.xuwanjin.inchoate.player.IPlayer;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
-import com.xuwanjin.inchoate.timber_style.EconomistServiceTimberStyle;
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
 
 import org.greenrobot.eventbus.EventBus;
@@ -170,11 +159,11 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mContext = getContext();
         view = inflater.inflate(R.layout.fragment_audio_play, container, false);
-        mArticleList = InchoateApplication.getAudioPlayingArticleListCache();
+        mArticleList = InchoateApp.getAudioPlayingArticleListCache();
         if (mArticleList == null || mArticleList.size() == 0) {
             return null;
         }
-        mAudioPlayingArticle = InchoateApplication.getDisplayArticleCache();
+        mAudioPlayingArticle = InchoateApp.getDisplayArticleCache();
         initView();
         initData();
         initOnListener();

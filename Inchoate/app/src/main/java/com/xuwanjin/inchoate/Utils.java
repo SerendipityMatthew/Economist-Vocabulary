@@ -1,10 +1,7 @@
 package com.xuwanjin.inchoate;
 
-import android.util.Log;
-
 import androidx.navigation.NavController;
 
-import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Internal;
 import com.xuwanjin.inchoate.model.Issue;
@@ -25,7 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.xuwanjin.inchoate.InchoateApplication.sArticleLinkedHashMap;
+import static com.xuwanjin.inchoate.InchoateApp.sArticleLinkedHashMap;
 
 
 public class Utils {

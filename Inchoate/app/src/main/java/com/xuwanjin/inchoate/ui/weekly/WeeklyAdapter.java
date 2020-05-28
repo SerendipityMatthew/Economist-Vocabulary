@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.xuwanjin.inchoate.InchoateApplication;
+import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
@@ -110,9 +110,9 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    InchoateApplication.setDisplayArticleCache(mArticleList.get(position - 1));
+                    InchoateApp.setDisplayArticleCache(mArticleList.get(position - 1));
                     Utils.navigationController(
-                            InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_article);
+                            InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
                 }
             });
 

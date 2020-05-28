@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.xuwanjin.inchoate.InchoateApplication;
+import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 
@@ -66,9 +66,9 @@ public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdap
             holder.categoryMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    InchoateApplication.setScrollToPosition(position);
+                    InchoateApp.setScrollToPosition(position);
                     Log.d(TAG, "onClick:  position = " + position);
-                    Utils.navigationController(InchoateApplication.NAVIGATION_CONTROLLER, R.id.navigation_weekly);
+                    Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_weekly);
                 }
             });
         }

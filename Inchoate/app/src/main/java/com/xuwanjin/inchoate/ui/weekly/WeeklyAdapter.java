@@ -99,7 +99,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             //  mArticleList.get(position) 会出现第一个 item 不显示的状况
             Article article = mArticleList.get(position - 1);
             Glide.with(mContext)
-                    .load(article.imageUrl)
+                    .load(article.mainArticleImage)
                     .error(R.mipmap.the_economist)
                     .placeholder(R.mipmap.the_economist)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

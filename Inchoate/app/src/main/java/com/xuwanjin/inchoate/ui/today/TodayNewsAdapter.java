@@ -1,7 +1,6 @@
 package com.xuwanjin.inchoate.ui.today;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xuwanjin.inchoate.InchoateApplication;
@@ -19,15 +17,15 @@ import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.ViewHolder> {
     public static final String TAG = "TodayNewsAdapter";
-    private List<Article> mArticleList;
+    private List<Article> mTodayNewsArticleList = new ArrayList<>();
     private Context mContext;
 
-    public TodayNewsAdapter(Context context, List<Article> articles) {
-        mArticleList = articles;
+    public TodayNewsAdapter(Context context) {
         mContext = context;
     }
 
@@ -40,7 +38,7 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        final Article article = mArticleList.get(position);
+        final Article article = mTodayNewsArticleList.get(position);
         Glide.with(mContext)
                 .load(article.mainArticleImage)
                 .placeholder(R.mipmap.the_economist)
@@ -60,7 +58,12 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
 
     @Override
     public int getItemCount() {
-        return mArticleList == null ? 0 : mArticleList.size();
+        return mTodayNewsArticleList == null ? 0 : mTodayNewsArticleList.size();
+    }
+    public void updateData(List<Article> articleList){
+        mTodayNewsArticleList.clear();
+        mTodayNewsArticleList.addAll(articleList);
+        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

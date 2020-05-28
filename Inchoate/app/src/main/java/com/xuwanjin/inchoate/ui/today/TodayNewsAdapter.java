@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xuwanjin.inchoate.InchoateApplication;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
@@ -40,7 +41,11 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final Article article = mArticleList.get(position);
-        Glide.with(mContext).load(article.mainArticleImage).into(holder.articleImage);
+        Glide.with(mContext)
+                .load(article.mainArticleImage)
+                .placeholder(R.mipmap.the_economist)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.articleImage);
         holder.sectionText.setText(article.section);
         holder.title.setText(article.title);
         holder.itemView.setOnClickListener(new View.OnClickListener() {

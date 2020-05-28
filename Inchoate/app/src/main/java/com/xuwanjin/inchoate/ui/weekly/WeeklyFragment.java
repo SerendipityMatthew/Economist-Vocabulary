@@ -77,6 +77,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -91,19 +98,21 @@ public class WeeklyFragment extends Fragment {
     private View mSectionHeaderView;
     private View mFooterView;
     private TextView previousEdition;
-    List<Article> mArticlesList;
-    FloatingActionButton mFab;
+    private List<Article> mArticlesList;
+    private FloatingActionButton mFab;
     private HashMap<String, List<Article>> issueHashMap = new HashMap<>();
-    View mDownloadAudio;
-    View mStreamAudio;
-    TextView issueDate;
-    TextView magazineHeadline;
-    ImageView magazineCover;
-    WeeklyAdapter mWeeklyAdapter;
-    StickHeaderDecoration mStickHeaderDecoration;
-    View view;
+    private View mDownloadAudio;
+    private View mStreamAudio;
+    private TextView issueDate;
+    private TextView magazineHeadline;
+    private ImageView magazineCover;
+    private WeeklyAdapter mWeeklyAdapter;
+    private StickHeaderDecoration mStickHeaderDecoration;
+    private View view;
     public DownloadService mDownloadService;
     private Issue mIssue;
+    private Disposable mDisposable;
+    public static String issueDateStr = "May 23rd 2020";
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -116,18 +125,7 @@ public class WeeklyFragment extends Fragment {
         }
     };
     public static final int FETCH_DATA_AND_NOTIFY_MSG = 1000;
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == FETCH_DATA_AND_NOTIFY_MSG) {
-                if (mWeeklyAdapter != null) {
-                    mWeeklyAdapter.notifyDataSetChanged();
-                }
-            }
-        }
-    };
+
 
     ServiceConnection economistServiceConnection = new ServiceConnection() {
         @Override
@@ -148,6 +146,9 @@ public class WeeklyFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_weekly, container, false);
         initView();
+        initOnClickListener();
+        mIssue = initFakeData();
+
 
         EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -159,20 +160,36 @@ public class WeeklyFragment extends Fragment {
             linearLayoutManager.scrollToPosition(scrollToPosition);
         }
 
-        mArticlesList = initData(new ArrayList<Article>());
-        mWeeklyAdapter = new WeeklyAdapter(mArticlesList, getContext(), this);
+        mWeeklyAdapter = new WeeklyAdapter(getContext(), this);
         issueContentRecyclerView.setAdapter(mWeeklyAdapter);
         mWeeklyAdapter.setHeaderView(mSectionHeaderView);
         mWeeklyAdapter.setFooterView(mFooterView);
 
+        updateView(mIssue);
+        loadTodayArticleList();
+
         mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
         issueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);
-        mFab.setFocusable(true);
-        mFab.setClickable(true);
-        mFab.setVisibility(View.VISIBLE);
 
-        initOnClickListener();
         return view;
+    }
+
+    private void loadTodayArticleList() {
+        mDisposable = Single.create(new SingleOnSubscribe<Issue>() {
+            @Override
+            public void subscribe(SingleEmitter<Issue> emitter) throws Exception {
+                Issue issue = initData();
+                emitter.onSuccess(issue);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Issue>() {
+                    @Override
+                    public void accept(Issue issue) throws Exception {
+                        updateView(issue);
+                        Log.d(TAG, "accept: updateView = " + issue.coverImageUrl);
+                    }
+                });
     }
 
     public void initView() {
@@ -184,12 +201,27 @@ public class WeeklyFragment extends Fragment {
         mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.weekly_footer, issueContentRecyclerView, false);
 
         mFab = view.findViewById(R.id.issue_category_fab);
+        mFab.setFocusable(true);
+        mFab.setClickable(true);
+        mFab.setVisibility(View.VISIBLE);
+
         previousEdition = mSectionHeaderView.findViewById(R.id.previous_edition);
         mDownloadAudio = mSectionHeaderView.findViewById(R.id.download_audio);
         mStreamAudio = mSectionHeaderView.findViewById(R.id.stream_audio);
         issueDate = mSectionHeaderView.findViewById(R.id.issue_date);
         magazineCover = mSectionHeaderView.findViewById(R.id.magazine_cover);
         magazineHeadline = mSectionHeaderView.findViewById(R.id.magazine_headline);
+    }
+
+    public void updateView(Issue issue) {
+        Glide.with(mSectionHeaderView)
+                .load(issue.coverImageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.mipmap.magazine_cover)
+                .into(magazineCover);
+        issueDate.setText(issue.issueDate);
+        magazineHeadline.setText(issue.headline);
+        mWeeklyAdapter.updateData(issue.containArticle);
     }
 
     public void initOnClickListener() {
@@ -199,7 +231,6 @@ public class WeeklyFragment extends Fragment {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-//                        InchoateApplication.setDisplayArticleCache(article);
                         InchoateApplication.setAudioPlayingArticleListCache(InchoateApplication.getNewestIssueCache().get(0).containArticle);
                         SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                         panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
@@ -230,10 +261,10 @@ public class WeeklyFragment extends Fragment {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            while (true){
-                                if (mDownloadService != null){
+                            while (true) {
+                                if (mDownloadService != null) {
                                     mDownloadService.getDownloadPercent();
-                                }else {
+                                } else {
                                     break;
                                 }
                             }
@@ -268,60 +299,47 @@ public class WeeklyFragment extends Fragment {
 
     }
 
-    private List<Article> initData(List<Article> articles) {
+    private Issue initFakeData() {
+        Issue issue = new Issue();
+        List<Article> articleList = new ArrayList<>();
+        for (int i = 0; i < 82; i++) {
+            Article article = new Article();
+            article.summary = "heeeeeeeeee" + i;
+            article.section = "Matthew, helllo";
+            article.headline = "Matthew = " + ArticleCategorySection.BRIEFING;
+            articleList.add(article);
+        }
+        issue.coverImageUrl = "";
+        issue.issueDate = "";
+        issue.issueUrl = "";
+        issue.issueFormatDate = "";
+        issue.containArticle = articleList;
+
+        return issue;
+    }
+
+    private Issue initData() {
+        List<Article> articles = new ArrayList<>();
         List<Issue> issueList = InchoateApplication.getNewestIssueCache();
-        final Issue issue;
+        Issue issue = new Issue();
         if (issueList != null && issueList.size() > 0) {
             InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
-            String issueDateStr = "May 23rd 2020";
             issue = helper.queryIssueByIssueDate(issueDateStr).get(0);
-            mIssue = helper.queryIssueByIssueDate(issueDateStr).get(0);
-            articles = issue.containArticle;
             Log.d(TAG, "onResponse: use the cache ");
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Glide.with(mSectionHeaderView)
-                            .load(issue.coverImageUrl)
-                            .addListener(new RequestListener<Drawable>() {
-                                @Override
-                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                    Log.d(TAG, "onLoadFailed: ");
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                    Log.d(TAG, "onResourceReady: ");
-                                    return false;
-                                }
-                            })
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .placeholder(R.mipmap.magazine_cover)
-                            .into(magazineCover);
-                    issueDate.setText(issue.issueDate);
-                    magazineHeadline.setText(issue.headline);
-                }
-            });
         } else {
             for (int i = 0; i < 82; i++) {
                 Article article = new Article();
-                article.summary = "heeeeeeeeee" + i;
-                article.section = "Matthew, helllo";
+                article.section = "Matthew";
                 article.headline = "Matthew = " + ArticleCategorySection.BRIEFING;
                 articles.add(article);
             }
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    parseJsonDataFromAsset();
-                }
-            });
+            issue.containArticle = articles;
+            issue = parseJsonDataFromAsset();
         }
-        return articles;
+        return issue;
     }
 
-    public void parseJsonDataFromAsset() {
+    public Issue parseJsonDataFromAsset() {
         Gson gson = new Gson()
                 .newBuilder()
                 .setFieldNamingStrategy(new FieldNamingStrategy() {
@@ -340,33 +358,8 @@ public class WeeklyFragment extends Fragment {
         InputStreamReader reader = new InputStreamReader(jsonStream);
         WeekFragment weekFragment = gson.fromJson(reader, WeekFragment.class);
         final Issue issue = getIssue(weekFragment);
-        Glide.with(mSectionHeaderView)
-                .load(issue.coverImageUrl)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        Log.d(TAG, "onLoadFailed: ");
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        Log.d(TAG, "onResourceReady: ");
-                        return false;
-                    }
-                })
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.mipmap.magazine_cover)
-                .into(magazineCover);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                issueDate.setText(issue.issueDate);
-                magazineHeadline.setText(issue.headline);
-
-            }
-        });
         InchoateApplication.setNewestIssueCache(issue);
+        mIssue = issue;
         final InchoateDBHelper helper = new InchoateDBHelper(getActivity(), null, null);
         new Thread(new Runnable() {
             @Override
@@ -375,8 +368,7 @@ public class WeeklyFragment extends Fragment {
             }
         }).start();
         mArticlesList = issue.containArticle;
-        mHandler.sendEmptyMessage(FETCH_DATA_AND_NOTIFY_MSG);
-
+        return issue;
     }
 
     public void weekFragmentTest() {
@@ -411,7 +403,6 @@ public class WeeklyFragment extends Fragment {
                 Issue issue = getIssue(weekFragment);
                 InchoateApplication.setNewestIssueCache(issue);
                 mArticlesList = issue.containArticle;
-                mHandler.sendEmptyMessage(FETCH_DATA_AND_NOTIFY_MSG);
             }
         });
     }

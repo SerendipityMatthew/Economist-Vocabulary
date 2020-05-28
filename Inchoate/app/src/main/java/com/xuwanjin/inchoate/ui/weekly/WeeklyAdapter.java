@@ -20,12 +20,13 @@ import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder>
         implements StickHeaderDecoration.StickHeaderInterface {
     private Context mContext;
-    public List<Article> mArticleList;
+    public List<Article> mArticleList = new ArrayList<>();
     private Fragment mFragment;
     private View mHeaderView;
     private View mFooterView;
@@ -33,9 +34,8 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     public static final int TYPE_FOOTER = 1;
     public static final int TYPE_NORMAL = 2;
 
-    public WeeklyAdapter(List<Article> articles, Context context, Fragment fragment) {
+    public WeeklyAdapter( Context context, Fragment fragment) {
         mContext = context;
-        mArticleList = articles;
         mFragment = fragment;
     }
 

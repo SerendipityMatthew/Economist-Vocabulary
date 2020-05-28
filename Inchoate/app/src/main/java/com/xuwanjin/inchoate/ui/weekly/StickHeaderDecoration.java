@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -114,6 +113,9 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
             // 当 RecyclerView 含有 HeaderView 的时候, 第一个可见的 View, 不是里面的填充item, 而是 eaderView
             // 因此绘制第一个 Group 的 headerView 时候, 需要在大的 HeaderView 的下方
             int position = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
+            if (parent.findViewHolderForAdapterPosition(position) == null){
+                return;
+            }
             View view = parent.findViewHolderForAdapterPosition(position).itemView;
             // 如果不是 mHeaderView 的话(也就是头部 View) ,
             // 那么就在 RecycleView 里列表的第一个可以看见的 View 的顶部画一个固定栏

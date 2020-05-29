@@ -96,7 +96,7 @@ public class WeeklyFragment extends Fragment {
     private Disposable mDisposable;
     public static String issueDateStr = "2020-05-23";
     private ExecutorService mExecutorService = Executors.newFixedThreadPool(1);
-
+    private  LinearLayoutManager mLinearLayoutManager;
     private Handler mHandler = new Handler();
 
     public static final int DELAY_TIME = 3000;
@@ -145,45 +145,51 @@ public class WeeklyFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_weekly, container, false);
         initView();
         initOnClickListener();
-        mIssue = initFakeData();
 
         EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        issueContentRecyclerView.setLayoutManager(linearLayoutManager);
+
         int sectionToPosition = InchoateApp.getScrollToPosition();
         if (sectionToPosition > 0) {
             int scrollToPosition = Utils.getArticleSumBySection(sectionToPosition - 2);
-            linearLayoutManager.scrollToPosition(scrollToPosition);
+            mLinearLayoutManager.scrollToPosition(scrollToPosition);
         }
 
+        if (mIssue != null && mIssue.containArticle != null && mIssue.containArticle.size() > 0) {
+            updateWeeklyFragmentContent(mIssue);
+        } else {
+            Issue issue = initFakeData();
+            updateWeeklyFragmentContent(issue);
+            loadTodayArticleList();
+        }
+
+        return view;
+    }
+
+    public void updateWeeklyFragmentContent(Issue issue) {
         mWeeklyAdapter = new WeeklyAdapter(getContext(), this);
         issueContentRecyclerView.setAdapter(mWeeklyAdapter);
         mWeeklyAdapter.setHeaderView(mSectionHeaderView);
         mWeeklyAdapter.setFooterView(mFooterView);
-
-        updateView(mIssue);
-        loadTodayArticleList();
-
         mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
         issueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);
 
-        return view;
+        updateView(issue);
     }
 
     private void loadTodayArticleList() {
         mDisposable = Single.create(new SingleOnSubscribe<Issue>() {
             @Override
             public void subscribe(SingleEmitter<Issue> emitter) throws Exception {
-                Issue issue = initData();
+                Issue issue = getIssueDataFromDB();
                 emitter.onSuccess(issue);
+                mIssue = issue;
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Issue>() {
                     @Override
                     public void accept(Issue issue) throws Exception {
-                        updateView(issue);
+                        updateWeeklyFragmentContent(issue);
                         Log.d(TAG, "accept: updateView = " + issue.coverImageUrl);
                     }
                 });
@@ -191,11 +197,15 @@ public class WeeklyFragment extends Fragment {
 
     public void initView() {
         issueContentRecyclerView = view.findViewById(R.id.issue_content_recyclerView);
+        mLinearLayoutManager = new LinearLayoutManager(getContext());
+        mLinearLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
+        issueContentRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         // 这种 header 的出现, 他会 inflate 在 RecyclerView 的上面, 这个时候, 画第一个 item 的 header,
         //也会出现在 RecyclerView 的上面, 但是他会出现, HeaderView 的上面
-        mSectionHeaderView = LayoutInflater.from(getContext()).inflate(R.layout.weekly_section_header, issueContentRecyclerView, false);
-        mFooterView = LayoutInflater.from(getContext()).inflate(R.layout.weekly_footer, issueContentRecyclerView, false);
+        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+        mSectionHeaderView = layoutInflater.inflate(R.layout.weekly_section_header, issueContentRecyclerView, false);
+        mFooterView = layoutInflater.inflate(R.layout.weekly_footer, issueContentRecyclerView, false);
 
         mFab = view.findViewById(R.id.issue_category_fab);
         mFab.setFocusable(true);
@@ -242,12 +252,12 @@ public class WeeklyFragment extends Fragment {
                 mExecutorService.submit(mStreamAudioRunnable);
             }
         });
+
         mDownloadAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(getContext(), DownloadService.class);
-                Log.d(TAG, "onClick: mIssue.issueFormatDate mIssue = " + mIssue);
                 Log.d(TAG, "onClick: mIssue.issueFormatDate mIssue.issueFormatDate = " + mIssue.issueFormatDate);
                 intent.putExtra(PENDING_DOWNLOAD_ISSUE_DATE, mIssue.issueFormatDate);
                 getContext().startService(intent);
@@ -295,9 +305,9 @@ public class WeeklyFragment extends Fragment {
         return issue;
     }
 
-    private Issue initData() {
+    private Issue getIssueDataFromDB() {
         List<Issue> issueList = InchoateApp.getNewestIssueCache();
-        Issue issue = new Issue();
+        Issue issue;
         if (issueList != null && issueList.size() > 0) {
             InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
             issue = helper.queryIssueByIssueDate(issueDateStr).get(0);

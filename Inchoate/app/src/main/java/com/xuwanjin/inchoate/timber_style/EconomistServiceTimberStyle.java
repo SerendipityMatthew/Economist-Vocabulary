@@ -422,8 +422,28 @@ public class EconomistServiceTimberStyle extends Service {
                         mMediaPlayer.reset();
                     }
                     mMediaPlayer = new MediaPlayer();
+                    String realAudioPath = getRealAudioPath(article) ;
+                    mCurrentPlayingArticle = article;
+                    Log.d(TAG, "audioPlayingTask: play: audioPath = " + realAudioPath);
+                    isNetworkBuffering = true;
+                    updateAudioPlayingFragment();
+                    try {
+                        mMediaPlayer.setDataSource(realAudioPath);
+                        mMediaPlayer.prepare();
+                        mMediaPlayer.setOnCompletionListener(EconomistPlayer.this);
+                        mMediaPlayer.setOnErrorListener(EconomistPlayer.this);
+                        mMediaPlayer.setOnBufferingUpdateListener(EconomistPlayer.this);
+                        mMediaPlayer.setOnPreparedListener(EconomistPlayer.this);
+                        mMediaPlayer.start();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                private String getRealAudioPath(Article article) {
                     String localCommonPath = "/storage/emulated/0/Android/data/";
-                    String audioPath;
+                    String audioPath = null;
                     if (article.localeAudioUrl != null
                             && article.localeAudioUrl.startsWith(localCommonPath)) {
                         File file = new File(article.localeAudioUrl);
@@ -435,30 +455,18 @@ public class EconomistServiceTimberStyle extends Service {
                     } else {
                         audioPath = article.audioUrl;
                     }
-                    mCurrentPlayingArticle = article;
-                    Log.d(TAG, "play: audioPath = " + audioPath);
-                    isNetworkBuffering = true;
-                    try {
-                        mMediaPlayer.setDataSource(audioPath);
-                        mMediaPlayer.prepare();
-                        mMediaPlayer.setOnCompletionListener(EconomistPlayer.this);
-                        mMediaPlayer.setOnErrorListener(EconomistPlayer.this);
-                        mMediaPlayer.setOnBufferingUpdateListener(EconomistPlayer.this);
-                        mMediaPlayer.setOnPreparedListener(EconomistPlayer.this);
-                        mMediaPlayer.start();
-                        PlayEvent playEvent = new PlayEvent();
-                        playEvent.isPlaySkip = true;
-                        playEvent.mArticle = mCurrentPlayingArticle;
-                        EventBus.getDefault().post(playEvent);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    return audioPath;
                 }
 
             };
             sAudioPlayingPoolExecutor.submit(audioPlayingTask);
         }
-
+        public void updateAudioPlayingFragment(){
+            PlayEvent playEvent = new PlayEvent();
+            playEvent.isPlaySkip = true;
+            playEvent.mArticle = mCurrentPlayingArticle;
+            EventBus.getDefault().post(playEvent);
+        }
         public void playFromPause() {
             Runnable audioStartRunnable = new Runnable() {
                 @Override

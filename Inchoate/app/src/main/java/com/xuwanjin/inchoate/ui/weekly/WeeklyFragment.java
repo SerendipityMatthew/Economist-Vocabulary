@@ -245,7 +245,7 @@ public class WeeklyFragment extends Fragment {
         Runnable mStreamAudioRunnable = new Runnable() {
             @Override
             public void run() {
-                List<Article> articleList = InchoateApp.getNewestIssueCache().get(0).containArticle;
+                List<Article> articleList = mIssue.containArticle;
                 InchoateApp.setAudioPlayingArticleListCache(articleList);
                 SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                 panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;

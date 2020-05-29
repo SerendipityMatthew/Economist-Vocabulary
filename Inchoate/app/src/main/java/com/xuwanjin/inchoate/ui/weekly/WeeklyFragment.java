@@ -40,6 +40,7 @@ import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.week.WeekFragment;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 
+import static com.xuwanjin.inchoate.Constants.NEWEST_ISSUE_DATE;
 import static com.xuwanjin.inchoate.Constants.PENDING_DOWNLOAD_ISSUE_DATE;
 import static com.xuwanjin.inchoate.Constants.WEEKLY_PLAYING_SOURCE;
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.mEconomistService;
@@ -47,7 +48,6 @@ import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.mEco
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
 
 import org.greenrobot.eventbus.EventBus;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,7 +67,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -94,9 +93,9 @@ public class WeeklyFragment extends Fragment {
     public DownloadService mDownloadService;
     private static Issue mIssue = new Issue();
     private Disposable mDisposable;
-    public static String issueDateStr = "2020-05-23";
+    public static String formatIssueDateStr = NEWEST_ISSUE_DATE;
     private ExecutorService mExecutorService = Executors.newFixedThreadPool(1);
-    private  LinearLayoutManager mLinearLayoutManager;
+    private LinearLayoutManager mLinearLayoutManager;
     private Handler mHandler = new Handler();
 
     public static final int DELAY_TIME = 3000;
@@ -188,9 +187,13 @@ public class WeeklyFragment extends Fragment {
         mDisposable = Single.create(new SingleOnSubscribe<Issue>() {
             @Override
             public void subscribe(SingleEmitter<Issue> emitter) throws Exception {
+                // 数据库---> 网络
                 Issue issue = getIssueDataFromDB();
-                emitter.onSuccess(issue);
+                if (issue == null) {
+                    issue = loadDataFromNetwork();
+                }
                 mIssue = issue;
+                emitter.onSuccess(issue);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -266,7 +269,6 @@ public class WeeklyFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(getContext(), DownloadService.class);
-                Log.d(TAG, "onClick: mIssue.issueFormatDate mIssue.issueFormatDate = " + mIssue.issueFormatDate);
                 intent.putExtra(PENDING_DOWNLOAD_ISSUE_DATE, mIssue.issueFormatDate);
                 getContext().startService(intent);
                 getContext().bindService(intent, serviceConnection, 0);
@@ -290,7 +292,7 @@ public class WeeklyFragment extends Fragment {
         });
     }
 
-    private void navigationToFragment(int resId){
+    private void navigationToFragment(int resId) {
         Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, resId);
 
     }
@@ -319,15 +321,13 @@ public class WeeklyFragment extends Fragment {
     }
 
     private Issue getIssueDataFromDB() {
-        List<Issue> issueList = InchoateApp.getNewestIssueCache();
-        Issue issue;
+        Issue issue = null;
+        InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
+        List<Issue> issueList = helper.queryIssueByFormatIssueDate(formatIssueDateStr);
         if (issueList != null && issueList.size() > 0) {
-            InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
-            issue = helper.queryIssueByIssueDate(issueDateStr).get(0);
-            Log.d(TAG, "onResponse: use the cache ");
-        } else {
-            issue = parseJsonDataFromAsset();
+            issue = issueList.get(0);
         }
+        Log.d(TAG, "onResponse: use the cache ");
         return issue;
     }
 
@@ -352,7 +352,6 @@ public class WeeklyFragment extends Fragment {
         final Issue issue = getIssue(weekFragment);
         InchoateApp.setNewestIssueCache(issue);
         mIssue = issue;
-        Log.d(TAG, "parseJsonDataFromAsset: mIssue = " + mIssue);
         Runnable insertDataRunnable = new Runnable() {
             @Override
             public void run() {
@@ -365,40 +364,57 @@ public class WeeklyFragment extends Fragment {
         return issue;
     }
 
-    public void weekFragmentTest() {
+    public Issue loadDataFromNetwork() {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(Constants.WEEK_FRAGMENT_QUERY_URL)
                 .build();
         Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d(TAG, "weekFragmentTest: onFailure: e = " + e.toString());
-            }
+        Response response = null;
+        try {
+            response = call.execute();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (response == null || !response.isSuccessful()) {
+            return null;
+        }
+        String jsonResult = null;
+        try {
+            jsonResult = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (jsonResult == null) {
+            return null;
+        }
+        Gson gson = new Gson()
+                .newBuilder()
+                .setFieldNamingStrategy(new FieldNamingStrategy() {
+                    @Override
+                    public String translateName(Field f) {
+                        String name = f.getName();
+                        if (name.contains("-")) {
+                            return name.replaceAll("-", "");
+                        }
+                        return name;
+                    }
+                }) // setFieldNamingPolicy 有什么区别
+                .create();
+        WeekFragment weekFragment = gson.fromJson(jsonResult, WeekFragment.class);
+        Issue issue = getIssue(weekFragment);
+        InchoateApp.setNewestIssueCache(issue);
+        mArticlesList = issue.containArticle;
+        Runnable mInsertIssueData = new Runnable() {
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String jsonResult = response.body().string();
-                Gson gson = new Gson()
-                        .newBuilder()
-                        .setFieldNamingStrategy(new FieldNamingStrategy() {
-                            @Override
-                            public String translateName(Field f) {
-                                String name = f.getName();
-                                if (name.contains("-")) {
-                                    return name.replaceAll("-", "");
-                                }
-                                return name;
-                            }
-                        }) // setFieldNamingPolicy 有什么区别
-                        .create();
-                WeekFragment weekFragment = gson.fromJson(jsonResult, WeekFragment.class);
-                Issue issue = getIssue(weekFragment);
-                InchoateApp.setNewestIssueCache(issue);
-                mArticlesList = issue.containArticle;
+            public void run() {
+                InchoateDBHelper helper = new InchoateDBHelper(getContext(),null, null);
+                helper.insertWholeData(issue);
             }
-        });
+        };
+        mExecutorService.submit(mInsertIssueData);
+        return issue;
     }
 
     @Override

@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -37,7 +36,7 @@ import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.ArticleCategorySection;
 import com.xuwanjin.inchoate.model.Issue;
-import com.xuwanjin.inchoate.model.week.WeekFragment;
+import com.xuwanjin.inchoate.model.week.WeekJson;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 
 import static com.xuwanjin.inchoate.Constants.NEWEST_ISSUE_DATE;
@@ -348,8 +347,8 @@ public class WeeklyFragment extends Fragment {
 
         InputStream jsonStream = getContext().getResources().openRawResource(R.raw.week_fragment_query);
         InputStreamReader reader = new InputStreamReader(jsonStream);
-        WeekFragment weekFragment = gson.fromJson(reader, WeekFragment.class);
-        final Issue issue = getIssue(weekFragment);
+        WeekJson weekJson = gson.fromJson(reader, WeekJson.class);
+        final Issue issue = getIssue(weekJson);
         InchoateApp.setNewestIssueCache(issue);
         mIssue = issue;
         Runnable insertDataRunnable = new Runnable() {
@@ -402,8 +401,8 @@ public class WeeklyFragment extends Fragment {
                     }
                 }) // setFieldNamingPolicy 有什么区别
                 .create();
-        WeekFragment weekFragment = gson.fromJson(jsonResult, WeekFragment.class);
-        Issue issue = getIssue(weekFragment);
+        WeekJson weekJson = gson.fromJson(jsonResult, WeekJson.class);
+        Issue issue = getIssue(weekJson);
         InchoateApp.setNewestIssueCache(issue);
         mArticlesList = issue.containArticle;
         Runnable mInsertIssueData = new Runnable() {

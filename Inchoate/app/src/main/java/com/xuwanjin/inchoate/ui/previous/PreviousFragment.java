@@ -20,14 +20,9 @@ import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
-import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.archive.Archive;
 import com.xuwanjin.inchoate.model.archive.Part;
-import com.xuwanjin.inchoate.model.week.WeekData;
-import com.xuwanjin.inchoate.model.week.WeekFragment;
-import com.xuwanjin.inchoate.model.week.WeekPart;
-import com.xuwanjin.inchoate.model.week.WeekText;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,8 +36,6 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import static com.xuwanjin.inchoate.Utils.getWholeArticle;
 
 public class PreviousFragment extends Fragment {
     RecyclerView issueListRecyclerView;

@@ -10,7 +10,7 @@ import com.xuwanjin.inchoate.model.archive.CoverContent;
 import com.xuwanjin.inchoate.model.today.TodayFirstParts;
 import com.xuwanjin.inchoate.model.today.TodayJson;
 import com.xuwanjin.inchoate.model.today.TodaySecondParts;
-import com.xuwanjin.inchoate.model.week.WeekFragment;
+import com.xuwanjin.inchoate.model.week.WeekJson;
 import com.xuwanjin.inchoate.model.week.WeekPart;
 import com.xuwanjin.inchoate.model.week.WeekSection;
 import com.xuwanjin.inchoate.model.week.WeekText;
@@ -32,9 +32,9 @@ public class Utils {
         }
     }
 
-    public static List<Article> getWholeArticle(WeekFragment weekFragment) {
+    public static List<Article> getWholeArticle(WeekJson weekJson) {
         List<Article> allArticleList = new ArrayList<>();
-        List<WeekPart> weekPartList = weekFragment.data.section.hasPart.parts;
+        List<WeekPart> weekPartList = weekJson.data.section.hasPart.parts;
 
         //1.  weekPartList 是获取了一周的所有文章的json 数据
         for (WeekPart weekPart : weekPartList) {
@@ -127,14 +127,14 @@ public class Utils {
         return null;
     }
 
-    public static Issue getIssue(WeekFragment weekFragment) {
+    public static Issue getIssue(WeekJson weekJson) {
         Issue issue = new Issue();
-        WeekSection weekSection = weekFragment.data.section;
+        WeekSection weekSection = weekJson.data.section;
         CoverContent coverContent = weekSection.image.cover.get(0);
         issue.headline = coverContent.headline;
         issue.issueUrl = weekSection.url.canonical;
         issue.coverImageUrl = coverContent.url.canonical;
-        issue.containArticle = getWholeArticle(weekFragment);
+        issue.containArticle = getWholeArticle(weekJson);
         issue.issueDate = Utils.digitalDateSwitchToEnglishFormat(weekSection.datePublished.substring(0, 10));
         issue.issueFormatDate = weekSection.datePublished.substring(0, 10);
         List<String> sectionList = new ArrayList<>();

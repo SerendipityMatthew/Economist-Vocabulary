@@ -6,7 +6,7 @@ import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.model.Article;
-import com.xuwanjin.inchoate.model.week.WeekFragment;
+import com.xuwanjin.inchoate.model.week.WeekJson;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -55,9 +55,9 @@ public class APIService {
                             }
                         }) // setFieldNamingPolicy 有什么区别
                         .create();
-                WeekFragment weekFragment = gson.fromJson(jsonResult, WeekFragment.class);
+                WeekJson weekJson = gson.fromJson(jsonResult, WeekJson.class);
                 Log.d(TAG, "onResponse: FETCH_DATA_AND_NOTIFY_MSG = ");
-                mArticlesList = getWholeArticle(weekFragment);
+                mArticlesList = getWholeArticle(weekJson);
             }
         });
         return mArticlesList;

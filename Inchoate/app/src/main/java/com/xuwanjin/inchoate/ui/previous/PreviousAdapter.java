@@ -22,9 +22,13 @@ public class PreviousAdapter extends RecyclerView.Adapter<PreviousAdapter.ViewHo
     private Context mContext;
     private List<Issue> mIssueList;
 
-    public PreviousAdapter(List<Issue> issueList, Context context) {
-        this.mIssueList = issueList;
+    public PreviousAdapter(Context context) {
         this.mContext = context;
+    }
+
+    public void updateData(List<Issue> issueList){
+        mIssueList = issueList;
+        notifyDataSetChanged();
     }
 
     @NonNull

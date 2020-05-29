@@ -30,7 +30,16 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import io.reactivex.Scheduler;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.internal.operators.single.SingleAmb;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -38,24 +47,15 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class PreviousFragment extends Fragment {
+    public static final String TAG = "PreviousFragment";
+
     RecyclerView issueListRecyclerView;
     GridLayoutManager mGridLayoutManager;
     PreviousAdapter previousAdapter;
-    List<Issue> issueList;
+    public static List<Issue> sIssueList = new ArrayList<>();
     public static final int FETCH_DATA_AND_NOTIFY_MSG = 1000;
-    public static final String TAG = "PreviousFragment";
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == FETCH_DATA_AND_NOTIFY_MSG) {
-                if (previousAdapter != null) {
-                    previousAdapter.notifyDataSetChanged();
-                }
-            }
-        }
-    };
+    private Disposable mDisposable;
+
 
     @Nullable
     @Override
@@ -65,57 +65,100 @@ public class PreviousFragment extends Fragment {
         mGridLayoutManager = new GridLayoutManager(getContext(), 2);
         mGridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         issueListRecyclerView.setLayoutManager(mGridLayoutManager);
-        issueList = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
-            Issue issue = new Issue();
-            issue.isDownloaded = false;
-            issue.issueDate = "Matthew + " + i;
-            issueList.add(issue);
+
+        if (sIssueList != null && sIssueList.size() > 0) {
+            updatePreviousFragmentContent(sIssueList);
+        } else {
+
+            List<Issue> issueList = new ArrayList<>();
+            for (int i = 0; i < 50; i++) {
+                Issue issue = new Issue();
+                issue.isDownloaded = false;
+                issue.issueDate = "Matthew + " + i;
+                issueList.add(issue);
+            }
+            updatePreviousFragmentContent(issueList);
+            loadPreviousIssue();
         }
-        previousAdapter = new PreviousAdapter(issueList, getContext());
-        issueListRecyclerView.setAdapter(previousAdapter);
+
+
+        return view;
+    }
+
+    public void loadPreviousIssue() {
+        mDisposable = SingleAmb.create(new SingleOnSubscribe<List<Issue>>() {
+            @Override
+            public void subscribe(SingleEmitter<List<Issue>> emitter) throws Exception {
+                sIssueList = getPreviousIssueDataFromNetwork();
+                emitter.onSuccess(sIssueList);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Issue>>() {
+                    @Override
+                    public void accept(List<Issue> issueList) throws Exception {
+                        updatePreviousFragmentContent(issueList);
+                    }
+                });
+    }
+
+    private List<Issue> getPreviousIssueDataFromNetwork() {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(Constants.ARCHIVE_QUERY_URL)
                 .build();
         Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.d(TAG, "onFailure: e = " + e.toString());
-            }
+        Response response = null;
+        try {
+            response = call.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (response == null || !response.isSuccessful()) {
+            return null;
+        }
+        String jsonResult = null;
+        try {
+            jsonResult = Objects.requireNonNull(response.body()).string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (jsonResult == null) {
+            return null;
+        }
+        Gson gson = new Gson()
+                .newBuilder()
+                .setFieldNamingStrategy(new FieldNamingStrategy() {
+                    @Override
+                    public String translateName(Field f) {
+                        String name = f.getName();
+                        if (name.contains("-")) {
+                            return name.replaceAll("-", "");
+                        }
+                        return name;
+                    }
+                }) // setFieldNamingPolicy 有什么区别
+                .create();
+        Archive data = gson.fromJson(jsonResult, Archive.class);
+        Part[] partArray = data.data.section.hasPart.parts;
+        sIssueList.clear();
+        for (int i = 0; i < partArray.length; i++) {
+            Issue issue = new Issue();
+            issue.isDownloaded = false;
+            String date = partArray[i].datePublished.substring(0, 10);
+            issue.issueFormatDate = date;
+            issue.issueDate = Utils.digitalDateSwitchToEnglishFormat(date);
+            issue.coverImageUrl = partArray[i].image.cover.get(0).url.canonical;
+            sIssueList.add(issue);
+        }
+        return sIssueList;
+    }
 
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String jsonResult = response.body().string();
-                Gson gson = new Gson()
-                        .newBuilder()
-                        .setFieldNamingStrategy(new FieldNamingStrategy() {
-                            @Override
-                            public String translateName(Field f) {
-                                String name = f.getName();
-                                if (name.contains("-")) {
-                                    return name.replaceAll("-", "");
-                                }
-                                return name;
-                            }
-                        }) // setFieldNamingPolicy 有什么区别
-                        .create();
-                Archive data = gson.fromJson(jsonResult, Archive.class);
-                Log.d(TAG, "onResponse: rootValueAndData.data " + data.data);
-                Part[] partArray = data.data.section.hasPart.parts;
-                issueList.clear();
-                for (int i = 0; i < partArray.length; i++) {
-                    Issue issue = new Issue();
-                    issue.isDownloaded = false;
-                    issue.issueDate = Utils.digitalDateSwitchToEnglishFormat(partArray[i].datePublished.substring(0, 10));
-                    issue.coverImageUrl = partArray[i].image.cover.get(0).url.canonical;
-                    issueList.add(issue);
-                }
-                mHandler.sendEmptyMessage(FETCH_DATA_AND_NOTIFY_MSG);
-            }
-        });
-        return view;
+    private void updatePreviousFragmentContent(List<Issue> issueList) {
+        previousAdapter = new PreviousAdapter(getContext());
+        issueListRecyclerView.setAdapter(previousAdapter);
+
+        previousAdapter.updateData(issueList);
     }
 
     @Override
@@ -126,5 +169,13 @@ public class PreviousFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mDisposable != null) {
+            mDisposable.dispose();
+        }
     }
 }

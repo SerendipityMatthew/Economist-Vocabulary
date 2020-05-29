@@ -21,9 +21,21 @@ import com.xuwanjin.inchoate.model.Issue;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
 public class BookmarkFragment extends Fragment {
     RecyclerView bookmarkRecycleView;
     TextView mTextView;
+    private Disposable mDisposable;
+    private BookmarkAdapter mBookmarkAdapter;
+    static List<Article> sArticleList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -33,19 +45,53 @@ public class BookmarkFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1);
         gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         bookmarkRecycleView.setLayoutManager(gridLayoutManager);
-        mTextView = view.findViewById(R.id.bookmark);
-        List<Article> articleList = new ArrayList<>();
-        InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
-        articleList = helper.queryBookmarkedArticle();
-        BookmarkAdapter adapter = new BookmarkAdapter(articleList, getContext(), this);
-        bookmarkRecycleView.setAdapter(adapter);
-        bookmarkRecycleView.addItemDecoration(new StickHeaderDecoration(bookmarkRecycleView, getContext()));
+        mTextView = view.findViewById(R.id.bookmark_title);
+
+        if (sArticleList.size() > 0) {
+            updateFragmentContent(sArticleList);
+        }else {
+            loadBookmarkData();
+        }
         return view;
+    }
+
+    private void loadBookmarkData() {
+        mDisposable = Single.create(new SingleOnSubscribe<List<Article>>() {
+            @Override
+            public void subscribe(SingleEmitter<List<Article>> emitter) throws Exception {
+                List<Article> articleList = new ArrayList<>();
+                InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
+                articleList = helper.queryBookmarkedArticle();
+                sArticleList = articleList;
+                emitter.onSuccess(articleList);
+            }
+        })
+        .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Article>>() {
+            @Override
+            public void accept(List<Article> articles) throws Exception {
+                updateFragmentContent(articles);
+            }
+        });
+
+    }
+
+    private void updateFragmentContent(List<Article> articleList) {
+        mBookmarkAdapter = new BookmarkAdapter(getContext(), BookmarkFragment.this);
+        bookmarkRecycleView.setAdapter(mBookmarkAdapter);
+        bookmarkRecycleView.addItemDecoration(new StickHeaderDecoration(bookmarkRecycleView, getContext()));
+        mBookmarkAdapter.updateData(articleList);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mDisposable != null) {
+            mDisposable.dispose();
+        }
     }
 }

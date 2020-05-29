@@ -19,7 +19,7 @@
             android:paddingStart="20dp"
             android:textSize="30sp"
             android:textColor="@color/black"
-            android:id="@+id/bookmark"
+            android:id="@+id/bookmark_title"
             android:textStyle="bold"
             tools:ignore="MissingConstraints" />
 
@@ -34,7 +34,6 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:ignore="MissingConstraints"
             tools:itemCount="20"
-            tools:listitem="@layout/today_news"
             tools:spanCount="2" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

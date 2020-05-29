@@ -21,23 +21,28 @@ import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHolder>
         implements StickHeaderDecoration.StickHeaderInterface {
     public static final String TAG = "BookmarkAdapter";
     private Context mContext;
-    private List<Article> mArticleList;
+    private List<Article> mArticleList = new ArrayList<>();
     private Fragment mFragment;
 
-    public BookmarkAdapter(List<Article> articles, Context context, Fragment fragment) {
+    public BookmarkAdapter( Context context, Fragment fragment) {
         mContext = context;
-        mArticleList = articles;
         mFragment = fragment;
     }
 
     public Fragment getFragment() {
         return mFragment;
+    }
+    public void updateData(List<Article> articleList){
+        mArticleList.clear();
+        mArticleList.addAll(articleList);
+        notifyDataSetChanged();
     }
 
     //Item header 按照 section, issueDate, bookmarkDate, Topic,

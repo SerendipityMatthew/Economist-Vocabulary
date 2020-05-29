@@ -100,6 +100,14 @@ public class WeeklyFragment extends Fragment {
     private Handler mHandler = new Handler();
 
     public static final int DELAY_TIME = 3000;
+
+    public Runnable mBindServiceRunnable = new Runnable() {
+        @Override
+        public void run() {
+            EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
+        }
+    };
+
     public Runnable mGetDownloadPercentRunnable = new Runnable() {
         @Override
         public void run() {
@@ -146,7 +154,7 @@ public class WeeklyFragment extends Fragment {
         initView();
         initOnClickListener();
 
-        EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
+        mExecutorService.submit(mBindServiceRunnable);
 
         int sectionToPosition = InchoateApp.getScrollToPosition();
         if (sectionToPosition > 0) {
@@ -269,7 +277,7 @@ public class WeeklyFragment extends Fragment {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_float_action);
+                navigationToFragment(R.id.navigation_float_action);
             }
         });
 
@@ -277,9 +285,14 @@ public class WeeklyFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: previousEdition = " + previousEdition);
-                Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_previous_edition);
+                navigationToFragment(R.id.navigation_previous_edition);
             }
         });
+    }
+
+    private void navigationToFragment(int resId){
+        Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, resId);
+
     }
 
     @Override

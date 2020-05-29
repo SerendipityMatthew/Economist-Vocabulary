@@ -1,6 +1,5 @@
 package com.xuwanjin.inchoate.download;
 
-import android.app.DownloadManager;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -13,7 +12,6 @@ import androidx.annotation.Nullable;
 
 import com.liulishuo.okdownload.DownloadListener;
 import com.liulishuo.okdownload.DownloadTask;
-import com.liulishuo.okdownload.UnifiedListenerManager;
 import com.liulishuo.okdownload.core.breakpoint.BreakpointInfo;
 import com.liulishuo.okdownload.core.cause.EndCause;
 import com.liulishuo.okdownload.core.cause.ResumeFailedCause;
@@ -24,10 +22,10 @@ import com.xuwanjin.inchoate.model.Issue;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 // 输入 issue 下载整个期刊
 // 输入 Article 下载一篇文章
 
@@ -40,49 +38,10 @@ public class DownloadService extends Service {
     private List<Article> downloadArticle = new ArrayList<>();
     public static int percent = 0;
     public ArrayMap<String, Boolean> localAudioUrlMap = new ArrayMap<>();
-
-    public class LocalBinder extends Binder {
-        public DownloadService getService() {
-            return DownloadService.this;
-        }
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mBinder;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        mIssue = intent.getParcelableExtra(Constants.DOWNLOAD_ISSUE);
-        Article article = intent.getParcelableExtra(Constants.DOWNLOAD_ARTICLE);
-        if (mIssue != null && article == null) {
-            downloadArticle = mIssue.containArticle;
-            new Thread(mRunnable).start();
-        }
-        if (mIssue == null && article != null) {
-            downloadArticle.add(article);
-            new Thread(mRunnable).start();
-        }
-        if (mIssue != null && article != null) {
-            downloadArticle = mIssue.containArticle;
-            new Thread(mRunnable).start();
-        }
-        if (mIssue == null && article == null) {
-
-        }
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
-    final Runnable mRunnable = new Runnable() {
+    final Runnable mDownloadRunnable = new Runnable() {
         @Override
         public void run() {
+            Log.d(TAG, "mDownloadRunnable: run: ");
             ArrayList<Article> audioArticle = new ArrayList<>();
             for (Article article : downloadArticle) {
                 if (article.audioUrl != null
@@ -112,11 +71,53 @@ public class DownloadService extends Service {
                 downloadTasks[i] = task;
                 String fullPath = noSpacePath + noSpaceName;
                 localAudioUrlMap.put(fullPath, false);
+                Log.d(TAG, "mDownloadRunnable: run: ");
             }
             DownloadTask.enqueue(downloadTasks, downloadListener);
         }
-
     };
+
+    private static final ExecutorService mExecutorService = Executors.newFixedThreadPool(1);
+
+    public class LocalBinder extends Binder {
+        public DownloadService getService() {
+            return DownloadService.this;
+        }
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        String formatIssueDate = intent.getStringExtra(Constants.PENDING_DOWNLOAD_ISSUE_DATE);
+        InchoateDBHelper helper = new InchoateDBHelper(getApplicationContext(), null, null);
+        mIssue = helper.queryIssueByFormatIssueDate(formatIssueDate).get(0);
+        Article article = intent.getParcelableExtra(Constants.DOWNLOAD_ARTICLE);
+        Log.d(TAG, "onStartCommand: mIssue = " + mIssue);
+        if (mIssue != null && article == null) {
+            downloadArticle = mIssue.containArticle;
+        }
+        if (mIssue == null && article != null) {
+            downloadArticle.add(article);
+        }
+        if (mIssue != null && article != null) {
+            downloadArticle = mIssue.containArticle;
+        }
+        mExecutorService.submit(mDownloadRunnable);
+        if (mIssue == null && article == null) {
+
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 
     public float getDownloadPercent() {
         if (localAudioUrlMap == null || !(localAudioUrlMap.size()>0)){

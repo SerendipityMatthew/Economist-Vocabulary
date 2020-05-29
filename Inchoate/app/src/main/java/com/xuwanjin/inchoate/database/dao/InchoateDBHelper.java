@@ -178,16 +178,39 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         return articleList;
     }
 
+    public List<Issue> queryIssueByFormatIssueDate(String issueDate) {
+        List<Issue> issueList = new ArrayList<>();
+        SQLiteDatabase database = openInchoateDB();
+        // Select * from article where issue_date='';
+        String query = "SELECT * FROM " + TABLE_NAME_ISSUE + " WHERE " + KEY_ISSUE_FORMAT_DATE + " =\'" + issueDate + "\'";
+        Log.d(TAG, "queryIssueByIssueDate: query = " + query);
+        Cursor cursor = database.rawQuery(query, null);
+        while (cursor != null && cursor.moveToNext()) {
+            Issue issue;
+            issue = getIssueFromCursor(cursor);
+            issueList.add(issue);
+            Log.d(TAG, "queryIssueByIssueDate: issue = " + issue);
+        }
+        if (database != null) {
+            database.close();
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return issueList;
+    }
     public List<Issue> queryIssueByIssueDate(String issueDate) {
         List<Issue> issueList = new ArrayList<>();
         SQLiteDatabase database = openInchoateDB();
         // Select * from article where issue_date='';
         String query = "SELECT * FROM " + TABLE_NAME_ISSUE + " WHERE " + KEY_ISSUE_DATE + " =\'" + issueDate + "\'";
+        Log.d(TAG, "queryIssueByIssueDate: query = " + query);
         Cursor cursor = database.rawQuery(query, null);
         while (cursor != null && cursor.moveToNext()) {
-            Issue issue = new Issue();
+            Issue issue;
             issue = getIssueFromCursor(cursor);
             issueList.add(issue);
+            Log.d(TAG, "queryIssueByIssueDate: issue = " + issue);
         }
         if (database != null) {
             database.close();

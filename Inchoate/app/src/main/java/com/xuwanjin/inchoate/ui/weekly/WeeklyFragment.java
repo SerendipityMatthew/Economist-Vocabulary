@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -38,7 +40,7 @@ import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.week.WeekFragment;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 
-import static com.xuwanjin.inchoate.Constants.DOWNLOAD_ISSUE;
+import static com.xuwanjin.inchoate.Constants.PENDING_DOWNLOAD_ISSUE_DATE;
 import static com.xuwanjin.inchoate.Constants.WEEKLY_PLAYING_SOURCE;
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.mEconomistService;
 
@@ -73,7 +75,7 @@ import okhttp3.Response;
 import static com.xuwanjin.inchoate.Utils.getIssue;
 
 public class WeeklyFragment extends Fragment {
-    public static final String TAG = "WeekFragment";
+    public static final String TAG = "WeeklyFragment";
     RecyclerView issueContentRecyclerView;
     private View mSectionHeaderView;
     private View mFooterView;
@@ -90,21 +92,25 @@ public class WeeklyFragment extends Fragment {
     private StickHeaderDecoration mStickHeaderDecoration;
     private View view;
     public DownloadService mDownloadService;
-    private Issue mIssue;
+    private static Issue mIssue = new Issue();
     private Disposable mDisposable;
-    public static String issueDateStr = "May 23rd 2020";
+    public static String issueDateStr = "2020-05-23";
     private ExecutorService mExecutorService = Executors.newFixedThreadPool(1);
 
+    private Handler mHandler = new Handler();
+
+    public static final int DELAY_TIME = 3000;
     public Runnable mGetDownloadPercentRunnable = new Runnable() {
         @Override
         public void run() {
-            while (true) {
-                if (mDownloadService != null) {
-                    mDownloadService.getDownloadPercent();
-                } else {
-                    break;
-                }
+            if (isDetached()) {
+                return;
             }
+            if (mDownloadService != null) {
+                float percent = mDownloadService.getDownloadPercent();
+                Log.d(TAG, "mGetDownloadPercentRunnable: percent = " + percent);
+            }
+            mHandler.postDelayed(mGetDownloadPercentRunnable, DELAY_TIME);
         }
     };
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -115,7 +121,7 @@ public class WeeklyFragment extends Fragment {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            mDownloadService = null;
         }
     };
 
@@ -140,7 +146,6 @@ public class WeeklyFragment extends Fragment {
         initView();
         initOnClickListener();
         mIssue = initFakeData();
-
 
         EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -242,23 +247,14 @@ public class WeeklyFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(getContext(), DownloadService.class);
-                Issue issue = null;
-
-                try {
-                    issue = mIssue.clone();
-                    for (Article article : issue.containArticle) {
-                        article.paragraphList = null;
-                    }
-                    intent.putExtra(DOWNLOAD_ISSUE, issue);
-                    getContext().startService(intent);
-                    Intent newIntent = new Intent().setClass(getContext(), DownloadService.class);
-                    getContext().bindService(newIntent, serviceConnection, 0);
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
-                }
+                Log.d(TAG, "onClick: mIssue.issueFormatDate mIssue = " + mIssue);
+                Log.d(TAG, "onClick: mIssue.issueFormatDate mIssue.issueFormatDate = " + mIssue.issueFormatDate);
+                intent.putExtra(PENDING_DOWNLOAD_ISSUE_DATE, mIssue.issueFormatDate);
+                getContext().startService(intent);
+                getContext().bindService(intent, serviceConnection, 0);
+                mHandler.post(mGetDownloadPercentRunnable);
             }
         });
-
 
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,7 +275,6 @@ public class WeeklyFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
     }
 
     private Issue initFakeData() {
@@ -287,8 +282,7 @@ public class WeeklyFragment extends Fragment {
         List<Article> articleList = new ArrayList<>();
         for (int i = 0; i < 82; i++) {
             Article article = new Article();
-            article.summary = "heeeeeeeeee" + i;
-            article.section = "Matthew, helllo";
+            article.section = "Matthew";
             article.headline = "Matthew = " + ArticleCategorySection.BRIEFING;
             articleList.add(article);
         }
@@ -302,7 +296,6 @@ public class WeeklyFragment extends Fragment {
     }
 
     private Issue initData() {
-        List<Article> articles = new ArrayList<>();
         List<Issue> issueList = InchoateApp.getNewestIssueCache();
         Issue issue = new Issue();
         if (issueList != null && issueList.size() > 0) {
@@ -310,13 +303,6 @@ public class WeeklyFragment extends Fragment {
             issue = helper.queryIssueByIssueDate(issueDateStr).get(0);
             Log.d(TAG, "onResponse: use the cache ");
         } else {
-            for (int i = 0; i < 82; i++) {
-                Article article = new Article();
-                article.section = "Matthew";
-                article.headline = "Matthew = " + ArticleCategorySection.BRIEFING;
-                articles.add(article);
-            }
-            issue.containArticle = articles;
             issue = parseJsonDataFromAsset();
         }
         return issue;
@@ -343,13 +329,15 @@ public class WeeklyFragment extends Fragment {
         final Issue issue = getIssue(weekFragment);
         InchoateApp.setNewestIssueCache(issue);
         mIssue = issue;
-        final InchoateDBHelper helper = new InchoateDBHelper(getActivity(), null, null);
-        new Thread(new Runnable() {
+        Log.d(TAG, "parseJsonDataFromAsset: mIssue = " + mIssue);
+        Runnable insertDataRunnable = new Runnable() {
             @Override
             public void run() {
+                final InchoateDBHelper helper = new InchoateDBHelper(getActivity(), null, null);
                 helper.insertWholeData(issue);
             }
-        }).start();
+        };
+        mExecutorService.submit(insertDataRunnable);
         mArticlesList = issue.containArticle;
         return issue;
     }
@@ -393,6 +381,8 @@ public class WeeklyFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EconomistPlayerTimberStyle.unbindToService(getActivity(), economistServiceConnection);
+        if (mEconomistService != null) {
+            EconomistPlayerTimberStyle.unbindToService(getActivity(), economistServiceConnection);
+        }
     }
 }

@@ -16,12 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
-import com.xuwanjin.inchoate.model.Issue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;

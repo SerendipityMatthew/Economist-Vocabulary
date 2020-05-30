@@ -186,11 +186,7 @@ public class WeeklyFragment extends Fragment {
         mDisposable = Single.create(new SingleOnSubscribe<Issue>() {
             @Override
             public void subscribe(SingleEmitter<Issue> emitter) throws Exception {
-                // 数据库---> 网络
-                Issue issue = getIssueDataFromDB();
-                if (issue == null) {
-                    issue = loadDataFromNetwork();
-                }
+                Issue issue = loadWholeIssue();
                 mIssue = issue;
                 emitter.onSuccess(issue);
             }
@@ -200,9 +196,28 @@ public class WeeklyFragment extends Fragment {
                     @Override
                     public void accept(Issue issue) throws Exception {
                         updateWeeklyFragmentContent(issue);
-                        Log.d(TAG, "accept: updateView = " + issue.coverImageUrl);
+                        Log.d(TAG, "loadTodayArticleList: issue.containArticle.size: " + issue.containArticle.size());
                     }
                 });
+    }
+    public Issue loadWholeIssue(){
+        // 数据库 (数据库插入不全)---> 网络
+        Issue issue = getIssueDataFromDB();
+        boolean shouldLoadFromNetwork = false;
+        if (issue != null){
+            int size = issue.containArticle.size();
+            Article lastArticle = issue.containArticle.get(size - 1);
+            if (!ArticleCategorySection.OBITUNARY.getName().equals(lastArticle.section)){
+                shouldLoadFromNetwork = true;
+            }
+        }else {
+            shouldLoadFromNetwork = true;
+        }
+
+        if (shouldLoadFromNetwork) {
+            issue = loadDataFromNetwork();
+        }
+        return issue;
     }
 
     public void initView() {
@@ -403,12 +418,13 @@ public class WeeklyFragment extends Fragment {
                 .create();
         WeekJson weekJson = gson.fromJson(jsonResult, WeekJson.class);
         Issue issue = getIssue(weekJson);
+        Log.d(TAG, "loadDataFromNetwork: issue.containArticle.size: " + issue.containArticle.size());
         InchoateApp.setNewestIssueCache(issue);
         mArticlesList = issue.containArticle;
         Runnable mInsertIssueData = new Runnable() {
             @Override
             public void run() {
-                InchoateDBHelper helper = new InchoateDBHelper(getContext(),null, null);
+                InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
                 helper.insertWholeData(issue);
             }
         };

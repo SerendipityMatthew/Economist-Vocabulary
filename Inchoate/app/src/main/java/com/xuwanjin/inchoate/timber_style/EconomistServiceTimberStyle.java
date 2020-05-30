@@ -364,7 +364,7 @@ public class EconomistServiceTimberStyle extends Service {
         private boolean isNetworkBuffering = true;
         private List<Article> mArticleList;
         private Handler mHandler;
-        private int bufferPercent = 0;
+        private static Integer bufferPercent = 0;
 
         @Override
         public void onCompletion(MediaPlayer mp) {
@@ -398,6 +398,7 @@ public class EconomistServiceTimberStyle extends Service {
         }
 
         public void setDataSource(String filePath) {
+            isNetworkBuffering = true;
             Log.d(TAG, "setDataSource: mMediaPlayer = " + mMediaPlayer);
             try {
                 mMediaPlayer.setDataSource(filePath);
@@ -470,28 +471,22 @@ public class EconomistServiceTimberStyle extends Service {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    Looper.prepare();
-                    Handler handler = new Handler(Looper.myLooper(), new Handler.Callback() {
-                        @Override
-                        public boolean handleMessage(@NonNull Message msg) {
-                            return false;
-                        }
-                    });
-
-                    Looper.loop();
                     while (true) {
                         boolean isBuffering = isNetworkBuffering();
-                        if (!isBuffering) {
-                            break;
+                        if (isBuffering && !isPlaying()) {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            Log.d(TAG, "isPlaying = " + isPlaying() + " isNetworkBuffering = " + isNetworkBuffering);
                         } else {
-                            Log.d(TAG, "getBufferPercentAndIsPlaying: run: isPlaying() = " + isPlaying());
+                            break;
                         }
                     }
-                    handler.postDelayed(this, 1000);
                 }
             };
-            new Thread(runnable).start();
-
+            Executors.newSingleThreadExecutor().submit(runnable);
         }
 
         public void updateAudioPlayingFragment() {
@@ -511,7 +506,6 @@ public class EconomistServiceTimberStyle extends Service {
             };
             sAudioPlayingPoolExecutor.submit(audioStartRunnable);
         }
-
 
         public boolean isPlaying() {
             return mMediaPlayer != null && mMediaPlayer.isPlaying();
@@ -541,12 +535,10 @@ public class EconomistServiceTimberStyle extends Service {
         }
 
         public int getCurrentPosition() {
-
             return mMediaPlayer == null ? 0 : mMediaPlayer.getCurrentPosition();
         }
 
         public int getDuration() {
-
             return mMediaPlayer == null ? -1 : mMediaPlayer.getDuration();
         }
 

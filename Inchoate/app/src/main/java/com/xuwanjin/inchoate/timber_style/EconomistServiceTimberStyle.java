@@ -111,17 +111,24 @@ public class EconomistServiceTimberStyle extends Service {
 
     public void setCurrentPlayingArticleListBySource(int sourceFlag, String issueDateStr) {
         InchoateDBHelper helper = new InchoateDBHelper(getApplicationContext(), null, null);
+        List<Article> articleList = new ArrayList<>();
         if (sourceFlag == WEEKLY_PLAYING_SOURCE) {
-            mCurrentPlayingArticleList = helper.queryIssueByIssueDate(issueDateStr).get(0).containArticle;
+            mCurrentIssue = helper.queryIssueByIssueDate(issueDateStr).get(0);
+            articleList = mCurrentIssue.containArticle;
         }
         if (sourceFlag == BOOKMARK_PLAYING_SOURCE) {
-            mCurrentPlayingArticleList = helper.queryBookmarkedArticle();
+            articleList = helper.queryBookmarkedArticle();
         }
         if (sourceFlag == TODAY_PLAYING_SOURCE) {
 
         }
         if (sourceFlag == ARTICLE_DETAIL_PLAYING_SOURCE) {
 
+        }
+        for (Article article : articleList) {
+            if (article.audioUrl != null && !article.audioUrl.trim().equals("")) {
+                mCurrentPlayingArticleList.add(article);
+            }
         }
         mPlayer.setArticleAudioPlayingList();
     }
@@ -131,6 +138,7 @@ public class EconomistServiceTimberStyle extends Service {
             Article art = mCurrentPlayingArticleList.get(i);
             if (art.section.equals(article.section)
                     && art.title.equals(article.title)) {
+                Log.d(TAG, "setArticleInPlayingListIndex:  i = " + i);
                 mArticleInPlayingListIndex = i;
             }
         }
@@ -222,13 +230,6 @@ public class EconomistServiceTimberStyle extends Service {
 
     public void playTheRestByIssueDate(Article article, String issueDate, int sourceFlag) {
         Log.d(TAG, "playTheRestByIssueDate: ");
-        InchoateDBHelper helper = new InchoateDBHelper(getBaseContext(), null, null);
-        List<Issue> issueList = helper.queryIssueByIssueDate(issueDate);
-        if (helper != null) {
-            helper.close();
-        }
-        mCurrentIssue = issueList.get(0);
-        playTheRestOfWholeIssue(article);
         setCurrentPlayingArticleListBySource(sourceFlag, issueDate);
         setArticleInPlayingListIndex(article);
     }
@@ -413,9 +414,6 @@ public class EconomistServiceTimberStyle extends Service {
                 @Override
                 public void run() {
                     Log.d(TAG, "EconomistPlayer: play: ");
-                    if (mArticleInPlayingListIndex < 0 || mArticleInPlayingListIndex >= mArticleList.size()) {
-                        return;
-                    }
                     Article article = mArticleList.get(mArticleInPlayingListIndex);
 
                     if (article == null) {
@@ -513,13 +511,27 @@ public class EconomistServiceTimberStyle extends Service {
 
         public void playNext() {
             mArticleInPlayingListIndex++;
+            isArticleIndexIllegal();
             stop();
             play();
+        }
 
+        public void isArticleIndexIllegal() {
+            int size = mArticleList.size();
+            Log.d(TAG, "isArticleIndexIllegal: mArticleInPlayingListIndex = " + mArticleInPlayingListIndex);
+            if (mArticleInPlayingListIndex <= 0 || mArticleInPlayingListIndex >= size) {
+                if (mArticleInPlayingListIndex <= 0) {
+                    mArticleInPlayingListIndex = 0;
+                }
+                if (mArticleInPlayingListIndex >= size) {
+                    mArticleInPlayingListIndex = size - 1;
+                }
+            }
         }
 
         public void playPrevious() {
             mArticleInPlayingListIndex--;
+            isArticleIndexIllegal();
             stop();
             play();
         }

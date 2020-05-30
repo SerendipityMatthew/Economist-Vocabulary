@@ -37,6 +37,8 @@ import com.xuwanjin.inchoate.timber_style.IEconomistService;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.xuwanjin.inchoate.Utils.getDurationFormat;
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.mEconomistService;
@@ -64,6 +66,7 @@ public class ArticleFragment extends Fragment {
     ImageView articleShareToolbar;
     LinearLayout mLinearLayout;
     View articlePlayBarDivider;
+    private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -145,27 +148,24 @@ public class ArticleFragment extends Fragment {
     }
 
     public void initOnClickListener() {
+        Runnable playArticleRunnable = new Runnable() {
+            @Override
+            public void run() {
+                InchoateApp.setDisplayArticleCache(article);
+                SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
+                panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
+                EventBus.getDefault().post(panelState);
+                EconomistPlayerTimberStyle.playWholeIssueByIssueDate(article, article.date);
+            }
+        };
+
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        InchoateApp.setDisplayArticleCache(article);
-                        InchoateApp.setAudioPlayingArticleListCache(InchoateApp.getNewestIssueCache().get(0).containArticle);
-                        SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
-                        panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
-                        EventBus.getDefault().post(panelState);
-                        List<Issue> issueList = InchoateApp.getNewestIssueCache();
-
-                        EconomistPlayerTimberStyle.playWholeIssue(article, issueList.get(0), Constants.ARTICLE_DETAIL_PLAYING_SOURCE);
-                    }
-                }).start();
-
+                mExecutorService.submit(playArticleRunnable);
             }
         });
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

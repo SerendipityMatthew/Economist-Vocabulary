@@ -157,25 +157,24 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: ");
         mContext = getContext();
         view = inflater.inflate(R.layout.fragment_audio_play, container, false);
         mArticleList = InchoateApp.getAudioPlayingArticleListCache();
-        if (mArticleList == null || mArticleList.size() == 0) {
-            return null;
-        }
         mAudioPlayingArticle = InchoateApp.getDisplayArticleCache();
+        Log.d(TAG, "onCreateView: mAudioPlayingArticle = " + mAudioPlayingArticle);
         initView();
         initData();
         initOnListener();
         EventBus.getDefault().register(this);
+        mHandler.removeCallbacks(mProgressCallback);
+        mHandler.postDelayed(mProgressCallback, 1000);
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mHandler.removeCallbacks(mProgressCallback);
-        mHandler.post(mProgressCallback);
     }
 
     public void initView() {
@@ -217,6 +216,9 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         }
         Glide.with(getContext())
                 .load(mAudioPlayingArticle.mainArticleImage)
+                .error(R.mipmap.the_economist)
+                .timeout(10*1000)
+                .placeholder(R.mipmap.the_economist)
                 .into(articleCoverImage);
         playFlyTitle.setText(mAudioPlayingArticle.flyTitle);
         audioPlayTitle.setText(mAudioPlayingArticle.title);

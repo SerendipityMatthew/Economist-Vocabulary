@@ -98,11 +98,11 @@ public class WeeklyFragment extends Fragment {
     private Handler mHandler = new Handler();
 
     public static final int DELAY_TIME = 3000;
-
+    private Object mObject;
     public Runnable mBindServiceRunnable = new Runnable() {
         @Override
         public void run() {
-            EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
+            mObject = EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
         }
     };
 
@@ -419,7 +419,7 @@ public class WeeklyFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mEconomistService != null) {
+        if (mObject != null) {
             EconomistPlayerTimberStyle.unbindToService(getActivity(), economistServiceConnection);
         }
     }

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
@@ -29,6 +30,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -362,6 +364,7 @@ public class EconomistServiceTimberStyle extends Service {
         private boolean isNetworkBuffering = true;
         private List<Article> mArticleList;
         private Handler mHandler;
+        private int bufferPercent = 0;
 
         @Override
         public void onCompletion(MediaPlayer mp) {
@@ -422,11 +425,12 @@ public class EconomistServiceTimberStyle extends Service {
                         mMediaPlayer.reset();
                     }
                     mMediaPlayer = new MediaPlayer();
-                    String realAudioPath = getRealAudioPath(article) ;
+                    String realAudioPath = getRealAudioPath(article);
                     mCurrentPlayingArticle = article;
                     Log.d(TAG, "audioPlayingTask: play: audioPath = " + realAudioPath);
                     isNetworkBuffering = true;
                     updateAudioPlayingFragment();
+                    getBufferPercentAndIsPlaying();
                     try {
                         mMediaPlayer.setDataSource(realAudioPath);
                         mMediaPlayer.prepare();
@@ -461,12 +465,42 @@ public class EconomistServiceTimberStyle extends Service {
             };
             sAudioPlayingPoolExecutor.submit(audioPlayingTask);
         }
-        public void updateAudioPlayingFragment(){
+
+        public void getBufferPercentAndIsPlaying() {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    Looper.prepare();
+                    Handler handler = new Handler(Looper.myLooper(), new Handler.Callback() {
+                        @Override
+                        public boolean handleMessage(@NonNull Message msg) {
+                            return false;
+                        }
+                    });
+
+                    Looper.loop();
+                    while (true) {
+                        boolean isBuffering = isNetworkBuffering();
+                        if (!isBuffering) {
+                            break;
+                        } else {
+                            Log.d(TAG, "getBufferPercentAndIsPlaying: run: isPlaying() = " + isPlaying());
+                        }
+                    }
+                    handler.postDelayed(this, 1000);
+                }
+            };
+            new Thread(runnable).start();
+
+        }
+
+        public void updateAudioPlayingFragment() {
             PlayEvent playEvent = new PlayEvent();
             playEvent.isPlaySkip = true;
             playEvent.mArticle = mCurrentPlayingArticle;
             EventBus.getDefault().post(playEvent);
         }
+
         public void playFromPause() {
             Runnable audioStartRunnable = new Runnable() {
                 @Override
@@ -551,15 +585,15 @@ public class EconomistServiceTimberStyle extends Service {
         @Override
         public void onBufferingUpdate(MediaPlayer mp, int percent) {
             // 这个 percent 有数字了表示就开始正在网络缓存当中
+            bufferPercent = percent;
             Log.d(TAG, "EconomistPlayer: onBufferingUpdate: percent = " + percent);
-            Log.d(TAG, "EconomistPlayer: onBufferingUpdate: mp = " + mp);
         }
 
         @Override
         public void onPrepared(MediaPlayer mp) {
+            Log.d(TAG, "EconomistPlayer: onPrepared: ");
             // 这个 表示可以播放文件了
             isNetworkBuffering = false;
-            Log.d(TAG, "EconomistPlayer: onPrepared: ");
         }
     }
 }

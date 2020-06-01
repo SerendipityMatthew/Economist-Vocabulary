@@ -16,7 +16,19 @@ import com.xuwanjin.inchoate.model.Paragraph;
 import com.xuwanjin.inchoate.model.Vocabulary;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.FlowableSubscriber;
+import io.reactivex.Scheduler;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 public class InchoateDBHelper extends SQLiteOpenHelper {
     private static final String TAG = "InchoateDBHelper";
@@ -27,7 +39,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     static final String TABLE_NAME_VOCABULARY = "vocabulary";
     public Context mContext;
     private static volatile SQLiteDatabase sDatabase;
-
+    Disposable mDisposable;
     private static final long RECORD_NOT_EXISTED_IN_DB = -1000;
     private static final String KEY_ID = "id";
 
@@ -200,6 +212,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         }
         return issueList;
     }
+
     public List<Issue> queryIssueByIssueDate(String issueDate) {
         List<Issue> issueList = new ArrayList<>();
         SQLiteDatabase database = openInchoateDB();
@@ -448,6 +461,49 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         // 对 List<Article> 里面的每一项执行 insertArticleData操作,
         //              返回一个结果, 获取了文章的 id之后,
         //                      执行 Paragraph List 里的每一项的插入
+        long finalIssueRowID = issueRowID;
+        mDisposable = Flowable
+                .fromIterable(issue.containArticle)        // 把 list 的元素一个一个的发送
+                .map(new Function<Article, HashMap<Long, Article>>() {
+                    @Override
+                    public HashMap<Long, Article> apply(Article article) throws Exception {
+                        Log.d(TAG, "insertWholeData: apply: article.title = " + article.title);
+                        long id = articleRowIDInDB(article, issue.issueDate);
+                        long articleRowID = RECORD_NOT_EXISTED_IN_DB;
+                        if (id == RECORD_NOT_EXISTED_IN_DB) {
+                            articleRowID = insertArticleData(article, finalIssueRowID, issue.issueDate);
+                        } else {
+                            articleRowID = id;
+                        }
+                        HashMap<Long, Article> articleHashMap = new HashMap<>(0);
+                        articleHashMap.put(articleRowID, article);
+                        return articleHashMap;
+                    }
+                })
+                .doOnError(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.d(TAG, "insertWholeData: doOnError: accept: ");
+                        return;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.io()) // subscribeOn 和 observeOn 在同一个线程, 可以解决 database connection pool has been closed 问题, 所以注释掉这一条
+                .subscribe(new Consumer<HashMap<Long, Article>>() {
+                    @Override
+                    public void accept(HashMap<Long, Article> longArticleHashMap) throws Exception {
+                        long articleRowID = longArticleHashMap.keySet().iterator().next();
+                        Article article = longArticleHashMap.values().iterator().next();
+                        Log.d(TAG, "insertWholeData: accept: articleRowID = " + articleRowID);
+                        for (Paragraph paragraph : article.paragraphList) {
+                            long paragraphID = paragraphRowIDInDB(paragraph.paragraph, articleRowID);
+                            if (paragraphID == RECORD_NOT_EXISTED_IN_DB) {
+                                insertParagraphData(paragraph, articleRowID);
+                            }
+                        }
+                    }
+                });
+        /*
         for (Article article : issue.containArticle) {
             long id = articleRowIDInDB(article, issue.issueDate);
             long articleRowID = RECORD_NOT_EXISTED_IN_DB;
@@ -466,6 +522,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                 }
             }
         }
+         */
     }
 
     private boolean isArticleExistedInDB(Article article, String issueDate) {

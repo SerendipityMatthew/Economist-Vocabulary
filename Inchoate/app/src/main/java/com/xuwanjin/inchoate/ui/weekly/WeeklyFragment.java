@@ -70,6 +70,7 @@ import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
@@ -196,7 +197,7 @@ public class WeeklyFragment extends Fragment {
             public void subscribe(SingleEmitter<Issue> emitter) throws Exception {
                 Issue issue = specificIssueByIssueDateAndUrlID();
                 mIssue = issue;
-                Log.d(TAG, "subscribe: mIssue = " + mIssue);
+                Log.d(TAG, "subscribe: mIssue.issueFormatDate = " + mIssue.issueFormatDate);
                 if (issue == null){
                     return;
                 }
@@ -211,6 +212,7 @@ public class WeeklyFragment extends Fragment {
                         Log.d(TAG, "loadTodayArticleList: issue.containArticle.size: " + issue.containArticle.size());
                     }
                 });
+
     }
 
     public Issue specificIssueByIssueDateAndUrlID(){
@@ -332,7 +334,6 @@ public class WeeklyFragment extends Fragment {
         previousEdition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: previousEdition = " + previousEdition);
                 navigationToFragment(R.id.navigation_previous_edition);
             }
         });
@@ -372,7 +373,6 @@ public class WeeklyFragment extends Fragment {
         if (issueList != null && issueList.size() > 0) {
             issue = issueList.get(0);
         }
-        Log.d(TAG, "getIssueDataFromDB: issue = " + issue);
         return issue;
     }
 

@@ -93,6 +93,13 @@ public class PreviousFragment extends Fragment {
                 emitter.onSuccess(sIssueList);
             }
         }).subscribeOn(Schedulers.io())
+                .doOnError(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.d(TAG, "loadPreviousIssue: doOnError: accept: ");
+                        return;
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Issue>>() {
                     @Override
@@ -148,7 +155,6 @@ public class PreviousFragment extends Fragment {
             String date = partArray[i].datePublished.substring(0, 10);
             issue.issueFormatDate = date;
             String urlId = partArray[i].id.split("/")[2];
-            Log.d(TAG, "getPreviousIssueDataFromNetwork: urlId = " + urlId);
             issue.urlID = urlId;
             issue.issueDate = Utils.digitalDateSwitchToEnglishFormat(date);
             issue.coverImageUrl = partArray[i].image.cover.get(0).url.canonical;

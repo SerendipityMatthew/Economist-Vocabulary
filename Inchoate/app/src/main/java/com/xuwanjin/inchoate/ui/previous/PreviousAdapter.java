@@ -49,6 +49,7 @@ public class PreviousAdapter extends RecyclerView.Adapter<PreviousAdapter.ViewHo
         Glide.with(mContext)
                 .load(issue.coverImageUrl)
                 .placeholder(R.mipmap.the_economist)
+                .override(600, 1000)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.issueCover);
         holder.issueDate.setText(issue.issueDate);

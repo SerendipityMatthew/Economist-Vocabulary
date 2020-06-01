@@ -32,7 +32,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     public static final int TYPE_FOOTER = 1;
     public static final int TYPE_NORMAL = 2;
 
-    public WeeklyAdapter( Context context, Fragment fragment) {
+    public WeeklyAdapter(Context context, Fragment fragment) {
         mContext = context;
         mFragment = fragment;
     }
@@ -110,7 +110,13 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    InchoateApp.setDisplayArticleCache(mArticleList.get(position - 1));
+                    if (article == null
+                            || article.title == null
+                            || article.title.equals("")
+                            || article.paragraphList == null) {
+                        return;
+                    }
+                    InchoateApp.setDisplayArticleCache(article);
                     Utils.navigationController(
                             InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
                 }
@@ -150,12 +156,12 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        if ((mHeaderView != null && mFooterView == null)||
+        if ((mHeaderView != null && mFooterView == null) ||
                 mHeaderView == null && mFooterView != null) {
-            return mArticleList == null ? 0 : mArticleList.size()+1;
+            return mArticleList == null ? 0 : mArticleList.size() + 1;
         }
-        if (mHeaderView != null && mFooterView != null){
-            return mArticleList == null ? 0 : mArticleList.size()+2;
+        if (mHeaderView != null && mFooterView != null) {
+            return mArticleList == null ? 0 : mArticleList.size() + 2;
         }
         return mArticleList == null ? 0 : mArticleList.size();
     }
@@ -177,7 +183,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
         if (position == 0) {
             return false;
         }
-        if (position == getItemCount()-1) {
+        if (position == getItemCount() - 1) {
             return false;
         }
 

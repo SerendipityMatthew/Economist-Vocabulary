@@ -50,6 +50,7 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick: article = " + article);
                 if (!"Checks and Balance".equals(article.flyTitle)){
                     InchoateApp.setDisplayArticleCache(article);
                     Utils.navigationController(

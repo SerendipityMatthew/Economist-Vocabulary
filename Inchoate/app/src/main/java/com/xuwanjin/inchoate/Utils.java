@@ -1,5 +1,7 @@
 package com.xuwanjin.inchoate;
 
+import android.util.Log;
+
 import androidx.navigation.NavController;
 
 import com.xuwanjin.inchoate.model.Article;
@@ -76,6 +78,9 @@ public class Utils {
                 // weekText0.children 第一个 children列表里data 字段, 合并成一个段落
                 StringBuilder paragraphBuilder = new StringBuilder();
                 // 3. 获取段落的所有数据
+                if (weekText0.children.size() == 0){
+                    break;
+                }
                 for (WeekText weekText1 : weekText0.children) {
                     if (weekText1.children != null) {
                         List<WeekText> children = weekText1.children;

@@ -18,6 +18,7 @@ public class Issue implements Parcelable, Cloneable {
     public String issueUrl;
     public List<Article> containArticle;
     public List<String> categorySection;
+    public String urlID;
 
     public Issue() {
 

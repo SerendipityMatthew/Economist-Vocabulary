@@ -37,6 +37,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     private static final String KEY_ISSUE_URL = "issue_url";
     private static final String KEY_ISSUE_FORMAT_DATE = "issue_format_date";
     private static final String KEY_ISSUE_HEADLINE = "issue_headline";
+    private static final String KEY_ISSUE_URL_ID = "url_id";
     // paragraph of article
     // the main key of table article
     private static final String KEY_ISSUE_DATE = "issue_date";
@@ -83,6 +84,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             + KEY_IS_DOWNLOADED + " TEXT,"
             + KEY_ISSUE_URL + " TEXT,"
             + KEY_ISSUE_HEADLINE + " TEXT,"
+            + KEY_ISSUE_URL_ID + " TEXT,"
             + KEY_ISSUE_FORMAT_DATE + " DATE"
             + ")";
     private static final String CREATE_TABLE_ARTICLE = "CREATE TABLE IF NOT EXISTS "

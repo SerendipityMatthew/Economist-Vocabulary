@@ -1,8 +1,10 @@
 package com.xuwanjin.inchoate.ui.weekly;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -41,7 +43,10 @@ import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 
 import static com.xuwanjin.inchoate.Constants.NEWEST_ISSUE_DATE;
 import static com.xuwanjin.inchoate.Constants.PENDING_DOWNLOAD_ISSUE_DATE;
+import static com.xuwanjin.inchoate.Constants.TAIL;
 import static com.xuwanjin.inchoate.Constants.WEEKLY_PLAYING_SOURCE;
+import static com.xuwanjin.inchoate.Constants.WEEK_FRAGMENT_COMMON_URL;
+import static com.xuwanjin.inchoate.Constants.WEEK_FRAGMENT_QUERY_URL;
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.mEconomistService;
 
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
@@ -55,6 +60,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -90,7 +97,7 @@ public class WeeklyFragment extends Fragment {
     private StickHeaderDecoration mStickHeaderDecoration;
     private View view;
     public DownloadService mDownloadService;
-    private static Issue mIssue = new Issue();
+    private Issue mIssue = new Issue();
     private Disposable mDisposable;
     public static String formatIssueDateStr = NEWEST_ISSUE_DATE;
     private ExecutorService mExecutorService = Executors.newFixedThreadPool(1);
@@ -186,8 +193,12 @@ public class WeeklyFragment extends Fragment {
         mDisposable = Single.create(new SingleOnSubscribe<Issue>() {
             @Override
             public void subscribe(SingleEmitter<Issue> emitter) throws Exception {
-                Issue issue = loadWholeIssue();
+                Issue issue = specificIssueByIssueDateAndUrlID();
                 mIssue = issue;
+                Log.d(TAG, "subscribe: mIssue = " + mIssue);
+                if (issue == null){
+                    return;
+                }
                 emitter.onSuccess(issue);
             }
         }).subscribeOn(Schedulers.io())
@@ -200,22 +211,42 @@ public class WeeklyFragment extends Fragment {
                     }
                 });
     }
-    public Issue loadWholeIssue(){
+
+    public Issue specificIssueByIssueDateAndUrlID(){
+        Issue issue ;
+        SharedPreferences preferences =
+                getContext().getSharedPreferences(Constants.INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+        String urlIdString = preferences.getString(Constants.CURRENT_DISPLAY_ISSUE_URL_ID, "");
+        if (!urlIdString.equals("")){
+            String[] value = urlIdString.split(",");
+            String issueDate = value[0];
+            String issueUrlId = value[1];
+            issue = loadWholeIssue(issueDate, issueUrlId);
+        }else {
+            issue = loadWholeIssue(formatIssueDateStr, "");
+        }
+        return issue;
+    }
+
+    // 先查看 load 哪一期, 然后是否从数据库, 还是 网络上 load.
+    // 通过 issueDate 查看是否存在数据库当中,
+    // 通过 urlId 从网络上加载
+    public Issue loadWholeIssue(String issueDate, String urlId) {
         // 数据库 (数据库插入不全)---> 网络
-        Issue issue = getIssueDataFromDB();
+        Issue issue = getIssueDataFromDB(issueDate);
         boolean shouldLoadFromNetwork = false;
-        if (issue != null){
+        if (issue != null) {
             int size = issue.containArticle.size();
-            Article lastArticle = issue.containArticle.get(size-1);
-            if (!ArticleCategorySection.OBITUARY.getName().equals(lastArticle.section)){
+            Article lastArticle = issue.containArticle.get(size - 1);
+            if (!ArticleCategorySection.OBITUARY.getName().equals(lastArticle.section)) {
                 shouldLoadFromNetwork = true;
             }
-        }else {
+        } else {
             shouldLoadFromNetwork = true;
         }
 
         if (shouldLoadFromNetwork) {
-            issue = loadDataFromNetwork();
+            issue = loadDataFromNetwork(urlId);
         }
         return issue;
     }
@@ -308,7 +339,6 @@ public class WeeklyFragment extends Fragment {
 
     private void navigationToFragment(int resId) {
         Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, resId);
-
     }
 
     @Override
@@ -334,10 +364,10 @@ public class WeeklyFragment extends Fragment {
         return issue;
     }
 
-    private Issue getIssueDataFromDB() {
+    private Issue getIssueDataFromDB(String issueDate) {
         Issue issue = null;
         InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
-        List<Issue> issueList = helper.queryIssueByFormatIssueDate(formatIssueDateStr);
+        List<Issue> issueList = helper.queryIssueByFormatIssueDate(issueDate);
         if (issueList != null && issueList.size() > 0) {
             issue = issueList.get(0);
         }
@@ -378,16 +408,16 @@ public class WeeklyFragment extends Fragment {
         return issue;
     }
 
-    public Issue loadDataFromNetwork() {
+    public Issue loadDataFromNetwork(String urlId) {
+        String wholeUrlId = WEEK_FRAGMENT_COMMON_URL + urlId + TAIL;
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url(Constants.WEEK_FRAGMENT_QUERY_URL)
+                .url(wholeUrlId)
                 .build();
         Call call = client.newCall(request);
         Response response = null;
         try {
             response = call.execute();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -430,6 +460,7 @@ public class WeeklyFragment extends Fragment {
         mExecutorService.submit(mInsertIssueData);
         return issue;
     }
+
 
     @Override
     public void onDestroy() {

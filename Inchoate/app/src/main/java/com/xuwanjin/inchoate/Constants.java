@@ -36,5 +36,6 @@ public class Constants {
     public static final int SKIP_DURATION_DEFAULT_VALUE_PREFERENCE = SKIP_DURATION_30_SECONDS_PREFERENCE;
 
     public static final String NEWEST_ISSUE_DATE = "2020-05-30";
+    public static final String CURRENT_DISPLAY_ISSUE_URL_ID = "current_display_issue_url_id";
 
 }

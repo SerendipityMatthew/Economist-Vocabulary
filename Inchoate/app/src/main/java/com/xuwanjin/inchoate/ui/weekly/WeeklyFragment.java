@@ -46,7 +46,7 @@ import static com.xuwanjin.inchoate.Constants.PENDING_DOWNLOAD_ISSUE_DATE;
 import static com.xuwanjin.inchoate.Constants.TAIL;
 import static com.xuwanjin.inchoate.Constants.WEEKLY_PLAYING_SOURCE;
 import static com.xuwanjin.inchoate.Constants.WEEK_FRAGMENT_COMMON_URL;
-import static com.xuwanjin.inchoate.Constants.WEEK_FRAGMENT_QUERY_URL;
+import static com.xuwanjin.inchoate.Constants.WEEK_FRAGMENT_QUERY_05_30_URL;
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.mEconomistService;
 
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
@@ -98,6 +98,7 @@ public class WeeklyFragment extends Fragment {
     private View view;
     public DownloadService mDownloadService;
     private Issue mIssue = new Issue();
+    private static HashMap<String, Issue> sIssueHashMap = new HashMap<>();
     private Disposable mDisposable;
     public static String formatIssueDateStr = NEWEST_ISSUE_DATE;
     private ExecutorService mExecutorService = Executors.newFixedThreadPool(1);
@@ -223,7 +224,7 @@ public class WeeklyFragment extends Fragment {
             String issueUrlId = value[1];
             issue = loadWholeIssue(issueDate, issueUrlId);
         }else {
-            issue = loadWholeIssue(formatIssueDateStr, "");
+            issue = loadWholeIssue(formatIssueDateStr, WEEK_FRAGMENT_QUERY_05_30_URL );
         }
         return issue;
     }
@@ -409,6 +410,7 @@ public class WeeklyFragment extends Fragment {
     }
 
     public Issue loadDataFromNetwork(String urlId) {
+
         String wholeUrlId = WEEK_FRAGMENT_COMMON_URL + urlId + TAIL;
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()

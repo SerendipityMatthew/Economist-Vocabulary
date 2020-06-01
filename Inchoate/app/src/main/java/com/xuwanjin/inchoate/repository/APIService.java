@@ -29,7 +29,7 @@ public class APIService {
     public List<Article> getArticleList() {
         OkHttpClient weekFragmentClient = new OkHttpClient();
         Request weekFragmentRequest = new Request.Builder()
-                .url(Constants.WEEK_FRAGMENT_QUERY_URL)
+                .url(Constants.WEEK_FRAGMENT_QUERY_05_30_URL)
                 .build();
         Call call = weekFragmentClient.newCall(weekFragmentRequest);
         call.enqueue(new Callback() {

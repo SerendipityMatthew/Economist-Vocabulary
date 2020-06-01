@@ -140,10 +140,13 @@ public class ArticleFragment extends Fragment {
         Glide.with(getContext())
                 .load(article.mainArticleImage)
                 .into(articleCoverImage);
-
-        if (article.title.contains("KAL’s cartoon")) {
-            mLinearLayout.setVisibility(View.INVISIBLE);
-            articlePlayBarDivider.setVisibility(View.INVISIBLE);
+        Log.d(TAG, "initData: article = " + article);
+        if (article != null
+                && (article.audioUrl == null
+                || article.audioUrl.trim().equals("")
+                || article.audioUrl.equalsIgnoreCase("null"))) {
+            mLinearLayout.setVisibility(View.GONE);
+            articlePlayBarDivider.setVisibility(View.GONE);
         }
     }
 

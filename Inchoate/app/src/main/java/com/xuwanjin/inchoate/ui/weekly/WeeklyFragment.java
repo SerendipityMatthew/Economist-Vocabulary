@@ -410,8 +410,8 @@ public class WeeklyFragment extends Fragment {
     }
 
     public Issue loadDataFromNetwork(String urlId) {
-
         String wholeUrlId = WEEK_FRAGMENT_COMMON_URL + urlId + TAIL;
+        Log.d(TAG, "loadDataFromNetwork: wholeUrlId = " + wholeUrlId);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(wholeUrlId)
@@ -452,6 +452,7 @@ public class WeeklyFragment extends Fragment {
         Issue issue = getIssue(weekJson);
         InchoateApp.setNewestIssueCache(issue);
         mArticlesList = issue.containArticle;
+        Log.d(TAG, "loadDataFromNetwork: ");
         Runnable mInsertIssueData = new Runnable() {
             @Override
             public void run() {

@@ -496,6 +496,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                         Article article = longArticleHashMap.values().iterator().next();
                         Log.d(TAG, "insertWholeData: accept: articleRowID = " + articleRowID);
                         for (Paragraph paragraph : article.paragraphList) {
+                            Log.d(TAG, "insertWholeData: accept: paragraph.paragraph = " + paragraph.paragraph);
                             long paragraphID = paragraphRowIDInDB(paragraph.paragraph, articleRowID);
                             if (paragraphID == RECORD_NOT_EXISTED_IN_DB) {
                                 insertParagraphData(paragraph, articleRowID);

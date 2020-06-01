@@ -28,6 +28,7 @@ import static com.xuwanjin.inchoate.InchoateApp.sArticleLinkedHashMap;
 
 
 public class Utils {
+    public static final String TAG = "Utils";
     public static void navigationController(NavController navController, int resId) {
         if (navController != null) {
             navController.navigate(resId);
@@ -74,22 +75,19 @@ public class Utils {
             article.paragraphList = new ArrayList<>();
             StringBuilder articleBuilder = new StringBuilder();
             int theOrderOfParagraph = 0;
-            for (WeekText weekText0 : weekPart.text) {
-                // weekText0.children 第一个 children列表里data 字段, 合并成一个段落
+            for (WeekText wholeArticleText : weekPart.text) {
+                // weekText0.children 第一个 children列表里 data 字段, 合并成一个段落
                 StringBuilder paragraphBuilder = new StringBuilder();
                 // 3. 获取段落的所有数据
-                if (weekText0.children.size() == 0){
-                    break;
-                }
-                for (WeekText weekText1 : weekText0.children) {
-                    if (weekText1.children != null) {
-                        List<WeekText> children = weekText1.children;
+                for (WeekText paragraphText : wholeArticleText.children) {
+                    if (paragraphText.children != null) {
+                        List<WeekText> children = paragraphText.children;
                         for (WeekText w : children) {
                             paragraphBuilder.append(w.data);
                         }
-                    } else { //(weekText1.children == null)
-                        if (weekText1.type.equals("text")) {
-                            paragraphBuilder.append(weekText1.data);
+                    } else {
+                        if (paragraphText.type.equals("text")) {
+                            paragraphBuilder.append(paragraphText.data);
                         }
                     }
                 }
@@ -200,6 +198,7 @@ public class Utils {
                         theOrderOfParagraph++;
                         paragraph.articleName = article.title;
                         paragraph.theOrderOfParagraph = theOrderOfParagraph;
+                        Log.d(TAG, "getTodayArticleList: paragraph = " + paragraph.paragraph);
                         article.paragraphList.add(paragraph);
                     }
                     articleBuilder.append(paragraphBuilder);

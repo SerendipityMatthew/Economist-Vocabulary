@@ -101,6 +101,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             Glide.with(mContext)
                     .load(article.mainArticleImage)
                     .error(R.mipmap.the_economist)
+                    .placeholder(R.mipmap.the_economist)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.article_image);
             holder.articleTitle.setText(article.title);

@@ -1,6 +1,7 @@
 package com.xuwanjin.inchoate.ui.today;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,9 +50,11 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InchoateApp.setDisplayArticleCache(article);
-                Utils.navigationController(
-                        InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
+                if (!"Checks and Balance".equals(article.flyTitle)){
+                    InchoateApp.setDisplayArticleCache(article);
+                    Utils.navigationController(
+                            InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
+                }
             }
         });
     }

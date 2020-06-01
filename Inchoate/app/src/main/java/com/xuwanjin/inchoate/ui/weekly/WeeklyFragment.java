@@ -206,8 +206,8 @@ public class WeeklyFragment extends Fragment {
         boolean shouldLoadFromNetwork = false;
         if (issue != null){
             int size = issue.containArticle.size();
-            Article lastArticle = issue.containArticle.get(size - 1);
-            if (!ArticleCategorySection.OBITUNARY.getName().equals(lastArticle.section)){
+            Article lastArticle = issue.containArticle.get(size-1);
+            if (!ArticleCategorySection.OBITUARY.getName().equals(lastArticle.section)){
                 shouldLoadFromNetwork = true;
             }
         }else {
@@ -341,7 +341,7 @@ public class WeeklyFragment extends Fragment {
         if (issueList != null && issueList.size() > 0) {
             issue = issueList.get(0);
         }
-        Log.d(TAG, "onResponse: use the cache ");
+        Log.d(TAG, "getIssueDataFromDB: issue = " + issue);
         return issue;
     }
 
@@ -418,7 +418,6 @@ public class WeeklyFragment extends Fragment {
                 .create();
         WeekJson weekJson = gson.fromJson(jsonResult, WeekJson.class);
         Issue issue = getIssue(weekJson);
-        Log.d(TAG, "loadDataFromNetwork: issue.containArticle.size: " + issue.containArticle.size());
         InchoateApp.setNewestIssueCache(issue);
         mArticlesList = issue.containArticle;
         Runnable mInsertIssueData = new Runnable() {

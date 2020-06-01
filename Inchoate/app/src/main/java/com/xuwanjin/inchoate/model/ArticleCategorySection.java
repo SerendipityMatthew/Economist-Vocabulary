@@ -19,7 +19,7 @@ public enum ArticleCategorySection {
     BOOKS_AND_ARTS("Books and arts"),
     ECONOMICS_AND_FINANCIAL_INDICATORS("Economics and financial indicators"),
     GRAPHIC_DETAIL("Graphic detail"),
-    OBITUNARY("Obitunary");
+    OBITUARY("Obituary");
     private String sectionName;
     private ArticleCategorySection(String sectionName){
         this.sectionName = sectionName;

@@ -435,7 +435,6 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     // 查看是否存在, 如果存在,                获取 rowID
     //              如果不存在. 则插入数据,   并且返回 rowID;
     public void insertWholeData(final Issue issue) {
-        Log.d(TAG, "insertWholeData: ");
         long rowID = issueRowIDInDB(issue);
         long issueRowID = RECORD_NOT_EXISTED_IN_DB;
         if (rowID == RECORD_NOT_EXISTED_IN_DB) {
@@ -469,7 +468,6 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
 
     private boolean isArticleExistedInDB(Article article, String issueDate) {
         long rowID = articleRowIDInDB(article, issueDate);
-        Log.d(TAG, "isArticleExistedInDB: rowID = " + rowID);
         if (rowID == RECORD_NOT_EXISTED_IN_DB) {
             return false;
         }
@@ -480,10 +478,15 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     private long articleRowIDInDB(Article article, String issueDate) {
         SQLiteDatabase database = openInchoateDB();
         // Select * from article where issue_date='' and section='' and title = '' ;
+
+        String articleTitle = article.title;
+        if (article.title.contains("'")) {
+            articleTitle = articleTitle.replace("'", "''");
+        }
         String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE "
                 + KEY_ISSUE_DATE + " =\'" + issueDate + "\'" + " AND "
                 + KEY_SECTION + " =\'" + article.section + "\'" + " AND "
-                + KEY_TITLE + " =\'" + article.title + "\' ";
+                + KEY_TITLE + " =\'" + articleTitle + "\' ";
         Cursor cursor = database.rawQuery(query, null);
         List<Article> articleList = new ArrayList<>();
         while (cursor != null && cursor.moveToNext()) {

@@ -107,11 +107,11 @@ public class WeeklyFragment extends Fragment {
     private Handler mHandler = new Handler();
 
     public static final int DELAY_TIME = 3000;
-    private Object mObject;
+    private boolean isSuccess = false;
     public Runnable mBindServiceRunnable = new Runnable() {
         @Override
         public void run() {
-            mObject = EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
+            isSuccess = EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
         }
     };
 
@@ -468,7 +468,7 @@ public class WeeklyFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mObject != null) {
+        if (isSuccess) {
             EconomistPlayerTimberStyle.unbindToService(getActivity(), economistServiceConnection);
         }
     }

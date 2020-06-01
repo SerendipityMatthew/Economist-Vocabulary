@@ -16,20 +16,20 @@ import com.xuwanjin.inchoate.model.Issue;
 public class EconomistPlayerTimberStyle {
     public static IEconomistService mEconomistService;
 
-    public static final ServiceToken binToService(Context context, ServiceConnection serviceConnection) {
+    public static final boolean binToService(Context context, ServiceConnection serviceConnection) {
         context.startService(new Intent(context, EconomistServiceTimberStyle.class));
         ServiceBinder serviceBinder = new ServiceBinder(serviceConnection, context);
-        if (context.bindService(new Intent().setClass(context, EconomistServiceTimberStyle.class), serviceBinder, 0)) {
-            return new ServiceToken(new ContextWrapper(context));
-        }
-        return null;
+        boolean success = context.bindService(new Intent().setClass(context, EconomistServiceTimberStyle.class), serviceBinder, 0);
+        return success;
     }
+
     public static final void unbindToService(Context context, ServiceConnection serviceConnection) {
-        if (serviceConnection != null){
+        if (serviceConnection != null) {
             context.unbindService(serviceConnection);
         }
     }
-    public static void play(String audioPath){
+
+    public static void play(String audioPath) {
         try {
             mEconomistService.openFile(audioPath);
 
@@ -38,7 +38,8 @@ public class EconomistPlayerTimberStyle {
             e.printStackTrace();
         }
     }
-    public static void seekToPosition(int position){
+
+    public static void seekToPosition(int position) {
         try {
             mEconomistService.seekToPosition(position);
         } catch (RemoteException e) {
@@ -46,7 +47,7 @@ public class EconomistPlayerTimberStyle {
         }
     }
 
-    public static boolean isPlaying(){
+    public static boolean isPlaying() {
 
         try {
             return mEconomistService.isPlaying();
@@ -55,7 +56,8 @@ public class EconomistPlayerTimberStyle {
         }
         return false;
     }
-    public static int getCurrentPosition(){
+
+    public static int getCurrentPosition() {
         try {
             return mEconomistService.getCurrentPosition();
         } catch (RemoteException e) {
@@ -63,7 +65,8 @@ public class EconomistPlayerTimberStyle {
         }
         return -1;
     }
-    public static int getDuration(){
+
+    public static int getDuration() {
         try {
             return mEconomistService.getDuration();
         } catch (RemoteException e) {
@@ -71,15 +74,16 @@ public class EconomistPlayerTimberStyle {
         }
         return -1;
     }
-    public static void playWholeIssue(Article currentArticle, Issue currentIssue, int sourceFlag){
+
+    public static void playWholeIssue(Article currentArticle, Issue currentIssue, int sourceFlag) {
         try {
-            mEconomistService.playTheRestByIssueDate(currentArticle, currentIssue.issueDate, sourceFlag );
+            mEconomistService.playTheRestByIssueDate(currentArticle, currentIssue.issueDate, sourceFlag);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
-    public static void playWholeIssueByIssueDate(Article currentArticle, String issueDate){
+    public static void playWholeIssueByIssueDate(Article currentArticle, String issueDate) {
         try {
             mEconomistService.playTheRestByIssueDate(currentArticle, issueDate, Constants.WEEKLY_PLAYING_SOURCE);
         } catch (RemoteException e) {
@@ -87,7 +91,7 @@ public class EconomistPlayerTimberStyle {
         }
     }
 
-    public static void seekToIncrementPosition(){
+    public static void seekToIncrementPosition() {
         try {
             mEconomistService.seekToIncrementPosition();
         } catch (RemoteException e) {
@@ -95,7 +99,7 @@ public class EconomistPlayerTimberStyle {
         }
     }
 
-    public static void playOrPause(){
+    public static void playOrPause() {
         try {
             mEconomistService.playOrPause();
         } catch (RemoteException e) {
@@ -103,14 +107,15 @@ public class EconomistPlayerTimberStyle {
         }
     }
 
-    public static void playNext(){
+    public static void playNext() {
         try {
             mEconomistService.next();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
-    public static void playPrevious(){
+
+    public static void playPrevious() {
         try {
             mEconomistService.previous();
         } catch (RemoteException e) {

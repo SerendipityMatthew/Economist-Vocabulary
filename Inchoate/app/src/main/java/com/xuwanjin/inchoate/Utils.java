@@ -79,7 +79,11 @@ public class Utils {
                 // weekText0.children 第一个 children列表里 data 字段, 合并成一个段落
                 StringBuilder paragraphBuilder = new StringBuilder();
                 // 3. 获取段落的所有数据
-                for (WeekText paragraphText : wholeArticleText.children) {
+                List<WeekText> childrenText = wholeArticleText.children;
+                if (childrenText == null || childrenText.size()==0){
+                    continue;
+                }
+                for (WeekText paragraphText : childrenText) {
                     if (paragraphText.children != null) {
                         List<WeekText> children = paragraphText.children;
                         for (WeekText w : children) {

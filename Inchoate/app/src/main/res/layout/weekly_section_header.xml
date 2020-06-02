@@ -72,7 +72,7 @@
 
         <TextView
             android:id="@+id/previous_edition"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_gravity="start"
             android:layout_marginStart="10dp"

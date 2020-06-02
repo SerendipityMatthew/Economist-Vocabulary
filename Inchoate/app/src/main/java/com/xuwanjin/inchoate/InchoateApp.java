@@ -31,6 +31,7 @@ public class InchoateApp extends Application {
             public void run() {
                 InchoateDBHelper helper = new InchoateDBHelper(getApplicationContext(), null, null);
                 helper.getReadableDatabase();
+                helper.close();
             }
         }).start();
         inchoateApp = this;

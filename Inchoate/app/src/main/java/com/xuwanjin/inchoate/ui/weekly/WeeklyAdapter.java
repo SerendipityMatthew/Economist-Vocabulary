@@ -128,7 +128,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.mipmap.bookmark_white)
                     .into(holder.bookmark);
-            
+
             holder.bookmark.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -144,6 +144,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                             .into(holder.bookmark);
                     InchoateDBHelper dbHelper = new InchoateDBHelper(mContext, null, null);
                     dbHelper.setBookmarkStatus(article, article.isBookmark);
+                    dbHelper.close();
                 }
             });
         }

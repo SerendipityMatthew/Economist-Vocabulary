@@ -383,6 +383,7 @@ public class WeeklyFragment extends Fragment {
         if (issueList != null && issueList.size() > 0) {
             issue = issueList.get(0);
         }
+        helper.close();
         return issue;
     }
 
@@ -412,6 +413,7 @@ public class WeeklyFragment extends Fragment {
             public void run() {
                 final InchoateDBHelper helper = new InchoateDBHelper(getActivity(), null, null);
                 helper.insertWholeData(issue);
+                helper.close();
             }
         };
         mExecutorService.submit(insertDataRunnable);
@@ -468,6 +470,7 @@ public class WeeklyFragment extends Fragment {
             public void run() {
                 InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
                 helper.insertWholeData(issue);
+                helper.close();
             }
         };
         mExecutorService.submit(mInsertIssueData);

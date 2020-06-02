@@ -203,6 +203,7 @@ public class ArticleFragment extends Fragment {
                         .into(bookmarkArticleToolbar);
                 InchoateDBHelper dbHelper = new InchoateDBHelper(getActivity(), null, null);
                 dbHelper.setBookmarkStatus(article, article.isBookmark);
+                dbHelper.close();
             }
         });
     }

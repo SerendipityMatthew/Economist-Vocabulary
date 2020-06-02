@@ -60,6 +60,7 @@ public class BookmarkFragment extends Fragment {
                 List<Article> articleList = new ArrayList<>();
                 InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
                 articleList = helper.queryBookmarkedArticle();
+                helper.close();
                 sArticleList = articleList;
                 emitter.onSuccess(articleList);
             }

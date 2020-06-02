@@ -197,7 +197,6 @@ public class WeeklyFragment extends Fragment {
             public void subscribe(SingleEmitter<Issue> emitter) throws Exception {
                 Issue issue = specificIssueByIssueDateAndUrlID();
                 mIssue = issue;
-                Log.d(TAG, "subscribe: mIssue.issueFormatDate = " + mIssue.issueFormatDate);
                 if (issue == null){
                     return;
                 }
@@ -308,19 +307,25 @@ public class WeeklyFragment extends Fragment {
         mStreamAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mExecutorService.submit(mStreamAudioRunnable);
+                if (mIssue != null && mIssue.containArticle != null){
+                    mExecutorService.submit(mStreamAudioRunnable);
+                }
             }
         });
 
         mDownloadAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(getContext(), DownloadService.class);
-                intent.putExtra(PENDING_DOWNLOAD_ISSUE_DATE, mIssue.issueFormatDate);
-                getContext().startService(intent);
-                getContext().bindService(intent, serviceConnection, 0);
-                mHandler.post(mGetDownloadPercentRunnable);
+                if (mIssue != null &&
+                        mIssue.issueFormatDate != null
+                        && !"".equals(mIssue.issueFormatDate)){
+                    Intent intent = new Intent();
+                    intent.setClass(getContext(), DownloadService.class);
+                    intent.putExtra(PENDING_DOWNLOAD_ISSUE_DATE, mIssue.issueFormatDate);
+                    getContext().startService(intent);
+                    getContext().bindService(intent, serviceConnection, 0);
+                    mHandler.post(mGetDownloadPercentRunnable);
+                }
             }
         });
 

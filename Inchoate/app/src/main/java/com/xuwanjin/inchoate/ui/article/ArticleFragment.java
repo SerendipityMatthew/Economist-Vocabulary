@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,8 +63,7 @@ public class ArticleFragment extends Fragment {
     ImageView articleCoverImage;
     Article article;
     View view;
-    ImageView backToWeeklyToolbar;
-    TextView weeklyToolbar;
+    TextView backToWeeklyToolbar;
     ImageView fontSizeToolbar;
     ImageView bookmarkArticleToolbar;
     ImageView articleShareToolbar;
@@ -111,7 +111,6 @@ public class ArticleFragment extends Fragment {
     public void initView() {
         mArticleContentRV = view.findViewById(R.id.article_content_recyclerview);
         backToWeeklyToolbar = view.findViewById(R.id.back_to_weekly_toolbar);
-        weeklyToolbar = view.findViewById(R.id.weekly_toolbar);
         fontSizeToolbar = view.findViewById(R.id.font_size_toolbar);
         bookmarkArticleToolbar = view.findViewById(R.id.bookmark_article_toolbar);
         articleShareToolbar = view.findViewById(R.id.article_share_toolbar);
@@ -206,6 +205,15 @@ public class ArticleFragment extends Fragment {
                 dbHelper.close();
             }
         });
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() != null) {
+                    getActivity().onBackPressed();
+                }
+            }
+        };
+        backToWeeklyToolbar.setOnClickListener(onClickListener);
     }
 
     @Override

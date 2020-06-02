@@ -9,19 +9,13 @@
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:alpha="50"
         tools:ignore="MissingConstraints">
 
-        <ImageView
+        <TextView
             android:id="@+id/back_to_weekly_toolbar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@mipmap/back" />
-
-        <TextView
-            android:id="@+id/weekly_toolbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableStart="@mipmap/back"
             android:text="@string/weekly" />
 
         <ImageView

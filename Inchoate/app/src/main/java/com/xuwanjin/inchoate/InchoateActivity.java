@@ -7,7 +7,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +20,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
+import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
+import com.xuwanjin.inchoate.timber_style.IEconomistService;
 import com.xuwanjin.inchoate.ui.playing.AudioPlayerFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setEconomistService;
 
 
 public class InchoateActivity extends AppCompatActivity implements
@@ -33,7 +40,30 @@ public class InchoateActivity extends AppCompatActivity implements
     ConstraintLayout mConstraintLayout;
     FrameLayout nowPlayingControl;
     public SlidingUpPanelLayout slidingUpPanelLayout;
+    public IEconomistService mEconomistService;
+    private boolean isSuccess = false;
+    ServiceConnection economistServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mEconomistService = IEconomistService.Stub.asInterface(service);
+            setEconomistService(mEconomistService);
+            isSuccess = true;
+            Log.d(TAG, "onServiceConnected: mEconomistService = " + mEconomistService);
+            if (isAudioPlying()){
+                SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
+                panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
+                EventBus.getDefault().post(panelState);
+            }
+        }
 
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.d(TAG, "onServiceDisconnected: ");
+            mEconomistService = null;
+            setEconomistService(null);
+            isSuccess = false;
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +82,17 @@ public class InchoateActivity extends AppCompatActivity implements
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         slidingUpPanelLayout = findViewById(R.id.slide_layout);
         nowPlayingControl = findViewById(R.id.now_playing_control);
-
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EconomistPlayerTimberStyle.binToService(this, economistServiceConnection);
+    }
+    public boolean isAudioPlying(){
+       return EconomistPlayerTimberStyle.isPlaying();
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSlidingPanel(SlidingUpControllerEvent event) {

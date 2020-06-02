@@ -161,7 +161,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         mContext = getContext();
         view = inflater.inflate(R.layout.fragment_audio_play, container, false);
         mArticleList = InchoateApp.getAudioPlayingArticleListCache();
-        mAudioPlayingArticle = InchoateApp.getDisplayArticleCache();
+        mAudioPlayingArticle = mArticleList.get(0);
         Log.d(TAG, "onCreateView: mAudioPlayingArticle = " + mAudioPlayingArticle);
         initView();
         initData();

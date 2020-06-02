@@ -36,6 +36,7 @@ import com.xuwanjin.inchoate.timber_style.IEconomistService;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -90,7 +91,6 @@ public class ArticleFragment extends Fragment {
         if (article != null) {
             mParagraphList = article.paragraphList;
         }
-//        EconomistPlayerTimberStyle.binToService(getActivity(), mConnection);
         view = inflater.inflate(R.layout.fragment_article_detail, container, false);
         initView();
         mGridLayoutManager = new GridLayoutManager(getContext(), 1);
@@ -160,6 +160,9 @@ public class ArticleFragment extends Fragment {
             @Override
             public void run() {
                 InchoateApp.setDisplayArticleCache(article);
+                ArrayList<Article> arrayList = new ArrayList<>();
+                arrayList.add(article);
+                InchoateApp.setAudioPlayingArticleListCache(arrayList);
                 SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                 panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                 EventBus.getDefault().post(panelState);

@@ -197,7 +197,7 @@ public class WeeklyFragment extends Fragment {
             public void subscribe(SingleEmitter<Issue> emitter) throws Exception {
                 Issue issue = specificIssueByIssueDateAndUrlID();
                 mIssue = issue;
-                if (issue == null){
+                if (issue == null) {
                     return;
                 }
                 emitter.onSuccess(issue);
@@ -214,18 +214,19 @@ public class WeeklyFragment extends Fragment {
 
     }
 
-    public Issue specificIssueByIssueDateAndUrlID(){
-        Issue issue ;
+    public Issue specificIssueByIssueDateAndUrlID() {
+        Issue issue;
         SharedPreferences preferences =
                 getContext().getSharedPreferences(Constants.INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
         String urlIdString = preferences.getString(Constants.CURRENT_DISPLAY_ISSUE_URL_ID, "");
-        if (!urlIdString.equals("")){
+        if (!urlIdString.equals("")
+                && !urlIdString.contains("null")) {
             String[] value = urlIdString.split(",");
             String issueDate = value[0];
             String issueUrlId = value[1];
             issue = loadWholeIssue(issueDate, issueUrlId);
-        }else {
-            issue = loadWholeIssue(formatIssueDateStr, WEEK_FRAGMENT_QUERY_05_30_URL );
+        } else {
+            issue = loadWholeIssue(formatIssueDateStr, WEEK_FRAGMENT_QUERY_05_30_URL);
         }
         return issue;
     }
@@ -307,7 +308,7 @@ public class WeeklyFragment extends Fragment {
         mStreamAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mIssue != null && mIssue.containArticle != null){
+                if (mIssue != null && mIssue.containArticle != null) {
                     mExecutorService.submit(mStreamAudioRunnable);
                 }
             }
@@ -318,7 +319,7 @@ public class WeeklyFragment extends Fragment {
             public void onClick(View v) {
                 if (mIssue != null &&
                         mIssue.issueFormatDate != null
-                        && !"".equals(mIssue.issueFormatDate)){
+                        && !"".equals(mIssue.issueFormatDate)) {
                     Intent intent = new Intent();
                     intent.setClass(getContext(), DownloadService.class);
                     intent.putExtra(PENDING_DOWNLOAD_ISSUE_DATE, mIssue.issueFormatDate);
@@ -416,7 +417,7 @@ public class WeeklyFragment extends Fragment {
 
     public Issue loadDataFromNetwork(String urlId) {
         String wholeUrlId = WEEK_FRAGMENT_COMMON_URL + urlId + TAIL;
-        Log.d(TAG, "loadDataFromNetwork: wholeUrlId = " + wholeUrlId);
+        Log.d(TAG, "loadDataFromNetwork: urlId = " + urlId);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(wholeUrlId)

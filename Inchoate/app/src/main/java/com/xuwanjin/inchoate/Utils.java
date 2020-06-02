@@ -202,7 +202,6 @@ public class Utils {
                         theOrderOfParagraph++;
                         paragraph.articleName = article.title;
                         paragraph.theOrderOfParagraph = theOrderOfParagraph;
-                        Log.d(TAG, "getTodayArticleList: paragraph = " + paragraph.paragraph);
                         article.paragraphList.add(paragraph);
                     }
                     articleBuilder.append(paragraphBuilder);

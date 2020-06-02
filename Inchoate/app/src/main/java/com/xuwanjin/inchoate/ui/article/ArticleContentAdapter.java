@@ -44,11 +44,18 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
         this.mHeaderView = headerView;
     }
 
+    public void setFooterView(View footerView) {
+        this.mFooterView = footerView;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         switch (viewType) {
+            case TYPE_FOOTER:
+                view = mFooterView;
+                break;
             case TYPE_HEADER:
                 view = mHeaderView;
                 break;
@@ -60,15 +67,23 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (position >= 1) {
-            holder.paragraph.setText(mParagraphList.get(position - 1).paragraph);
+        if (position >= 1 && position < getItemCount() - 1) {
+            Paragraph paragraph = mParagraphList.get(position - 1);
+            holder.paragraph.setText(paragraph.paragraph);
         }
     }
 
     @Override
     public int getItemCount() {
-        if (mHeaderView != null) {
+        if (mHeaderView != null && mFooterView != null) {
+            return mParagraphList.size() + 2;
+        }
+        if ((mHeaderView == null && mFooterView != null) ||
+                (mHeaderView != null && mFooterView == null)) {
             return mParagraphList.size() + 1;
+        }
+        if ((mHeaderView == null && mFooterView == null)) {
+            return mParagraphList.size();
         }
         return mParagraphList == null ? 0 : mParagraphList.size();
     }
@@ -104,7 +119,8 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
 
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
-            if (itemView == mHeaderView) {
+            if (itemView == mHeaderView
+                    || itemView == mFooterView) {
                 return;
             }
             final String[] selectedVocabulary = new String[1];

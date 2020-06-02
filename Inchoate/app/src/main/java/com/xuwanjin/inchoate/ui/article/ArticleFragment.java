@@ -50,6 +50,7 @@ public class ArticleFragment extends Fragment {
     public List<Paragraph> mParagraphList;
     public GridLayoutManager mGridLayoutManager;
     public View mArticleContentHeaderView;
+    public View mArticleContentFooterView;
     TextView sectionAndDate;
     ImageView play;
     TextView duration;
@@ -99,6 +100,7 @@ public class ArticleFragment extends Fragment {
         mArticleContentRV.addItemDecoration(articleItemDecoration);
         mArticleContentRV.setAdapter(mArticleContentAdapter);
         mArticleContentAdapter.setHeaderView(mArticleContentHeaderView);
+        mArticleContentAdapter.setFooterView(mArticleContentFooterView);
         initData();
         initOnClickListener();
         return view;
@@ -114,6 +116,9 @@ public class ArticleFragment extends Fragment {
 
         mArticleContentHeaderView = LayoutInflater.from(getContext())
                 .inflate(R.layout.fragment_article_header_view, mArticleContentRV, false);
+        mArticleContentFooterView = LayoutInflater.from(getContext())
+                .inflate(R.layout.fragment_article_detail_footer, mArticleContentRV, false);
+
         duration = mArticleContentHeaderView.findViewById(R.id.duration);
         play = mArticleContentHeaderView.findViewById(R.id.play);
         articleCoverImage = mArticleContentHeaderView.findViewById(R.id.article_cover_image);

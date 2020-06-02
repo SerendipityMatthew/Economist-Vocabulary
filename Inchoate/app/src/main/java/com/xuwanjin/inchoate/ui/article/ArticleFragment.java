@@ -41,7 +41,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.xuwanjin.inchoate.Utils.getDurationFormat;
-import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.mEconomistService;
 
 public class ArticleFragment extends Fragment {
     public static final String TAG = "ArticleFragment";
@@ -67,6 +66,7 @@ public class ArticleFragment extends Fragment {
     ImageView articleShareToolbar;
     LinearLayout mLinearLayout;
     View articlePlayBarDivider;
+    private IEconomistService mEconomistService;
     private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override

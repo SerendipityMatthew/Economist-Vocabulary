@@ -47,7 +47,6 @@ import static com.xuwanjin.inchoate.Constants.TAIL;
 import static com.xuwanjin.inchoate.Constants.WEEKLY_PLAYING_SOURCE;
 import static com.xuwanjin.inchoate.Constants.WEEK_FRAGMENT_COMMON_URL;
 import static com.xuwanjin.inchoate.Constants.WEEK_FRAGMENT_QUERY_05_30_URL;
-import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.mEconomistService;
 
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
 
@@ -79,6 +78,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.xuwanjin.inchoate.Utils.getIssue;
+import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setEconomistService;
 
 public class WeeklyFragment extends Fragment {
     public static final String TAG = "WeeklyFragment";
@@ -105,7 +105,7 @@ public class WeeklyFragment extends Fragment {
     private ExecutorService mExecutorService = Executors.newFixedThreadPool(1);
     private LinearLayoutManager mLinearLayoutManager;
     private Handler mHandler = new Handler();
-
+    public IEconomistService mEconomistService;
     public static final int DELAY_TIME = 3000;
     private boolean isSuccess = false;
     public Runnable mBindServiceRunnable = new Runnable() {
@@ -144,13 +144,17 @@ public class WeeklyFragment extends Fragment {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mEconomistService = IEconomistService.Stub.asInterface(service);
+            setEconomistService(mEconomistService);
+            isSuccess = true;
             Log.d(TAG, "onServiceConnected: mEconomistService = " + mEconomistService);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.d(TAG, "onServiceDisconnected: ");
-
+            mEconomistService = null;
+            setEconomistService(null);
+            isSuccess = false;
         }
     };
 
@@ -474,7 +478,7 @@ public class WeeklyFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (isSuccess) {
+        if (isSuccess && mEconomistService != null) {
             EconomistPlayerTimberStyle.unbindToService(getActivity(), economistServiceConnection);
         }
     }

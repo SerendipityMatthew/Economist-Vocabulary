@@ -14,12 +14,21 @@ import com.xuwanjin.inchoate.model.Issue;
 
 
 public class EconomistPlayerTimberStyle {
-    public static IEconomistService mEconomistService;
+    private static IEconomistService mEconomistService;
 
+    public static IEconomistService getEconomistService(){
+        return mEconomistService;
+    }
+    public static void setEconomistService(IEconomistService service){
+        mEconomistService = service;
+
+    }
     public static final boolean binToService(Context context, ServiceConnection serviceConnection) {
         context.startService(new Intent(context, EconomistServiceTimberStyle.class));
-        ServiceBinder serviceBinder = new ServiceBinder(serviceConnection, context);
-        boolean success = context.bindService(new Intent().setClass(context, EconomistServiceTimberStyle.class), serviceBinder, 0);
+        boolean success = context.bindService(new Intent().setClass(context, EconomistServiceTimberStyle.class), serviceConnection, 0);
+        if (!success){
+            context.unbindService(serviceConnection);
+        }
         return success;
     }
 

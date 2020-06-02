@@ -16,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 
 import java.util.ArrayList;
@@ -123,11 +124,28 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             });
 
             Glide.with(mContext)
-                    .load(article.isBookmark ? R.mipmap.bookmark_green : R.mipmap.bookmark_white)
+                    .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.mipmap.bookmark_white)
                     .into(holder.bookmark);
-
+            
+            holder.bookmark.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (article.isBookmark) {
+                        article.isBookmark = false;
+                    } else {
+                        article.isBookmark = true;
+                    }
+                    Glide.with(mContext)
+                            .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .placeholder(R.mipmap.bookmark_white)
+                            .into(holder.bookmark);
+                    InchoateDBHelper dbHelper = new InchoateDBHelper(mContext, null, null);
+                    dbHelper.setBookmarkStatus(article, article.isBookmark);
+                }
+            });
         }
     }
 

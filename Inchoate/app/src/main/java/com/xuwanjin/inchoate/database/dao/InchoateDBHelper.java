@@ -164,11 +164,11 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         this.mContext = context;
     }
 
-    public void setBookmarkStatus(boolean isBookmark) {
+    public void setBookmarkStatus(Article article, boolean isBookmark) {
         sDatabase = openInchoateDB();
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_IS_BOOKMARK, isBookmark);
-        sDatabase.update(TABLE_NAME_ARTICLE, contentValues, KEY_ID + "=?", new String[]{});
+        sDatabase.update(TABLE_NAME_ARTICLE, contentValues, KEY_ID + "=?", new String[]{String.valueOf(article.rowIdInDB)});
         sDatabase.close();
     }
 

@@ -23,10 +23,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Issue;
@@ -146,6 +148,15 @@ public class ArticleFragment extends Fragment {
                 .load(article.mainArticleImage)
                 .into(articleCoverImage);
         Log.d(TAG, "initData: article = " + article);
+
+        if (article != null) {
+            Glide.with(getActivity())
+                    .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.mipmap.bookmark_white)
+                    .into(bookmarkArticleToolbar);
+        }
+
         if (article != null
                 && (article.audioUrl == null
                 || article.audioUrl.trim().equals("")
@@ -174,6 +185,24 @@ public class ArticleFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mExecutorService.submit(playArticleRunnable);
+            }
+        });
+
+        bookmarkArticleToolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (article.isBookmark) {
+                    article.isBookmark = false;
+                } else {
+                    article.isBookmark = true;
+                }
+                Glide.with(getActivity())
+                        .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.mipmap.bookmark_white)
+                        .into(bookmarkArticleToolbar);
+                InchoateDBHelper dbHelper = new InchoateDBHelper(getActivity(), null, null);
+                dbHelper.setBookmarkStatus(article, article.isBookmark);
             }
         });
     }

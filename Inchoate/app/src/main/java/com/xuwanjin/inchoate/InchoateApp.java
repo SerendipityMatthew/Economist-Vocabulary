@@ -11,6 +11,7 @@ import com.xuwanjin.inchoate.model.Issue;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class InchoateApp extends Application {
     public static InchoateApp inchoateApp;
@@ -26,14 +27,15 @@ public class InchoateApp extends Application {
 
     public void onCreate() {
         super.onCreate();
-        new Thread(new Runnable() {
+        Runnable openDatabaseRunnable = new Runnable() {
             @Override
             public void run() {
                 InchoateDBHelper helper = new InchoateDBHelper(getApplicationContext(), null, null);
                 helper.getReadableDatabase();
                 helper.close();
             }
-        }).start();
+        };
+        Executors.newSingleThreadExecutor().submit(openDatabaseRunnable);
         inchoateApp = this;
 //        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy
 //                .Builder()

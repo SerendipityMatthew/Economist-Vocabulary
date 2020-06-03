@@ -47,7 +47,7 @@ public class BookmarkFragment extends Fragment {
 
         if (sArticleList.size() > 0) {
             updateFragmentContent(sArticleList);
-        }else {
+        } else {
             loadBookmarkData();
         }
         return view;
@@ -65,14 +65,16 @@ public class BookmarkFragment extends Fragment {
                 emitter.onSuccess(articleList);
             }
         })
-        .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Article>>() {
-            @Override
-            public void accept(List<Article> articles) throws Exception {
-                if (articles.size()> 0){
-                    updateFragmentContent(articles);
-                }
-            }
-        });
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Article>>() {
+                    @Override
+                    public void accept(List<Article> articles) throws Exception {
+                        if (articles.size() > 0) {
+                            updateFragmentContent(articles);
+                        }
+                    }
+                });
 
     }
 

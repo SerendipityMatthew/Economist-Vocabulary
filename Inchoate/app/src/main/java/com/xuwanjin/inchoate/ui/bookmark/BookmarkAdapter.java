@@ -18,6 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 
 
@@ -31,7 +32,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     private List<Article> mArticleList = new ArrayList<>();
     private Fragment mFragment;
 
-    public BookmarkAdapter( Context context, Fragment fragment) {
+    public BookmarkAdapter(Context context, Fragment fragment) {
         mContext = context;
         mFragment = fragment;
     }
@@ -39,7 +40,8 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     public Fragment getFragment() {
         return mFragment;
     }
-    public void updateData(List<Article> articleList){
+
+    public void updateData(List<Article> articleList) {
         mArticleList.clear();
         mArticleList.addAll(articleList);
         notifyDataSetChanged();
@@ -110,6 +112,12 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
                 .placeholder(R.mipmap.the_economist)
                 .override(700, 500)
                 .into(holder.article_image);
+        Glide.with(mContext)
+                .load(R.mipmap.bookmark_black)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.bookmark);
+
+
         holder.article_title.setText(article.title);
         holder.articleFlyTitle.setText(article.flyTitle);
         holder.dateAndReadTime.setText(article.date);
@@ -119,6 +127,25 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
                 InchoateApp.setDisplayArticleCache(mArticleList.get(position));
                 Utils.navigationController(
                         InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
+            }
+        });
+
+        holder.bookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (article.isBookmark) {
+                    article.isBookmark = false;
+                } else {
+                    article.isBookmark = true;
+                }
+                Glide.with(mContext)
+                        .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.mipmap.bookmark_white)
+                        .into(holder.bookmark);
+                InchoateDBHelper dbHelper = new InchoateDBHelper(mContext, null, null);
+                dbHelper.setBookmarkStatus(article, article.isBookmark);
+                dbHelper.close();
             }
         });
     }

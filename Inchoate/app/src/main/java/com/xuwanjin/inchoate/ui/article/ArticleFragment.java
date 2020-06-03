@@ -184,7 +184,6 @@ public class ArticleFragment extends Fragment {
             // //? ! . , : "  特殊情况
             String collectedVocabularyPattern = " " + collectedVocabularyList.get(i) + " ";
             boolean isExisted = paragraphText.contains(collectedVocabularyPattern);
-            Log.d(TAG, "processArticleText: map: apply: isExisted = " + isExisted);
             // 如果一个段落里多个不认识的单词, 存在 hashmap 里
             if (isExisted) {
                 int index = paragraphText.indexOf(collectedVocabulary);

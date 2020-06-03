@@ -197,7 +197,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase database = openInchoateDB();
         // Select * from article where issue_date='';
         String query = "SELECT * FROM " + TABLE_NAME_ISSUE + " WHERE " + KEY_ISSUE_FORMAT_DATE + " =\'" + formatIssueDate + "\'";
-        Log.d(TAG, "queryIssueByIssueDate: query = " + query);
+        Log.d(TAG, "queryIssueByFormatIssueDate: query = " + query);
         Cursor cursor = database.rawQuery(query, null);
         while (cursor != null && cursor.moveToNext()) {
             Issue issue;
@@ -449,7 +449,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
 
     // 查看是否存在, 如果存在,                获取 rowID
     //              如果不存在. 则插入数据,   并且返回 rowID;
-    public void insertWholeData(final Issue issue) {
+    public Disposable insertWholeData(final Issue issue) {
         long rowID = issueRowIDInDB(issue);
         long issueRowID = RECORD_NOT_EXISTED_IN_DB;
         if (rowID == RECORD_NOT_EXISTED_IN_DB) {
@@ -467,7 +467,8 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                 .map(new Function<Article, HashMap<Long, Article>>() {
                     @Override
                     public HashMap<Long, Article> apply(Article article) throws Exception {
-                        Log.d(TAG, "insertWholeData: apply: article.title = " + article.title);
+                        Log.d(TAG, "insertWholeData: apply: article.section = " + article.section);
+                        Log.d(TAG, "insertWholeData: apply: article.date = " + article.date);
                         long id = articleRowIDInDB(article, issue.issueDate);
                         long articleRowID = RECORD_NOT_EXISTED_IN_DB;
                         if (id == RECORD_NOT_EXISTED_IN_DB) {
@@ -494,9 +495,8 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                     public void accept(HashMap<Long, Article> longArticleHashMap) throws Exception {
                         long articleRowID = longArticleHashMap.keySet().iterator().next();
                         Article article = longArticleHashMap.values().iterator().next();
-                        Log.d(TAG, "insertWholeData: accept: articleRowID = " + articleRowID);
+                        Log.d(TAG, "insertWholeData: accept: articleRowID = " + articleRowID + " article.date =" + article.date);
                         for (Paragraph paragraph : article.paragraphList) {
-                            Log.d(TAG, "insertWholeData: accept: paragraph.paragraph = " + paragraph.paragraph);
                             long paragraphID = paragraphRowIDInDB(paragraph.paragraph.toString(), articleRowID);
                             if (paragraphID == RECORD_NOT_EXISTED_IN_DB) {
                                 insertParagraphData(paragraph, articleRowID);
@@ -524,6 +524,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             }
         }
          */
+        return mDisposable;
     }
 
     private boolean isArticleExistedInDB(Article article, String issueDate) {
@@ -680,6 +681,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         // Select * from article where issue_date='' ;
         String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE "
                 + KEY_ISSUE_DATE + " =\'" + issueDate + "\'";
+        Log.d(TAG, "getArticleListByIssueDate: query = " + query);
         Cursor cursor = database.rawQuery(query, null);
 
         List<Article> articleList = new ArrayList<>();

@@ -63,11 +63,14 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
@@ -99,14 +102,16 @@ public class WeeklyFragment extends Fragment {
     private View view;
     public DownloadService mDownloadService;
     private static Issue sIssueCache = new Issue();
-    private Disposable mDisposable;
+
+    CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     public static String formatIssueDateStr = NEWEST_ISSUE_DATE;
-    private ExecutorService mExecutorService = Executors.newFixedThreadPool(1);
+    private static ScheduledExecutorService mExecutorService = Executors.newSingleThreadScheduledExecutor();
     private LinearLayoutManager mLinearLayoutManager;
     private Handler mHandler = new Handler();
     public IEconomistService mEconomistService;
     public static final int DELAY_TIME = 3000;
     private boolean isSuccess = false;
+    private boolean isInsertData = false;
     public Runnable mBindServiceRunnable = new Runnable() {
         @Override
         public void run() {
@@ -183,8 +188,8 @@ public class WeeklyFragment extends Fragment {
         } else {
             Issue issue = initFakeData();
             updateWeeklyFragmentContent(issue);
-            loadTodayArticleList();
         }
+        loadTodayArticleList();
 
         return view;
     }
@@ -194,7 +199,7 @@ public class WeeklyFragment extends Fragment {
     }
 
     private void loadTodayArticleList() {
-        mDisposable = Single.create(new SingleOnSubscribe<Issue>() {
+        Disposable disposable = Single.create(new SingleOnSubscribe<Issue>() {
             @Override
             public void subscribe(SingleEmitter<Issue> emitter) throws Exception {
                 Issue issue = specificIssueByIssueDateAndUrlID();
@@ -210,11 +215,32 @@ public class WeeklyFragment extends Fragment {
                     @Override
                     public void accept(Issue issue) throws Exception {
                         sIssueCache = issue;
+                        updateDatabase(sIssueCache);
                         updateWeeklyFragmentContent(sIssueCache);
                         Log.d(TAG, "loadTodayArticleList: issue.containArticle.size: " + issue.containArticle.size());
                     }
                 });
+        mCompositeDisposable.add(disposable);
+    }
 
+    public void updateDatabase(Issue issue) {
+        isInsertData = false;
+        Runnable mInsertIssueData = new Runnable() {
+            @Override
+            public void run() {
+                final Disposable disposable;
+                InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
+                Log.d(TAG, "mInsertIssueData: run: ");
+                isInsertData = true;
+                disposable = helper.insertWholeData(issue);
+                mCompositeDisposable.add(disposable);
+                helper.close();
+            }
+        };
+        if (!isInsertData){
+            mExecutorService.schedule(mInsertIssueData, 10, TimeUnit.SECONDS);
+        }
+        // 延迟插入数据, 防止线程竞争打开数据库的问题.
     }
 
     public Issue specificIssueByIssueDateAndUrlID() {
@@ -242,11 +268,17 @@ public class WeeklyFragment extends Fragment {
         Issue issue = getIssueDataFromDB(issueDate);
         boolean shouldLoadFromNetwork = false;
         if (issue != null) {
-            int size = issue.containArticle.size();
-            Article lastArticle = issue.containArticle.get(size - 1);
-            if (!ArticleCategorySection.OBITUARY.getName().equals(lastArticle.section)) {
+            List<Article> articleList = issue.containArticle;
+            if (articleList == null || articleList.size() == 0) {
                 shouldLoadFromNetwork = true;
+            } else {
+                int size = articleList.size();
+                Article lastArticle = articleList.get(size - 1);
+                if (!ArticleCategorySection.OBITUARY.getName().equals(lastArticle.section)) {
+                    shouldLoadFromNetwork = true;
+                }
             }
+
         } else {
             shouldLoadFromNetwork = true;
         }
@@ -386,40 +418,6 @@ public class WeeklyFragment extends Fragment {
         return issue;
     }
 
-    public Issue parseJsonDataFromAsset() {
-        Gson gson = new Gson()
-                .newBuilder()
-                .setFieldNamingStrategy(new FieldNamingStrategy() {
-                    @Override
-                    public String translateName(Field f) {
-                        String name = f.getName();
-                        if (name.contains("-")) {
-                            return name.replaceAll("-", "");
-                        }
-                        return name;
-                    }
-                }) // setFieldNamingPolicy 有什么区别
-                .create();
-
-        InputStream jsonStream = getContext().getResources().openRawResource(R.raw.week_fragment_query);
-        InputStreamReader reader = new InputStreamReader(jsonStream);
-        WeekJson weekJson = gson.fromJson(reader, WeekJson.class);
-        final Issue issue = getIssue(weekJson);
-        InchoateApp.setNewestIssueCache(issue);
-        sIssueCache = issue;
-        Runnable insertDataRunnable = new Runnable() {
-            @Override
-            public void run() {
-                final InchoateDBHelper helper = new InchoateDBHelper(getActivity(), null, null);
-                helper.insertWholeData(issue);
-                helper.close();
-            }
-        };
-        mExecutorService.submit(insertDataRunnable);
-        mArticlesList = issue.containArticle;
-        return issue;
-    }
-
     public Issue loadDataFromNetwork(String urlId) {
         String wholeUrlId = WEEK_FRAGMENT_COMMON_URL + urlId + TAIL;
         Log.d(TAG, "loadDataFromNetwork: urlId = " + urlId);
@@ -464,15 +462,7 @@ public class WeeklyFragment extends Fragment {
         InchoateApp.setNewestIssueCache(issue);
         mArticlesList = issue.containArticle;
         Log.d(TAG, "loadDataFromNetwork: ");
-        Runnable mInsertIssueData = new Runnable() {
-            @Override
-            public void run() {
-                InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
-                helper.insertWholeData(issue);
-                helper.close();
-            }
-        };
-        mExecutorService.submit(mInsertIssueData);
+
         return issue;
     }
 
@@ -480,6 +470,10 @@ public class WeeklyFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mCompositeDisposable.isDisposed()) {
+            mExecutorService.isShutdown();
+            mCompositeDisposable.dispose();
+        }
         if (isSuccess && mEconomistService != null) {
             EconomistPlayerTimberStyle.unbindToService(getActivity(), economistServiceConnection);
         }

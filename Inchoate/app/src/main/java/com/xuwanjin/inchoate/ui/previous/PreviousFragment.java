@@ -65,24 +65,29 @@ public class PreviousFragment extends Fragment {
         mGridLayoutManager = new GridLayoutManager(getContext(), 2);
         mGridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         issueListRecyclerView.setLayoutManager(mGridLayoutManager);
+        previousAdapter = new PreviousAdapter(getContext());
+        issueListRecyclerView.setAdapter(previousAdapter);
 
         if (sIssueList != null && sIssueList.size() > 0) {
             updatePreviousFragmentContent(sIssueList);
         } else {
 
-            List<Issue> issueList = new ArrayList<>();
-            for (int i = 0; i < 50; i++) {
-                Issue issue = new Issue();
-                issue.isDownloaded = false;
-                issue.issueDate = "Matthew + " + i;
-                issueList.add(issue);
-            }
+            List<Issue> issueList = initFakeData();
             updatePreviousFragmentContent(issueList);
             loadPreviousIssue();
         }
-
-
         return view;
+    }
+
+    private List<Issue> initFakeData(){
+        List<Issue> issueList = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            Issue issue = new Issue();
+            issue.isDownloaded = false;
+            issue.issueDate = "Matthew + " + i;
+            issueList.add(issue);
+        }
+        return issueList;
     }
 
     public void loadPreviousIssue() {
@@ -105,6 +110,11 @@ public class PreviousFragment extends Fragment {
                     @Override
                     public void accept(List<Issue> issueList) throws Exception {
                         updatePreviousFragmentContent(issueList);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        updatePreviousFragmentContent(initFakeData());
                     }
                 });
     }
@@ -164,9 +174,6 @@ public class PreviousFragment extends Fragment {
     }
 
     private void updatePreviousFragmentContent(List<Issue> issueList) {
-        previousAdapter = new PreviousAdapter(getContext());
-        issueListRecyclerView.setAdapter(previousAdapter);
-
         previousAdapter.updateData(issueList);
     }
 

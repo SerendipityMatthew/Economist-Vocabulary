@@ -68,7 +68,9 @@ public class BookmarkFragment extends Fragment {
         .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Article>>() {
             @Override
             public void accept(List<Article> articles) throws Exception {
-                updateFragmentContent(articles);
+                if (articles.size()> 0){
+                    updateFragmentContent(articles);
+                }
             }
         });
 

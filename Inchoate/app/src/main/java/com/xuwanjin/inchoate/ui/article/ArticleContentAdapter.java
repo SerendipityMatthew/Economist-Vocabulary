@@ -64,6 +64,10 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
         }
         return new ViewHolder(view);
     }
+    public void updateData(List<Paragraph> paragraphList){
+        mParagraphList = paragraphList;
+        notifyDataSetChanged();
+    }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {

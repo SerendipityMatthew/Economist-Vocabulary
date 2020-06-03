@@ -97,7 +97,7 @@ public class ArticleItemDecoration extends RecyclerView.ItemDecoration {
             }
             View childView = parent.findViewHolderForAdapterPosition(position).itemView;
             int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
-            String paragraph = adapter.getParagraphList().get(position - 1).paragraph;
+            String paragraph = adapter.getParagraphList().get(position - 1).paragraph.toString();
             int paragraphWordCount = getArticleWordCount(adapter.getParagraphList());
 
             // 如果把下面的注释掉, 会出现即使下一个分类小组没有滑动到顶部, 顶部的 stick header 会消失
@@ -116,7 +116,7 @@ public class ArticleItemDecoration extends RecyclerView.ItemDecoration {
     public int getArticleWordCount(List<Paragraph> paragraphList) {
         int paragraphWordCount = 0;
         for (Paragraph p : paragraphList) {
-            paragraphWordCount += p.paragraph.split(" ").length;
+            paragraphWordCount += p.paragraph.toString().split(" ").length;
         }
         mArticleWordCount = paragraphWordCount;
         return paragraphWordCount;

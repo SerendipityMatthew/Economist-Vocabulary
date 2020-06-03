@@ -11,7 +11,7 @@ public class Paragraph implements Parcelable {
     public int id;
     public int theOrderOfParagraph;
     public String articleName;
-    public String paragraph;
+    public CharSequence paragraph;
     public boolean isEditorsNote;
     public boolean isRelatedSuggestion;
     public int belongedArticleID;
@@ -34,7 +34,7 @@ public class Paragraph implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(articleName);
-        dest.writeString(paragraph);
+        dest.writeString(paragraph.toString());
         dest.writeString(String.valueOf(isEditorsNote));
         dest.writeString(String.valueOf(isRelatedSuggestion));
         dest.writeInt(belongedArticleID);
@@ -83,7 +83,7 @@ public class Paragraph implements Parcelable {
         this.articleName = articleName;
     }
 
-    public String getParagraph() {
+    public CharSequence getParagraph() {
         return paragraph;
     }
 

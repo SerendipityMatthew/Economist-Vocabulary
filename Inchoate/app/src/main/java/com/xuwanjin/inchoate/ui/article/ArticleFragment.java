@@ -1,12 +1,15 @@
 package com.xuwanjin.inchoate.ui.article;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,9 +43,18 @@ import com.xuwanjin.inchoate.timber_style.IEconomistService;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.xuwanjin.inchoate.Utils.getDurationFormat;
 
@@ -69,6 +81,8 @@ public class ArticleFragment extends Fragment {
     ImageView articleShareToolbar;
     LinearLayout mLinearLayout;
     View articlePlayBarDivider;
+    int count = 0;
+    private List<String> collectedVocabularyList = new ArrayList<>();
     private IEconomistService mEconomistService;
     private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -76,7 +90,6 @@ public class ArticleFragment extends Fragment {
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d(TAG, "onServiceConnected: ");
             mEconomistService = IEconomistService.Stub.asInterface(service);
-
         }
 
         @Override
@@ -95,6 +108,9 @@ public class ArticleFragment extends Fragment {
         }
         view = inflater.inflate(R.layout.fragment_article_detail, container, false);
         initView();
+        initData();
+        initOnClickListener();
+
         mGridLayoutManager = new GridLayoutManager(getContext(), 1);
         mArticleContentRV.setLayoutManager(mGridLayoutManager);
         mArticleContentAdapter = new ArticleContentAdapter(getContext(), mParagraphList, view);
@@ -103,9 +119,115 @@ public class ArticleFragment extends Fragment {
         mArticleContentRV.setAdapter(mArticleContentAdapter);
         mArticleContentAdapter.setHeaderView(mArticleContentHeaderView);
         mArticleContentAdapter.setFooterView(mArticleContentFooterView);
-        initData();
-        initOnClickListener();
+
+        initFillCollectedVocabulary();
+        processArticleText();
         return view;
+    }
+
+    private void initFillCollectedVocabulary() {
+        collectedVocabularyList.addAll(InchoateApp.sCollectedVocabularyList);
+        Log.d(TAG, "initFillCollectedVocabulary:collectedVocabularyList.size =  " + collectedVocabularyList.size());
+    }
+
+    /*
+      paragraphList                   VocabularyList
+      paragraph 01                    incendiary
+      paragraph 02                    hoodlum
+      paragraph 03                    babble
+      paragraph 04                    incite
+      paragraph 05                    inflammatory
+      paragraph 06                    magnanimous
+      paragraph 07                    retrenchment
+      paragraph 08                    flagrant
+      paragraph 08                    dissidents
+       多对多的关系   flatmap
+ */
+    @SuppressLint("CheckResult")
+    private void processArticleText() {
+
+        List<Paragraph> paragraphList = article.paragraphList;
+        List<Paragraph> adapterDataList = new ArrayList<>();
+        adapterDataList.addAll(article.paragraphList);
+        Log.d(TAG, "processArticleText: paragraphList.size = " + paragraphList.size());
+        Flowable.fromIterable(paragraphList)
+                .map(new Function<Paragraph, HashMap<Integer, Paragraph>>() {
+                    @Override
+                    public HashMap<Integer, Paragraph> apply(Paragraph paragraph) throws Exception {
+                        return processArticleTextToSpannable(paragraph);
+                    }
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<HashMap<Integer, Paragraph>>() {
+                    @Override
+                    public void accept(HashMap<Integer, Paragraph> integerParagraphHashMap) throws Exception {
+                        // 更新 Article 的 ParagraphList .
+                        Integer index = integerParagraphHashMap.keySet().iterator().next();
+                        adapterDataList.add(index, integerParagraphHashMap.get(index));
+                        if (count == adapterDataList.size() - 1) {
+                            mArticleContentAdapter.updateData(adapterDataList);
+                        }
+                    }
+                });
+    }
+
+    public HashMap<Integer, Paragraph> processArticleTextToSpannable(Paragraph paragraph) {
+        String paragraphText = paragraph.paragraph.toString();
+        HashMap<Integer, Paragraph> hashMap = new HashMap<>(0);
+        HashMap<Integer, CharSequence> collectedVocabularyHashMap = new HashMap<>();
+        for (int i = 0; i < collectedVocabularyList.size(); i++) {
+            String collectedVocabulary = collectedVocabularyList.get(i);
+            if (isSkipVocabulary(collectedVocabulary)) {
+                continue;
+            }
+            // //? ! . , : "  特殊情况
+            String collectedVocabularyPattern = " " + collectedVocabularyList.get(i) + " ";
+            boolean isExisted = paragraphText.contains(collectedVocabularyPattern);
+            Log.d(TAG, "processArticleText: map: apply: isExisted = " + isExisted);
+            // 如果一个段落里多个不认识的单词, 存在 hashmap 里
+            if (isExisted) {
+                int index = paragraphText.indexOf(collectedVocabulary);
+                collectedVocabularyHashMap.put(Integer.valueOf(index), collectedVocabulary);
+            }
+        }
+        SpannableString vocabularySpannable = new SpannableString(paragraphText);
+        if (collectedVocabularyHashMap.size() > 0) {
+            for (Integer index : collectedVocabularyHashMap.keySet()) {
+                CharSequence vocabulary = collectedVocabularyHashMap.get(index);
+                vocabularySpannable.setSpan(
+                        new BackgroundColorSpan(Color.GREEN),
+                        index, index + vocabulary.length(),
+                        SpannableString.SPAN_INCLUSIVE_INCLUSIVE);
+            }
+            paragraph.paragraph = vocabularySpannable;
+        }
+        hashMap.put(paragraph.theOrderOfParagraph, paragraph);
+        return hashMap;
+    }
+
+    public boolean isSkipVocabulary(String vocabulary) {
+        if (vocabulary.length() == 1
+                || vocabulary.length() == 2
+                || vocabulary.length() == 3
+        ) {
+            return true;
+        }
+        if (vocabulary.equalsIgnoreCase("them")
+                || vocabulary.equalsIgnoreCase("next")
+                || vocabulary.equalsIgnoreCase("will")
+                || vocabulary.equalsIgnoreCase("that")
+                || vocabulary.equalsIgnoreCase("move")
+        ) {
+            return true;
+        }
+        //数字类的去掉
+        Pattern pattern = Pattern.compile(".*\\\\d+.*");
+        Matcher matcher = pattern.matcher(vocabulary);
+        if (matcher.matches()) {
+            return true;
+        }
+        return false;
     }
 
     public void initView() {

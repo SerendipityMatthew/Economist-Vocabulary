@@ -437,7 +437,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_IS_EDITORS_NOTE, paragraph.isEditorsNote);
         contentValues.put(KEY_IS_RELATED_SUGGESTION, paragraph.isRelatedSuggestion);
-        contentValues.put(KEY_PARAGRAPH_CONTENT, paragraph.paragraph);
+        contentValues.put(KEY_PARAGRAPH_CONTENT, paragraph.paragraph.toString());
         contentValues.put(KEY_ORDER_OF_PARAGRAPH, paragraph.theOrderOfParagraph);
         contentValues.put(KEY_BELONGED_ARTICLE_ID, articleRowID);
         long affectedRowCount = database.insert(TABLE_NAME_PARAGRAPH, null, contentValues);
@@ -497,7 +497,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                         Log.d(TAG, "insertWholeData: accept: articleRowID = " + articleRowID);
                         for (Paragraph paragraph : article.paragraphList) {
                             Log.d(TAG, "insertWholeData: accept: paragraph.paragraph = " + paragraph.paragraph);
-                            long paragraphID = paragraphRowIDInDB(paragraph.paragraph, articleRowID);
+                            long paragraphID = paragraphRowIDInDB(paragraph.paragraph.toString(), articleRowID);
                             if (paragraphID == RECORD_NOT_EXISTED_IN_DB) {
                                 insertParagraphData(paragraph, articleRowID);
                             }

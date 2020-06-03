@@ -210,14 +210,7 @@ public class ArticleFragment extends Fragment {
         if (vocabulary.length() == 1
                 || vocabulary.length() == 2
                 || vocabulary.length() == 3
-        ) {
-            return true;
-        }
-        if (vocabulary.equalsIgnoreCase("them")
-                || vocabulary.equalsIgnoreCase("next")
-                || vocabulary.equalsIgnoreCase("will")
-                || vocabulary.equalsIgnoreCase("that")
-                || vocabulary.equalsIgnoreCase("move")
+                || vocabulary.length() == 4
         ) {
             return true;
         }

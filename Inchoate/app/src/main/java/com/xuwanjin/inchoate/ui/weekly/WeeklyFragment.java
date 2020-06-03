@@ -98,8 +98,7 @@ public class WeeklyFragment extends Fragment {
     private StickHeaderDecoration mStickHeaderDecoration;
     private View view;
     public DownloadService mDownloadService;
-    private Issue mIssue = new Issue();
-    private static HashMap<String, Issue> sIssueHashMap = new HashMap<>();
+    private static Issue sIssueCache = new Issue();
     private Disposable mDisposable;
     public static String formatIssueDateStr = NEWEST_ISSUE_DATE;
     private ExecutorService mExecutorService = Executors.newFixedThreadPool(1);
@@ -164,6 +163,12 @@ public class WeeklyFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_weekly, container, false);
         initView();
         initOnClickListener();
+        mWeeklyAdapter = new WeeklyAdapter(getContext(), this);
+        issueContentRecyclerView.setAdapter(mWeeklyAdapter);
+        mWeeklyAdapter.setHeaderView(mSectionHeaderView);
+        mWeeklyAdapter.setFooterView(mFooterView);
+        mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
+        issueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);
 
         mExecutorService.submit(mBindServiceRunnable);
 
@@ -173,8 +178,8 @@ public class WeeklyFragment extends Fragment {
             mLinearLayoutManager.scrollToPosition(scrollToPosition);
         }
 
-        if (mIssue != null && mIssue.containArticle != null && mIssue.containArticle.size() > 0) {
-            updateWeeklyFragmentContent(mIssue);
+        if (sIssueCache != null && sIssueCache.containArticle != null && sIssueCache.containArticle.size() > 0) {
+            updateWeeklyFragmentContent(sIssueCache);
         } else {
             Issue issue = initFakeData();
             updateWeeklyFragmentContent(issue);
@@ -185,13 +190,6 @@ public class WeeklyFragment extends Fragment {
     }
 
     public void updateWeeklyFragmentContent(Issue issue) {
-        mWeeklyAdapter = new WeeklyAdapter(getContext(), this);
-        issueContentRecyclerView.setAdapter(mWeeklyAdapter);
-        mWeeklyAdapter.setHeaderView(mSectionHeaderView);
-        mWeeklyAdapter.setFooterView(mFooterView);
-        mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
-        issueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);
-
         updateView(issue);
     }
 
@@ -200,7 +198,7 @@ public class WeeklyFragment extends Fragment {
             @Override
             public void subscribe(SingleEmitter<Issue> emitter) throws Exception {
                 Issue issue = specificIssueByIssueDateAndUrlID();
-                mIssue = issue;
+                sIssueCache = issue;
                 if (issue == null) {
                     return;
                 }
@@ -211,7 +209,8 @@ public class WeeklyFragment extends Fragment {
                 .subscribe(new Consumer<Issue>() {
                     @Override
                     public void accept(Issue issue) throws Exception {
-                        updateWeeklyFragmentContent(issue);
+                        sIssueCache = issue;
+                        updateWeeklyFragmentContent(sIssueCache);
                         Log.d(TAG, "loadTodayArticleList: issue.containArticle.size: " + issue.containArticle.size());
                     }
                 });
@@ -298,13 +297,13 @@ public class WeeklyFragment extends Fragment {
         Runnable mStreamAudioRunnable = new Runnable() {
             @Override
             public void run() {
-                List<Article> articleList = mIssue.containArticle;
+                List<Article> articleList = sIssueCache.containArticle;
                 InchoateApp.setAudioPlayingArticleListCache(articleList);
                 SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                 panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                 EventBus.getDefault().post(panelState);
-                if (mIssue != null) {
-                    EconomistPlayerTimberStyle.playWholeIssue(mIssue.containArticle.get(0), mIssue, WEEKLY_PLAYING_SOURCE);
+                if (sIssueCache != null) {
+                    EconomistPlayerTimberStyle.playWholeIssue(sIssueCache.containArticle.get(0), sIssueCache, WEEKLY_PLAYING_SOURCE);
                 }
             }
         };
@@ -312,7 +311,7 @@ public class WeeklyFragment extends Fragment {
         mStreamAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mIssue != null && mIssue.containArticle != null) {
+                if (sIssueCache != null && sIssueCache.containArticle != null) {
                     mExecutorService.submit(mStreamAudioRunnable);
                 }
             }
@@ -321,12 +320,12 @@ public class WeeklyFragment extends Fragment {
         mDownloadAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mIssue != null &&
-                        mIssue.issueFormatDate != null
-                        && !"".equals(mIssue.issueFormatDate)) {
+                if (sIssueCache != null &&
+                        sIssueCache.issueFormatDate != null
+                        && !"".equals(sIssueCache.issueFormatDate)) {
                     Intent intent = new Intent();
                     intent.setClass(getContext(), DownloadService.class);
-                    intent.putExtra(PENDING_DOWNLOAD_ISSUE_DATE, mIssue.issueFormatDate);
+                    intent.putExtra(PENDING_DOWNLOAD_ISSUE_DATE, sIssueCache.issueFormatDate);
                     getContext().startService(intent);
                     getContext().bindService(intent, serviceConnection, 0);
                     mHandler.post(mGetDownloadPercentRunnable);
@@ -407,7 +406,7 @@ public class WeeklyFragment extends Fragment {
         WeekJson weekJson = gson.fromJson(reader, WeekJson.class);
         final Issue issue = getIssue(weekJson);
         InchoateApp.setNewestIssueCache(issue);
-        mIssue = issue;
+        sIssueCache = issue;
         Runnable insertDataRunnable = new Runnable() {
             @Override
             public void run() {

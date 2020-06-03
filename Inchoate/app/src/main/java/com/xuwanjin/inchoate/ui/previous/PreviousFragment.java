@@ -69,9 +69,9 @@ public class PreviousFragment extends Fragment {
         issueListRecyclerView.setAdapter(previousAdapter);
 
         if (sIssueList != null && sIssueList.size() > 0) {
+            Log.d(TAG, "onCreateView: sIssueList  = " + sIssueList.size());
             updatePreviousFragmentContent(sIssueList);
         } else {
-
             List<Issue> issueList = initFakeData();
             updatePreviousFragmentContent(issueList);
             loadPreviousIssue();
@@ -79,7 +79,7 @@ public class PreviousFragment extends Fragment {
         return view;
     }
 
-    private List<Issue> initFakeData(){
+    private List<Issue> initFakeData() {
         List<Issue> issueList = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
             Issue issue = new Issue();
@@ -94,17 +94,12 @@ public class PreviousFragment extends Fragment {
         mDisposable = SingleAmb.create(new SingleOnSubscribe<List<Issue>>() {
             @Override
             public void subscribe(SingleEmitter<List<Issue>> emitter) throws Exception {
+
                 sIssueList = getPreviousIssueDataFromNetwork();
+                Log.d(TAG, "loadPreviousIssue: subscribe: sIssueList = " + sIssueList.size());
                 emitter.onSuccess(sIssueList);
             }
         }).subscribeOn(Schedulers.io())
-                .doOnError(new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.d(TAG, "loadPreviousIssue: doOnError: accept: ");
-                        return;
-                    }
-                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Issue>>() {
                     @Override
@@ -159,6 +154,7 @@ public class PreviousFragment extends Fragment {
         Archive data = gson.fromJson(jsonResult, Archive.class);
         Part[] partArray = data.data.section.hasPart.parts;
         sIssueList.clear();
+        Log.d(TAG, "getPreviousIssueDataFromNetwork: ");
         for (int i = 0; i < partArray.length; i++) {
             Issue issue = new Issue();
             issue.isDownloaded = false;

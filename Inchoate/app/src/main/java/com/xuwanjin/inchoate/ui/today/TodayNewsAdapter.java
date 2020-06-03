@@ -51,7 +51,7 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: article = " + article);
-                if (!"Checks and Balance".equals(article.flyTitle)){
+                if (article.section != null && !"null".equalsIgnoreCase(article.section)){
                     InchoateApp.setDisplayArticleCache(article);
                     Utils.navigationController(
                             InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);

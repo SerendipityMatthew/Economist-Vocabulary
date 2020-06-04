@@ -17,6 +17,7 @@ import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.today.TodayJson;
 
@@ -64,7 +65,9 @@ public class TodayFragment extends Fragment {
         } else {
             List<Article> articleList = initFakeData();
             updateTodayFragment(articleList);
-            loadTodayArticleList();
+            if (Utils.isNetworkAvailable(getContext())){
+                loadTodayArticleList();
+            }
         }
 
         return view;

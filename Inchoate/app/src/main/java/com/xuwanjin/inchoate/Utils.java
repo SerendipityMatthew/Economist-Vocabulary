@@ -1,5 +1,9 @@
 package com.xuwanjin.inchoate;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import androidx.navigation.NavController;
@@ -345,6 +349,16 @@ public class Utils {
         }
 
         return month + " " + day + " " + year;
+    }
+
+    public static boolean isNetworkAvailable(Context context){
+        ConnectivityManager manager = (ConnectivityManager)
+                context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager == null){
+            return false;
+        }
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
 }

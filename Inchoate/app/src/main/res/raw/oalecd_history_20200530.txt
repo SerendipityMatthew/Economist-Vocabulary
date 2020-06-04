@@ -865,7 +865,6 @@ gibberish
 corral
 enshrine
 tuck
-favour
 impeccable
 impeachable
 intrusive
@@ -1935,7 +1934,6 @@ disobey
 volley
 intended
 like-minded
-likely
 liken
 deploy
 honoree
@@ -2028,7 +2026,6 @@ trajectory
 jive
 team
 cover
-covered
 culvert
 badger
 stimulus
@@ -3804,7 +3801,6 @@ fatigued
 incommunicado
 blindfold
 accost
-covered
 yardstick
 defect
 co-opt
@@ -6418,7 +6414,6 @@ come
 bellyflop
 flop
 exposure
-common
 embattled
 spurious
 ditch
@@ -7055,7 +7050,6 @@ languish
 hyperbolic
 parody
 travesty
-trial
 travesty
 counterproductive
 cash flow
@@ -7587,7 +7581,6 @@ undermanned
 overmanned
 overstaffed
 bust
-coin
 buffet
 buffet
 throng
@@ -7745,9 +7738,7 @@ composition
 quotient
 index
 motivate
-group
 differential calculus
-differential
 differential
 typology
 golden goose
@@ -14347,7 +14338,6 @@ mottled
 bedstead
 agony
 sinister
-that
 wry
 toll
 reassert
@@ -15561,7 +15551,6 @@ stash
 stash
 elude
 vantage point
-that
 emphatic
 convulse
 bawl
@@ -15932,7 +15921,6 @@ bartender
 procaine
 willy
 willie
-A1
 immature
 new-found
 scrutinize
@@ -16828,8 +16816,6 @@ dwindle
 goody
 goodie
 consecutive
-favourite
-favourite
 provision
 meme
 collar
@@ -18349,7 +18335,6 @@ triumphant
 remittance
 mettle
 think tank
-issue
 think tank
 flock
 refugee

@@ -318,7 +318,7 @@ public class WeeklyFragment extends Fragment {
         Glide.with(mSectionHeaderView)
                 .load(issue.coverImageUrl)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.mipmap.magazine_cover)
+                .placeholder(R.mipmap.the_economist_cover_placeholder)
                 .into(magazineCover);
         issueDate.setText(issue.issueDate);
         magazineHeadline.setText(issue.headline);

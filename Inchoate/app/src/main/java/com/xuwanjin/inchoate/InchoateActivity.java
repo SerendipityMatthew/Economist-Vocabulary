@@ -74,7 +74,7 @@ public class InchoateActivity extends AppCompatActivity implements
         controller = Navigation.findNavController(this, R.id.nav_host_fragment);
         InchoateApp.NAVIGATION_CONTROLLER = controller;
         // 第一次启动的时候隐藏 SlidingUpLayout ,
-        slidingUpPanelLayout.setPanelHeight(30);
+        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
     }
 
     public void initView() {

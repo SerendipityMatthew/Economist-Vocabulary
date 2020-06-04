@@ -170,7 +170,9 @@ public class EconomistServiceTimberStyle extends Service {
     public void pause() {
         mPlayer.pause();
     }
-
+    public void stop() {
+        mPlayer.stop();
+    }
     //
     public void playOrPause() {
         boolean isPlaying;
@@ -277,7 +279,7 @@ public class EconomistServiceTimberStyle extends Service {
 
         @Override
         public void stop() throws RemoteException {
-
+            mService.get().stop();
         }
 
         @Override

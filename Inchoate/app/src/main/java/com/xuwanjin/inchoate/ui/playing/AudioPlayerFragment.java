@@ -22,10 +22,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.events.PlayEvent;
+import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.player.IPlayer;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
@@ -237,6 +239,15 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         barPlayingProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
         playToggle.setOnClickListener(playOrPauseListener);
 
+        barPlayingClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
+                panelState.panelState = SlidingUpPanelLayout.PanelState.HIDDEN;
+                EventBus.getDefault().post(panelState);
+            }
+        });
+
         replay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -290,13 +301,13 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mHandler.removeCallbacks(mProgressCallback);
+        EconomistPlayerTimberStyle.stop();
         EventBus.getDefault().unregister(this);
     }
 

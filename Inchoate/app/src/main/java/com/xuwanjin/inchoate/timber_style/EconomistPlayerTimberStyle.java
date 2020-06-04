@@ -132,6 +132,15 @@ public class EconomistPlayerTimberStyle {
         }
     }
 
+    public static void stop() {
+        try {
+            mEconomistService.stop();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private static final class ServiceToken {
         public ContextWrapper mContextWrapper;
 

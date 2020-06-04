@@ -119,7 +119,7 @@ public class ArticleFragment extends Fragment {
         mArticleContentRV.setAdapter(mArticleContentAdapter);
         mArticleContentAdapter.setHeaderView(mArticleContentHeaderView);
         mArticleContentAdapter.setFooterView(mArticleContentFooterView);
-
+        mArticleContentAdapter.setArticle(article);
         initFillCollectedVocabulary();
         processArticleText();
         return view;

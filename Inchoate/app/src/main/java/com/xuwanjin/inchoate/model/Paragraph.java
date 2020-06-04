@@ -15,6 +15,8 @@ public class Paragraph implements Parcelable {
     public boolean isEditorsNote;
     public boolean isRelatedSuggestion;
     public int belongedArticleID;
+    public String issueDate;
+    public String belongedSection;
 
     public Paragraph() {
 

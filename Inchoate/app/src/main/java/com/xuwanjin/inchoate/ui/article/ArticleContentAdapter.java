@@ -3,6 +3,7 @@ package com.xuwanjin.inchoate.ui.article;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,13 +21,20 @@ import com.google.android.material.snackbar.Snackbar;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.customtext.OnWordClickListener;
 import com.xuwanjin.inchoate.customtext.SelectableTextView;
+import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
+import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Paragraph;
+import com.xuwanjin.inchoate.model.Vocabulary;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAdapter.ViewHolder> {
+    public static final String TAG = "ArticleContentAdapter";
     private Context mContext;
     private List<Paragraph> mParagraphList;
+    private Article mArticle;
     private View mHeaderView;
     private View mFooterView;
     private View mView;
@@ -42,6 +50,10 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
 
     public void setHeaderView(View headerView) {
         this.mHeaderView = headerView;
+    }
+
+    public void setArticle(Article article) {
+        this.mArticle = article;
     }
 
     public void setFooterView(View footerView) {
@@ -64,7 +76,8 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
         }
         return new ViewHolder(view);
     }
-    public void updateData(List<Paragraph> paragraphList){
+
+    public void updateData(List<Paragraph> paragraphList) {
         mParagraphList = paragraphList;
         notifyDataSetChanged();
     }
@@ -73,7 +86,9 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (position >= 1 && position < getItemCount() - 1) {
             Paragraph paragraph = mParagraphList.get(position - 1);
-            holder.paragraph.setText(paragraph.paragraph);
+            holder.paragraphTextView.setText(paragraph.paragraph);
+            holder.setCurrentParagraph(paragraph);
+
         }
     }
 
@@ -119,7 +134,8 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public SelectableTextView paragraph;
+        public SelectableTextView paragraphTextView;
+        public Paragraph mParagraph;
 
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -128,22 +144,22 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
                 return;
             }
             final String[] selectedVocabulary = new String[1];
-            paragraph = itemView.findViewById(R.id.paragraph);
-            paragraph.setTextIsSelectable(true);
-            paragraph.setFocusable(true);
-            paragraph.setSelectTextBackColorRes(R.color.colorAccent);
-            paragraph.setSelectTextFrontColorRes(R.color.colorPrimary);
+            paragraphTextView = itemView.findViewById(R.id.paragraph);
+            paragraphTextView.setTextIsSelectable(true);
+            paragraphTextView.setFocusable(true);
+            paragraphTextView.setSelectTextBackColorRes(R.color.colorAccent);
+            paragraphTextView.setSelectTextFrontColorRes(R.color.colorPrimary);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.milote_textita);
-            paragraph.setFocusableInTouchMode(true);
-            paragraph.setTypeface(typeface);
-            paragraph.setOnWordClickListener(new OnWordClickListener() {
+            paragraphTextView.setFocusableInTouchMode(true);
+            paragraphTextView.setTypeface(typeface);
+            paragraphTextView.setOnWordClickListener(new OnWordClickListener() {
                 @Override
                 protected void onNoDoubleClick(String word) {
                     selectedVocabulary[0] = word;
                     Toast.makeText(mContext, selectedVocabulary[0].toString(), Toast.LENGTH_LONG).show();
                 }
             });
-            paragraph.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+            paragraphTextView.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
                 private Menu mMenu;
 
                 @Override
@@ -170,10 +186,34 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
                                 .make(mView, selectedVocabulary[0], Snackbar.LENGTH_LONG)
                                 .setTextColor(Color.RED)
                                 .show();
+                        collectTheVocabulary(mParagraph, selectedVocabulary[0]);
                         mode.finish();
                         mMenu.close();
                     }
                     return false;
+                }
+
+                private void collectTheVocabulary(Paragraph paragraph, String vocabularyString) {
+                    if (paragraph == null || paragraph.paragraph.length() == 0
+                        ||"null".equalsIgnoreCase(vocabularyString)) {
+                        return;
+                    }
+                    InchoateDBHelper dbHelper = new InchoateDBHelper(mContext, null, null);
+                    Vocabulary vocabulary = new Vocabulary();
+                    vocabulary.belongedParagraph = paragraph.paragraph.toString();
+                    vocabulary.belongedArticleTitle = paragraph.articleName;
+                    vocabulary.belongedIssueDate = paragraph.issueDate;
+                    vocabulary.vocabularyContent = vocabularyString;
+                    vocabulary.belongedSectionName = mArticle.section;
+                    vocabulary.belongedArticleUrl = mArticle.articleUrl;
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// HH:mm:ss
+                    //获取当前时间
+                    Date date = new Date(System.currentTimeMillis());
+                    String dateString = simpleDateFormat.format(date);
+                    vocabulary.collectedDate = dateString.substring(0, 11);
+                    vocabulary.collectedTime = dateString.substring(11, dateString.length() - 1);
+                    Log.d(TAG, "collectTheVocabulary: vocabularyString = " + vocabularyString);
+                    dbHelper.insertVocabulary(vocabulary);
                 }
 
                 @Override
@@ -181,6 +221,10 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
                     mode.getMenu().close();
                 }
             });
+        }
+
+        public void setCurrentParagraph(Paragraph paragraph) {
+            this.mParagraph = paragraph;
         }
     }
 }

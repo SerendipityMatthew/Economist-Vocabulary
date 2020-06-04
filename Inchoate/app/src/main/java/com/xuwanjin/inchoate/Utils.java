@@ -201,6 +201,8 @@ public class Utils {
                     if (paragraph != null) {
                         theOrderOfParagraph++;
                         paragraph.articleName = article.title;
+                        paragraph.issueDate = article.date;
+                        paragraph.belongedSection = article.section;
                         paragraph.theOrderOfParagraph = theOrderOfParagraph;
                         article.paragraphList.add(paragraph);
                     }

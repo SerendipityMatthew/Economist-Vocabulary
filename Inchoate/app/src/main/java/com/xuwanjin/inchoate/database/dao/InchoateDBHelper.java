@@ -396,7 +396,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         contentValues.put(KEY_BELONGED_SECTION_NAME, vocabulary.belongedSectionName);
         contentValues.put(KEY_BELONGED_ISSUE_DATE, vocabulary.belongedIssueDate);
         contentValues.put(KEY_BELONGED_ARTICLE_URL, vocabulary.belongedArticleUrl);
-        long rowID = database.insert(TABLE_NAME_ARTICLE, null, contentValues);
+        long rowID = database.insert(TABLE_NAME_VOCABULARY, null, contentValues);
         if (database != null) {
             database.close();
         }

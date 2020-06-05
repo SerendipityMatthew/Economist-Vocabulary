@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/article_cover_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="300dp" />
 
         <TextView
             android:id="@+id/article_fly_title"

@@ -259,6 +259,7 @@ public class ArticleFragment extends Fragment {
         duration.setText(getDurationFormat(article.audioDuration));
         Glide.with(getContext())
                 .load(article.mainArticleImage)
+                .placeholder(R.mipmap.article_cover_placeholder)
                 .into(articleCoverImage);
         Log.d(TAG, "initData: article = " + article);
 

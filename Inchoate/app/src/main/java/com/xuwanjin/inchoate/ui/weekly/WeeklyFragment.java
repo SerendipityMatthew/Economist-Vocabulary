@@ -461,8 +461,6 @@ public class WeeklyFragment extends Fragment {
         Issue issue = getIssue(weekJson);
         InchoateApp.setNewestIssueCache(issue);
         mArticlesList = issue.containArticle;
-        Log.d(TAG, "loadDataFromNetwork: ");
-
         return issue;
     }
 

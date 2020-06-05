@@ -470,6 +470,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                         Log.d(TAG, "insertWholeData: apply: article.section = " + article.section);
                         Log.d(TAG, "insertWholeData: apply: article.date = " + article.date);
                         long id = articleRowIDInDB(article, issue.issueDate);
+                        Log.d(TAG, "insertWholeData: apply: id = " + id);
                         long articleRowID = RECORD_NOT_EXISTED_IN_DB;
                         if (id == RECORD_NOT_EXISTED_IN_DB) {
                             articleRowID = insertArticleData(article, finalIssueRowID, issue.issueDate);
@@ -544,14 +545,15 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         if (article.title.contains("'")) {
             articleTitle = articleTitle.replace("'", "''");
         }
-        String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE "
+        String query = "SELECT id FROM " + TABLE_NAME_ARTICLE + " WHERE "
                 + KEY_ISSUE_DATE + " =\'" + issueDate + "\'" + " AND "
                 + KEY_SECTION + " =\'" + article.section + "\'" + " AND "
                 + KEY_TITLE + " =\'" + articleTitle + "\' ";
+        Log.d(TAG, "articleRowIDInDB: query = " + query);
         Cursor cursor = database.rawQuery(query, null);
         List<Article> articleList = new ArrayList<>();
         while (cursor != null && cursor.moveToNext()) {
-            Article a = getArticleFromCursor(cursor);
+            Article a = getArticleIDFromCursor(cursor);
             articleList.add(a);
         }
         if (articleList == null || articleList.size() == 0) {
@@ -638,6 +640,13 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         vocabulary.belongedArticleUrl = cursor.getString(belongedArticleUrlIndex);
 
         return vocabulary;
+    }
+
+    public Article getArticleIDFromCursor(Cursor cursor) {
+        Article article = new Article();
+        int idIndex = cursor.getColumnIndex(KEY_ID);
+        article.rowIdInDB = cursor.getInt(idIndex);
+        return article;
     }
 
     public Article getArticleFromCursor(Cursor cursor) {

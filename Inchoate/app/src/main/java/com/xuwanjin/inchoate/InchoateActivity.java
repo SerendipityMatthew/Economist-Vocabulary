@@ -87,7 +87,7 @@ public class InchoateActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        EconomistPlayerTimberStyle.binToService(this, economistServiceConnection);
+//        EconomistPlayerTimberStyle.binToService(this, economistServiceConnection);
     }
     public boolean isAudioPlying(){
        return EconomistPlayerTimberStyle.isPlaying();

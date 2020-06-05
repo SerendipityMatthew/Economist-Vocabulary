@@ -42,6 +42,8 @@ public class InchoateActivity extends AppCompatActivity implements
     public SlidingUpPanelLayout slidingUpPanelLayout;
     public IEconomistService mEconomistService;
     private boolean isSuccess = false;
+    AudioPlayerFragment audioPlayerFragment = new AudioPlayerFragment();
+    FragmentManager fragmentManager = getSupportFragmentManager();
     ServiceConnection economistServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -100,9 +102,7 @@ public class InchoateActivity extends AppCompatActivity implements
     }
 
     public void inflateAudioPlaying(SlidingUpPanelLayout.PanelState panelState) {
-        Log.d("Matthew", "inflateAudioPlaying: ");
-        final AudioPlayerFragment audioPlayerFragment = new AudioPlayerFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        Log.d(TAG, "inflateAudioPlaying: panelState = " + panelState);
         fragmentManager
                 .beginTransaction()
                 .replace(R.id.now_playing_control, audioPlayerFragment)

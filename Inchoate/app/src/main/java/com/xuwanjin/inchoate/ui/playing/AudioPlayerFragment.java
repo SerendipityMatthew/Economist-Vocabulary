@@ -245,6 +245,7 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
                 SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                 panelState.panelState = SlidingUpPanelLayout.PanelState.HIDDEN;
                 EventBus.getDefault().post(panelState);
+                EconomistPlayerTimberStyle.stop();
             }
         });
 

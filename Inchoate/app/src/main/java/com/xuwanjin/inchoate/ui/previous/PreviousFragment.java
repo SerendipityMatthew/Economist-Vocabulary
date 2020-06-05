@@ -152,20 +152,7 @@ public class PreviousFragment extends Fragment {
                 }) // setFieldNamingPolicy 有什么区别
                 .create();
         Archive data = gson.fromJson(jsonResult, Archive.class);
-        Part[] partArray = data.data.section.hasPart.parts;
-        sIssueList.clear();
-        Log.d(TAG, "getPreviousIssueDataFromNetwork: ");
-        for (int i = 0; i < partArray.length; i++) {
-            Issue issue = new Issue();
-            issue.isDownloaded = false;
-            String date = partArray[i].datePublished.substring(0, 10);
-            issue.issueFormatDate = date;
-            String urlId = partArray[i].id.split("/")[2];
-            issue.urlID = urlId;
-            issue.issueDate = Utils.digitalDateSwitchToEnglishFormat(date);
-            issue.coverImageUrl = partArray[i].image.cover.get(0).url.canonical;
-            sIssueList.add(issue);
-        }
+        sIssueList = Utils.getIssueList(data);
         return sIssueList;
     }
 

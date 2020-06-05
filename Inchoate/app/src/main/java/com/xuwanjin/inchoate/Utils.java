@@ -12,7 +12,9 @@ import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Internal;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.Paragraph;
+import com.xuwanjin.inchoate.model.archive.Archive;
 import com.xuwanjin.inchoate.model.archive.CoverContent;
+import com.xuwanjin.inchoate.model.archive.Part;
 import com.xuwanjin.inchoate.model.today.TodayFirstParts;
 import com.xuwanjin.inchoate.model.today.TodayJson;
 import com.xuwanjin.inchoate.model.today.TodaySecondParts;
@@ -361,4 +363,21 @@ public class Utils {
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
+    public static List<Issue> getIssueList(Archive archiveData){
+        Part[] partArray = archiveData.data.section.hasPart.parts;
+        List<Issue> issueList = new ArrayList<>();
+        Log.d(TAG, "getIssueList: ");
+        for (int i = 0; i < partArray.length; i++) {
+            Issue issue = new Issue();
+            issue.isDownloaded = false;
+            String date = partArray[i].datePublished.substring(0, 10);
+            issue.issueFormatDate = date;
+            String urlId = partArray[i].id.split("/")[2];
+            issue.urlID = urlId;
+            issue.issueDate = Utils.digitalDateSwitchToEnglishFormat(date);
+            issue.coverImageUrl = partArray[i].image.cover.get(0).url.canonical;
+            issueList.add(issue);
+        }
+        return issueList;
+    }
 }

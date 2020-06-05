@@ -111,7 +111,7 @@ public class WeeklyFragment extends Fragment {
     public IEconomistService mEconomistService;
     public static final int DELAY_TIME = 3000;
     private boolean isSuccess = false;
-    private boolean isInsertData = false;
+    private static boolean isInsertData = false;
     public Runnable mBindServiceRunnable = new Runnable() {
         @Override
         public void run() {
@@ -224,17 +224,17 @@ public class WeeklyFragment extends Fragment {
     }
 
     public void updateDatabase(Issue issue) {
-        isInsertData = false;
         Runnable mInsertIssueData = new Runnable() {
             @Override
             public void run() {
+                isInsertData = true;
                 final Disposable disposable;
                 InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
                 Log.d(TAG, "mInsertIssueData: run: ");
-                isInsertData = true;
                 disposable = helper.insertWholeData(issue);
                 mCompositeDisposable.add(disposable);
                 helper.close();
+                isInsertData = false;
             }
         };
         if (!isInsertData){

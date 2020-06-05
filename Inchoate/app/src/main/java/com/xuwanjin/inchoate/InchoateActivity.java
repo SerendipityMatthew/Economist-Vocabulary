@@ -44,6 +44,7 @@ public class InchoateActivity extends AppCompatActivity implements
     private boolean isSuccess = false;
     AudioPlayerFragment audioPlayerFragment = new AudioPlayerFragment();
     FragmentManager fragmentManager = getSupportFragmentManager();
+
     ServiceConnection economistServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -76,7 +77,24 @@ public class InchoateActivity extends AppCompatActivity implements
         controller = Navigation.findNavController(this, R.id.nav_host_fragment);
         InchoateApp.NAVIGATION_CONTROLLER = controller;
         // 第一次启动的时候隐藏 SlidingUpLayout ,
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+        slidingUpPanelLayout.setPanelHeight(30);
+        slidingUpPanelLayout.setTouchEnabled(true);
+        slidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                if (audioPlayerFragment.getAudioPlayingBar() != null){
+                    audioPlayerFragment.getAudioPlayingBar().setVisibility(slideOffset > 0.3 ? View.GONE : View.VISIBLE);
+                }
+                if (slideOffset > 0.3){
+
+                }
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+
+            }
+        });
     }
 
     public void initView() {
@@ -108,23 +126,6 @@ public class InchoateActivity extends AppCompatActivity implements
                 .replace(R.id.now_playing_control, audioPlayerFragment)
                 .commitAllowingStateLoss();
         slidingUpPanelLayout.setPanelState(panelState);
-        slidingUpPanelLayout.setTouchEnabled(true);
-        slidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-                if (audioPlayerFragment.getAudioPlayingBar() != null){
-                     audioPlayerFragment.getAudioPlayingBar().setVisibility(slideOffset > 0.3 ? View.GONE : View.VISIBLE);
-                }
-                if (slideOffset > 0.3){
-
-                }
-            }
-
-            @Override
-            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
-
-            }
-        });
         slidingUpPanelLayout.setPanelHeight(400);
     }
 

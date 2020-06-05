@@ -43,11 +43,11 @@
 
             <ImageView
                 android:id="@+id/bar_playing_close"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginStart="10dp"
-                android:background="@mipmap/float_action_close" />
+                android:src="@mipmap/float_action_close" />
         </LinearLayout>
 
         <ImageView

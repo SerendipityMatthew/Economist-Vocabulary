@@ -18,7 +18,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSeekBar;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -32,6 +31,7 @@ import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.player.IPlayer;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
+import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -44,7 +44,7 @@ import static com.xuwanjin.inchoate.Constants.INCHOATE_PREFERENCE_FILE_NAME;
 import static com.xuwanjin.inchoate.Constants.REWIND_BY_SECONDS_PREFERENCE;
 import static com.xuwanjin.inchoate.Constants.REWIND_OR_FORWARD_PREFERENCE;
 
-public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
+public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callback {
     public static final String TAG = "AudioPlayerFragment";
     private IPlayer mPlayService;
     private IEconomistService mEconomistService;
@@ -155,12 +155,17 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         mAudioPlayingArticle = mArticleList.get(0);
         Log.d(TAG, "onCreateView: mAudioPlayingArticle = " + mAudioPlayingArticle);
         initView();
-        initData();
         initOnListener();
         EventBus.getDefault().register(this);
         mHandler.removeCallbacks(mProgressCallback);
         mHandler.postDelayed(mProgressCallback, 1000);
+        super.onCreateView(inflater, container, savedInstanceState);
         return view;
+    }
+
+    @Override
+    protected void loadData() {
+        initData();
     }
 
     @Override

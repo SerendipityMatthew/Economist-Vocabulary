@@ -39,6 +39,7 @@ import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import static com.xuwanjin.inchoate.Utils.getTodayArticleList;
 
@@ -71,7 +72,7 @@ public class TodayFragment extends BaseFragment {
         } else {
             List<Article> articleList = initFakeData();
             updateTodayFragment(articleList);
-            if (Utils.isNetworkAvailable(getContext())){
+            if (Utils.isNetworkAvailable(getContext())) {
                 loadTodayArticleList();
             }
         }
@@ -135,6 +136,8 @@ public class TodayFragment extends BaseFragment {
     }
 
     public List<Article> loadDataFromNetwork(SingleEmitter<List<Article>> emitter) {
+        Log.d(TAG, "loadDataFromNetwork: ");
+
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
@@ -144,36 +147,49 @@ public class TodayFragment extends BaseFragment {
                 .url(Constants.TODAY_SECTION_QUERY_URL)
                 .build();
         Call call = okHttpClient.newCall(request);
-        Log.d(TAG, "loadDataFromNetwork: ");
-        try {
-            Response response = call.execute();
-            if (!response.isSuccessful()) {
-                Log.d(TAG, "subscribe: today news json result response unsuccessfully! " +
-                        "response code " + response.code());
-                return null;
-            }
-            String jsonResult = response.body().string();
-            Gson gson = new Gson()
-                    .newBuilder()
-                    .setFieldNamingStrategy(new FieldNamingStrategy() {
-                        @Override
-                        public String translateName(Field f) {
-                            String name = f.getName();
-                            if (name.contains("-")) {
-                                return name.replaceAll("-", "");
-                            }
-                            return name;
-                        }
-                    })
-                    .create();
-            TodayJson todayJson = gson.fromJson(jsonResult, TodayJson.class);
-            sTodayArticleList = getTodayArticleList(todayJson);
 
+        Response response = null;
+        ResponseBody responseBody = null;
+        try {
+            response = call.execute();
+            responseBody = response.body();
         } catch (IOException e) {
-            Log.d(TAG, "loadDataFromNetwork: IOException ");
+            Log.d(TAG, "loadDataFromNetwork: IOException e = " + e);
             loadData();
             e.printStackTrace();
         }
+        if (response == null || !response.isSuccessful()) {
+            Log.d(TAG, "subscribe: today news json result response unsuccessfully! " +
+                    "response code " + response);
+            return null;
+        }
+        if (responseBody == null) {
+            Log.d(TAG, "no result that server return");
+            return null;
+        }
+        String jsonResult = null;
+        try {
+            jsonResult = responseBody.string();
+        } catch (IOException e) {
+            Log.d(TAG, "loadDataFromNetwork: responseBody to string exception = ");
+            e.printStackTrace();
+        }
+
+        Gson gson = new Gson()
+                .newBuilder()
+                .setFieldNamingStrategy(new FieldNamingStrategy() {
+                    @Override
+                    public String translateName(Field f) {
+                        String name = f.getName();
+                        if (name.contains("-")) {
+                            return name.replaceAll("-", "");
+                        }
+                        return name;
+                    }
+                })
+                .create();
+        TodayJson todayJson = gson.fromJson(jsonResult, TodayJson.class);
+        sTodayArticleList = getTodayArticleList(todayJson);
         return sTodayArticleList;
     }
 

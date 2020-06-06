@@ -23,8 +23,6 @@ import com.xuwanjin.inchoate.model.today.TodayJson;
 import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,27 +114,6 @@ public class TodayFragment extends BaseFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-    }
-
-    public void parseJsonDataFromAsset() {
-        Gson gson = new Gson()
-                .newBuilder()
-                .setFieldNamingStrategy(new FieldNamingStrategy() {
-                    @Override
-                    public String translateName(Field f) {
-                        String name = f.getName();
-                        if (name.contains("-")) {
-                            return name.replaceAll("-", "");
-                        }
-                        return name;
-                    }
-                }) // setFieldNamingPolicy 有什么区别
-                .create();
-
-        InputStream jsonStream = getContext().getResources().openRawResource(R.raw.today_fragment_query);
-        InputStreamReader reader = new InputStreamReader(jsonStream);
-        TodayJson todayJson = gson.fromJson(reader, TodayJson.class);
-        sTodayArticleList = getTodayArticleList(todayJson);
     }
 
     public void loadTodayArticleList() {

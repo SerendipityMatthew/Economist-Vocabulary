@@ -145,17 +145,6 @@ public class AudioPlayerFragment extends Fragment implements IPlayer.Callback {
         return getView().findViewById(R.id.audio_playing_bar);
     }
 
-    public ImageView getPlayButton() {
-        View view = getAudioPlayingBar();
-        int visibility = view.getVisibility();
-        if (visibility == View.GONE) {
-            return playToggle;
-        } else if (visibility == View.INVISIBLE) {
-            return barPlay;
-        }
-        return null;
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

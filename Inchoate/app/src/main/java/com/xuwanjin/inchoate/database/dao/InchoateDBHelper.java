@@ -19,12 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.FlowableSubscriber;
-import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -505,26 +500,6 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                         }
                     }
                 });
-        /*
-        for (Article article : issue.containArticle) {
-            long id = articleRowIDInDB(article, issue.issueDate);
-            long articleRowID = RECORD_NOT_EXISTED_IN_DB;
-            if (id == RECORD_NOT_EXISTED_IN_DB) {
-                articleRowID = insertArticleData(article, issueRowID, issue.issueDate);
-            } else {
-                articleRowID = id;
-            }
-            for (Paragraph paragraph : article.paragraphList) {
-                long paragraphID = paragraphRowIDInDB(paragraph.paragraph, articleRowID);
-                long paragraphRowID = RECORD_NOT_EXISTED_IN_DB;
-                if (paragraphID == RECORD_NOT_EXISTED_IN_DB) {
-                    paragraphRowID = insertParagraphData(paragraph, articleRowID);
-                } else {
-                    paragraphRowID = paragraphID;
-                }
-            }
-        }
-         */
         return mDisposable;
     }
 

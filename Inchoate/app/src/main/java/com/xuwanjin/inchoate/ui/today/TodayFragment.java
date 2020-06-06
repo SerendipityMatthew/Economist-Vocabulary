@@ -26,12 +26,14 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -133,11 +135,16 @@ public class TodayFragment extends BaseFragment {
     }
 
     public List<Article> loadDataFromNetwork(SingleEmitter<List<Article>> emitter) {
-        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
+                .build();
         Request request = new Request.Builder()
                 .url(Constants.TODAY_SECTION_QUERY_URL)
                 .build();
         Call call = okHttpClient.newCall(request);
+        Log.d(TAG, "loadDataFromNetwork: ");
         try {
             Response response = call.execute();
             if (!response.isSuccessful()) {
@@ -163,6 +170,8 @@ public class TodayFragment extends BaseFragment {
             sTodayArticleList = getTodayArticleList(todayJson);
 
         } catch (IOException e) {
+            Log.d(TAG, "loadDataFromNetwork: IOException ");
+            loadData();
             e.printStackTrace();
         }
         return sTodayArticleList;

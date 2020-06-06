@@ -20,6 +20,7 @@ import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.today.TodayJson;
+import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +42,7 @@ import okhttp3.Response;
 
 import static com.xuwanjin.inchoate.Utils.getTodayArticleList;
 
-public class TodayFragment extends Fragment {
+public class TodayFragment extends BaseFragment {
     public static final String TAG = "TodayFragment";
     View view = null;
     RecyclerView recyclerViewTodayNews;
@@ -59,7 +60,12 @@ public class TodayFragment extends Fragment {
         GridLayoutManager manager = new GridLayoutManager(getContext(), 1);
         manager.setOrientation(GridLayoutManager.VERTICAL);
         recyclerViewTodayNews.setLayoutManager(manager);
+        super.onCreateView(inflater, container, savedInstanceState);
+        return view;
+    }
 
+    @Override
+    public void loadData() {
         if (sTodayArticleList.size() > 0) {
             updateTodayFragment(sTodayArticleList);
         } else {
@@ -69,8 +75,6 @@ public class TodayFragment extends Fragment {
                 loadTodayArticleList();
             }
         }
-
-        return view;
     }
 
     private List<Article> initFakeData() {

@@ -23,6 +23,7 @@ import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.archive.Archive;
 import com.xuwanjin.inchoate.model.archive.Part;
+import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +47,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class PreviousFragment extends Fragment {
+public class PreviousFragment extends BaseFragment {
     public static final String TAG = "PreviousFragment";
 
     RecyclerView issueListRecyclerView;
@@ -67,7 +68,12 @@ public class PreviousFragment extends Fragment {
         issueListRecyclerView.setLayoutManager(mGridLayoutManager);
         previousAdapter = new PreviousAdapter(getContext());
         issueListRecyclerView.setAdapter(previousAdapter);
+        super.onCreateView(inflater, container, savedInstanceState);
+        return view;
+    }
 
+    @Override
+    public void loadData() {
         if (sIssueList != null && sIssueList.size() > 0) {
             Log.d(TAG, "onCreateView: sIssueList  = " + sIssueList.size());
             updatePreviousFragmentContent(sIssueList);
@@ -76,7 +82,6 @@ public class PreviousFragment extends Fragment {
             updatePreviousFragmentContent(issueList);
             loadPreviousIssue();
         }
-        return view;
     }
 
     private List<Issue> initFakeData() {

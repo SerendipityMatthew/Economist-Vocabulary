@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class BookmarkFragment extends Fragment {
+public class BookmarkFragment extends BaseFragment {
     RecyclerView bookmarkRecycleView;
     TextView mTextView;
     private Disposable mDisposable;
@@ -44,13 +45,17 @@ public class BookmarkFragment extends Fragment {
         gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         bookmarkRecycleView.setLayoutManager(gridLayoutManager);
         mTextView = view.findViewById(R.id.bookmark_title);
+        super.onCreateView(inflater, container, savedInstanceState);
+        return view;
+    }
 
+    @Override
+    public void loadData() {
         if (sArticleList.size() > 0) {
             updateFragmentContent(sArticleList);
         } else {
             loadBookmarkData();
         }
-        return view;
     }
 
     private void loadBookmarkData() {

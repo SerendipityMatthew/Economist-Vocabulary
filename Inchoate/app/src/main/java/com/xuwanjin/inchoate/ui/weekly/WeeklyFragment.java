@@ -49,6 +49,7 @@ import static com.xuwanjin.inchoate.Constants.WEEK_FRAGMENT_COMMON_URL;
 import static com.xuwanjin.inchoate.Constants.WEEK_FRAGMENT_QUERY_05_30_URL;
 
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
+import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -83,7 +84,7 @@ import okhttp3.Response;
 import static com.xuwanjin.inchoate.Utils.getIssue;
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setEconomistService;
 
-public class WeeklyFragment extends Fragment {
+public class WeeklyFragment extends BaseFragment {
     public static final String TAG = "WeeklyFragment";
     RecyclerView issueContentRecyclerView;
     private View mSectionHeaderView;
@@ -183,6 +184,12 @@ public class WeeklyFragment extends Fragment {
             mLinearLayoutManager.scrollToPosition(scrollToPosition);
         }
 
+        super.onCreateView(inflater, container, savedInstanceState);
+        return view;
+    }
+
+    @Override
+    public void loadData() {
         if (sIssueCache != null && sIssueCache.containArticle != null && sIssueCache.containArticle.size() > 0) {
             updateWeeklyFragmentContent(sIssueCache);
         } else {
@@ -190,8 +197,6 @@ public class WeeklyFragment extends Fragment {
             updateWeeklyFragmentContent(issue);
         }
         loadTodayArticleList();
-
-        return view;
     }
 
     public void updateWeeklyFragmentContent(Issue issue) {

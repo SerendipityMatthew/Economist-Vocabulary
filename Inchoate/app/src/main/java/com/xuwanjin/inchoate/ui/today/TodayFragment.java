@@ -67,12 +67,15 @@ public class TodayFragment extends BaseFragment {
         if (sTodayArticleList.size() > 0) {
             updateTodayFragment(sTodayArticleList);
         } else {
-            List<Article> articleList = initFakeData();
-            updateTodayFragment(articleList);
+            initFakeDataAndUpdateUI();
             if (Utils.isNetworkAvailable(getContext())) {
                 loadTodayArticleList();
             }
         }
+    }
+    private void initFakeDataAndUpdateUI(){
+        List<Article> articleList = initFakeData();
+        updateTodayFragment(articleList);
     }
 
     @Override
@@ -157,7 +160,7 @@ public class TodayFragment extends BaseFragment {
             responseBody = response.body();
         } catch (IOException e) {
             Log.d(TAG, "loadDataFromNetwork: IOException e = " + e);
-            loadData();
+            initFakeDataAndUpdateUI();
             e.printStackTrace();
         }
         if (response == null || !response.isSuccessful()) {

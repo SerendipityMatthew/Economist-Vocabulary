@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
@@ -45,11 +46,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -100,7 +104,7 @@ public class ArticleFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater,container, savedInstanceState);
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -142,9 +146,10 @@ public class ArticleFragment extends BaseFragment {
         initData();
         setArticleAdapter();
         initFillCollectedVocabulary();
-        processArticleText();
+        processArticleTextWithFlatMap();
     }
-    private void setArticleAdapter(){
+
+    private void setArticleAdapter() {
         mArticleContentAdapter = new ArticleContentAdapter(getContext(), mParagraphList, mView);
         ArticleItemDecoration articleItemDecoration = new ArticleItemDecoration(mArticleContentRV, getContext());
         mArticleContentRV.addItemDecoration(articleItemDecoration);
@@ -161,7 +166,6 @@ public class ArticleFragment extends BaseFragment {
 
     private void initFillCollectedVocabulary() {
         mCollectedVocabularyList.addAll(InchoateApp.sCollectedVocabularyList);
-        Log.d(TAG, "initFillCollectedVocabulary:collectedVocabularyList.size =  " + mCollectedVocabularyList.size());
     }
 
     /*
@@ -202,9 +206,66 @@ public class ArticleFragment extends BaseFragment {
                         if (mCount == adapterDataList.size() - 1) {
                             mArticleContentAdapter.updateData(adapterDataList);
                         }
+                        mCount ++;
                     }
                 });
     }
+
+    @SuppressLint("CheckResult")
+    private void processArticleTextWithFlatMap() {
+        List<Paragraph> paragraphList = mArticle.paragraphList;
+        final List<Paragraph> list = paragraphList;
+        Function<String, List<Paragraph>> func = new Function<String, List<Paragraph>>() {
+            @Override
+            public List<Paragraph> apply(String t1) {
+                return list;
+            }
+        };
+        BiFunction<String, Paragraph, HashMap<Integer, Paragraph>> resFunc = new BiFunction<String, Paragraph, HashMap<Integer, Paragraph>>() {
+            @Override
+            public HashMap<Integer, Paragraph> apply(String vocabulary, Paragraph paragraph) {
+                // 一段文本 和一个单词  处理应该返回一个 SpannableString, 接着下一次, 返回利用这个结果返回接着处理下一个单词, 再次生成新的 SpannableString
+                return processArticleTextToSpannableForFlatMap(paragraph, vocabulary);
+            }
+        };
+//       key: orderOfParagraph  value: SpannableString
+        List<String> collectedList = new ArrayList<>();
+        for (String vocabulary : mCollectedVocabularyList) {
+            if (!isSkipVocabulary(vocabulary)) {
+                collectedList.add(vocabulary);
+            }
+        }
+
+        Observable.fromIterable(collectedList)
+                .flatMapIterable(func, resFunc)
+                .subscribeOn(Schedulers.computation())
+                .delay(10, TimeUnit.SECONDS)
+                .subscribe();
+
+    }
+
+    public HashMap<Integer, Paragraph> processArticleTextToSpannableForFlatMap(Paragraph paragraph, String collectedVocabulary) {
+        String paragraphText = paragraph.paragraph.toString();
+        HashMap<Integer, Paragraph> hashMap = new HashMap<>(0);
+
+        // //? ! . , : "  特殊情况
+        String collectedVocabularyPattern = " " + collectedVocabulary + " ";
+        boolean isExisted = paragraphText.contains(collectedVocabularyPattern);
+        // 如果一个段落里多个不认识的单词, 存在 hashmap 里, 段落的顺序为 key 值, value为段落值
+        SpannableString vocabularySpannable = new SpannableString(paragraph.paragraph);
+        if (isExisted) {
+            int index = 0;
+            index = paragraphText.indexOf(collectedVocabulary);
+            vocabularySpannable.setSpan(
+                    new BackgroundColorSpan(Color.GREEN),
+                    index, index + collectedVocabulary.length(),
+                    SpannableString.SPAN_INCLUSIVE_INCLUSIVE);
+        }
+        paragraph.paragraph = vocabularySpannable;
+        hashMap.put(paragraph.theOrderOfParagraph, paragraph);
+        return hashMap;
+    }
+
 
     public HashMap<Integer, Paragraph> processArticleTextToSpannable(Paragraph paragraph) {
         String paragraphText = paragraph.paragraph.toString();

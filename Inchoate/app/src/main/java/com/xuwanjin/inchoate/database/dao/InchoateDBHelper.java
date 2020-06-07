@@ -462,10 +462,10 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                 .map(new Function<Article, HashMap<Long, Article>>() {
                     @Override
                     public HashMap<Long, Article> apply(Article article) throws Exception {
-                        Log.d(TAG, "insertWholeData: apply: article.section = " + article.section);
-                        Log.d(TAG, "insertWholeData: apply: article.date = " + article.date);
+//                        Log.d(TAG, "insertWholeData: apply: article.section = " + article.section);
+//                        Log.d(TAG, "insertWholeData: apply: article.date = " + article.date);
                         long id = articleRowIDInDB(article, issue.issueDate);
-                        Log.d(TAG, "insertWholeData: apply: id = " + id);
+//                        Log.d(TAG, "insertWholeData: apply: id = " + id);
                         long articleRowID = RECORD_NOT_EXISTED_IN_DB;
                         if (id == RECORD_NOT_EXISTED_IN_DB) {
                             articleRowID = insertArticleData(article, finalIssueRowID, issue.issueDate);
@@ -491,7 +491,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                     public void accept(HashMap<Long, Article> longArticleHashMap) throws Exception {
                         long articleRowID = longArticleHashMap.keySet().iterator().next();
                         Article article = longArticleHashMap.values().iterator().next();
-                        Log.d(TAG, "insertWholeData: accept: articleRowID = " + articleRowID + " article.date =" + article.date);
+//                        Log.d(TAG, "insertWholeData: accept: articleRowID = " + articleRowID + " article.date =" + article.date);
                         for (Paragraph paragraph : article.paragraphList) {
                             long paragraphID = paragraphRowIDInDB(paragraph.paragraph.toString(), articleRowID);
                             if (paragraphID == RECORD_NOT_EXISTED_IN_DB) {
@@ -524,7 +524,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                 + KEY_ISSUE_DATE + " =\'" + issueDate + "\'" + " AND "
                 + KEY_SECTION + " =\'" + article.section + "\'" + " AND "
                 + KEY_TITLE + " =\'" + articleTitle + "\' ";
-        Log.d(TAG, "articleRowIDInDB: query = " + query);
+//        Log.d(TAG, "articleRowIDInDB: query = " + query);
         Cursor cursor = database.rawQuery(query, null);
         List<Article> articleList = new ArrayList<>();
         while (cursor != null && cursor.moveToNext()) {

@@ -167,9 +167,13 @@ public class WeeklyFragment extends BaseFragment {
         mExecutorService.submit(mBindServiceRunnable);
 
         int sectionToPosition = InchoateApp.getScrollToPosition();
+        Log.d(TAG, "onCreateView: sectionToPosition = " +sectionToPosition);
         if (sectionToPosition > 0) {
-            int scrollToPosition = Utils.getArticleSumBySection(sectionToPosition - 2);
-            mLinearLayoutManager.scrollToPosition(scrollToPosition);
+            int scrollToPosition = Utils.getArticleSumBySection(sectionToPosition - 2, sIssueCache);
+            Log.d(TAG, "onCreateView: scrollToPosition = " + scrollToPosition);
+            if (scrollToPosition > 0){
+                mLinearLayoutManager.scrollToPosition(scrollToPosition);
+            }
         }
 
         super.onCreateView(inflater, container, savedInstanceState);
@@ -179,6 +183,7 @@ public class WeeklyFragment extends BaseFragment {
     @Override
     public void loadData() {
         if (sIssueCache != null && sIssueCache.containArticle != null && sIssueCache.containArticle.size() > 0) {
+            InchoateApp.setNewestIssueCache(sIssueCache);
             updateWeeklyFragmentContent(sIssueCache);
         } else {
             Issue issue = initFakeData();
@@ -200,6 +205,7 @@ public class WeeklyFragment extends BaseFragment {
                 if (issue == null) {
                     return;
                 }
+                InchoateApp.setNewestIssueCache(issue);
                 emitter.onSuccess(issue);
             }
         }).subscribeOn(Schedulers.io())
@@ -267,8 +273,11 @@ public class WeeklyFragment extends BaseFragment {
             } else {
                 int size = articleList.size();
                 Article lastArticle = articleList.get(size - 1);
+                // 没有完全插入接入
                 if (!ArticleCategorySection.OBITUARY.getName().equals(lastArticle.section)) {
                     shouldLoadFromNetwork = true;
+                }else {
+                    return issue;
                 }
             }
 

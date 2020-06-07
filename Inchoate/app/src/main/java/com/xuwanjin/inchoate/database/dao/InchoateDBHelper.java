@@ -586,6 +586,13 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         issue.issueFormatDate = cursor.getString(issueFormatDateIndex);
         issue.headline = cursor.getString(headlineIndex);
         issue.containArticle = getArticleListByIssueDate(issue.issueDate);
+        List<String> sectionList = new ArrayList<>();
+        for (Article a : issue.containArticle) {
+            if (!sectionList.contains(a.section)) {
+                sectionList.add(a.section);
+            }
+        }
+        issue.categorySection = sectionList;
         return issue;
     }
 

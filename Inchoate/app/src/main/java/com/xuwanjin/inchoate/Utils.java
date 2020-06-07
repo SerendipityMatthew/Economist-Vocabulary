@@ -34,6 +34,7 @@ import static com.xuwanjin.inchoate.InchoateApp.sArticleLinkedHashMap;
 
 public class Utils {
     public static final String TAG = "Utils";
+
     public static void navigationController(NavController navController, int resId) {
         if (navController != null) {
             navController.navigate(resId);
@@ -85,7 +86,7 @@ public class Utils {
                 StringBuilder paragraphBuilder = new StringBuilder();
                 // 3. 获取段落的所有数据
                 List<WeekText> childrenText = wholeArticleText.children;
-                if (childrenText == null || childrenText.size()==0){
+                if (childrenText == null || childrenText.size() == 0) {
                     continue;
                 }
                 for (WeekText paragraphText : childrenText) {
@@ -163,7 +164,7 @@ public class Utils {
     public static List<Article> getTodayArticleList(TodayJson todayJson) {
         List<Article> articleList = new ArrayList<>();
         List<TodayFirstParts> todayFirstPartsList = todayJson.data.canonical.hasPart.parts;
-        for (TodayFirstParts firstParts:todayFirstPartsList){
+        for (TodayFirstParts firstParts : todayFirstPartsList) {
             List<TodaySecondParts> todaySecondPartsList = firstParts.hasPart.parts;
             for (TodaySecondParts secondParts : todaySecondPartsList) {
                 Article article = new Article();
@@ -175,13 +176,13 @@ public class Utils {
                     article.section = internalList.get(0).sectionName;
                 }
                 if (secondParts.audio != null) {
-                    if (secondParts.audio.main != null){
+                    if (secondParts.audio.main != null) {
                         article.audioDuration = secondParts.audio.main.duration;
                         article.audioUrl = secondParts.audio.main.url.canonical;
                     }
                 }
                 article.mainArticleImage = secondParts.image.main.url.canonical;
-                article.date = secondParts.published.substring(0,10);
+                article.date = secondParts.published.substring(0, 10);
                 article.paragraphList = new ArrayList<>();
                 int theOrderOfParagraph = 0;
                 StringBuilder articleBuilder = new StringBuilder();
@@ -235,8 +236,12 @@ public class Utils {
         return articleLinkedHashMap;
     }
 
-    public static int getArticleSumBySection(int sectionPosition) {
-        LinkedHashMap<String, List<Article>> maps = sArticleLinkedHashMap;
+    public static int getArticleSumBySection(int sectionPosition, Issue issue) {
+        if (issue.categorySection == null
+                || issue.categorySection.size() == 0) {
+            return -1;
+        }
+        LinkedHashMap<String, List<Article>> maps = getArticleListBySection(issue);
         int i = 0;
         int sum = 0;
         for (Iterator pairs = maps.entrySet().iterator(); pairs.hasNext() && i < sectionPosition; i++) {
@@ -352,17 +357,17 @@ public class Utils {
         return month + " " + day + " " + year;
     }
 
-    public static boolean isNetworkAvailable(Context context){
+    public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager manager = (ConnectivityManager)
                 context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (manager == null){
+        if (manager == null) {
             return false;
         }
         NetworkInfo networkInfo = manager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
-    public static List<Issue> getIssueList(Archive archiveData){
+    public static List<Issue> getIssueList(Archive archiveData) {
         Part[] partArray = archiveData.data.section.hasPart.parts;
         List<Issue> issueList = new ArrayList<>();
         Log.d(TAG, "getIssueList: ");

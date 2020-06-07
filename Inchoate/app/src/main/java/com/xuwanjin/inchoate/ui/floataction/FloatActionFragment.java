@@ -1,6 +1,7 @@
 package com.xuwanjin.inchoate.ui.floataction;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.model.Issue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FloatActionFragment extends Fragment {
+    public static final String TAG = "FloatActionFragment";
     private View mHeaderSectionView;
     private List<String> sectionList = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -27,7 +31,12 @@ public class FloatActionFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         RecyclerView recyclerView = view.findViewById(R.id.float_action_recyclerView);
         recyclerView.setLayoutManager(linearLayoutManager);
-        sectionList.addAll(InchoateApp.getNewestIssueCache().get(0).categorySection);
+        Issue issue = InchoateApp.getNewestIssueCache().get(0);
+        if (issue == null || issue.categorySection == null || issue.categorySection.size() == 0) {
+            Log.d(TAG, "onCreateView: issue " + issue.categorySection);
+            return null;
+        }
+        sectionList.addAll(issue.categorySection);
         sectionList.add(0, "This week");
         IssueCategoryAdapter categoryAdapter = new IssueCategoryAdapter(
                 getContext(), sectionList);

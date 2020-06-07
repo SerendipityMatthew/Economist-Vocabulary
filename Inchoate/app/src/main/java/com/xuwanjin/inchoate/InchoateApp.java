@@ -85,7 +85,7 @@ public class InchoateApp extends Application {
     }
 
     public static void setNewestIssueCache(Issue issue) {
-        cacheNewestIssue.add(issue);
+        cacheNewestIssue.add(0,issue);
     }
 
     public static List<Issue> getNewestIssueCache() {

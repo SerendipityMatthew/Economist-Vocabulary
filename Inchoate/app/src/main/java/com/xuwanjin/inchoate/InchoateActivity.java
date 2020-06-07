@@ -35,15 +35,15 @@ public class InchoateActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener,
         BottomNavigationController {
     public static final String TAG = "InchoateActivity";
-    NavController controller;
-    BottomNavigationView bottomNavigationView;
+    NavController mController;
+    BottomNavigationView mBottomNavigationView;
     ConstraintLayout mConstraintLayout;
-    FrameLayout nowPlayingControl;
-    public SlidingUpPanelLayout slidingUpPanelLayout;
+    FrameLayout mNowPlayingControl;
+    public SlidingUpPanelLayout mSlidingUpPanelLayout;
     public IEconomistService mEconomistService;
     private boolean isSuccess = false;
-    AudioPlayerFragment audioPlayerFragment = new AudioPlayerFragment();
-    FragmentManager fragmentManager = getSupportFragmentManager();
+    AudioPlayerFragment mAudioPlayerFragment = new AudioPlayerFragment();
+    FragmentManager mFragmentManager = getSupportFragmentManager();
 
     ServiceConnection economistServiceConnection = new ServiceConnection() {
         @Override
@@ -73,17 +73,17 @@ public class InchoateActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
         initView();
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        controller = Navigation.findNavController(this, R.id.nav_host_fragment);
-        InchoateApp.NAVIGATION_CONTROLLER = controller;
+        mBottomNavigationView.setOnNavigationItemSelectedListener(this);
+        mController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        InchoateApp.NAVIGATION_CONTROLLER = mController;
         // 第一次启动的时候隐藏 SlidingUpLayout ,
-        slidingUpPanelLayout.setPanelHeight(30);
-        slidingUpPanelLayout.setTouchEnabled(true);
-        slidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+        mSlidingUpPanelLayout.setPanelHeight(30);
+        mSlidingUpPanelLayout.setTouchEnabled(true);
+        mSlidingUpPanelLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-                if (audioPlayerFragment.getAudioPlayingBar() != null){
-                    audioPlayerFragment.getAudioPlayingBar().setVisibility(slideOffset > 0.3 ? View.GONE : View.VISIBLE);
+                if (mAudioPlayerFragment.getAudioPlayingBar() != null){
+                    mAudioPlayerFragment.getAudioPlayingBar().setVisibility(slideOffset > 0.3 ? View.GONE : View.VISIBLE);
                 }
                 if (slideOffset > 0.3){
 
@@ -99,9 +99,9 @@ public class InchoateActivity extends AppCompatActivity implements
 
     public void initView() {
         mConstraintLayout = findViewById(R.id.main_activity);
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-        slidingUpPanelLayout = findViewById(R.id.slide_layout);
-        nowPlayingControl = findViewById(R.id.now_playing_control);
+        mBottomNavigationView = findViewById(R.id.bottom_navigation);
+        mSlidingUpPanelLayout = findViewById(R.id.slide_layout);
+        mNowPlayingControl = findViewById(R.id.now_playing_control);
     }
 
     @Override
@@ -121,24 +121,24 @@ public class InchoateActivity extends AppCompatActivity implements
 
     public void inflateAudioPlaying(SlidingUpPanelLayout.PanelState panelState) {
         Log.d(TAG, "inflateAudioPlaying: panelState = " + panelState);
-        fragmentManager
+        mFragmentManager
                 .beginTransaction()
-                .replace(R.id.now_playing_control, audioPlayerFragment)
+                .replace(R.id.now_playing_control, mAudioPlayerFragment)
                 .commitAllowingStateLoss();
-        slidingUpPanelLayout.setPanelState(panelState);
-        slidingUpPanelLayout.setPanelHeight(400);
+        mSlidingUpPanelLayout.setPanelState(panelState);
+        mSlidingUpPanelLayout.setPanelHeight(400);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.item_today) {
-            Utils.navigationController(controller, R.id.navigation_today);
+            Utils.navigationController(mController, R.id.navigation_today);
         } else if (item.getItemId() == R.id.item_weekly) {
-            Utils.navigationController(controller, R.id.navigation_weekly);
+            Utils.navigationController(mController, R.id.navigation_weekly);
         } else if (item.getItemId() == R.id.item_bookmark) {
-            Utils.navigationController(controller, R.id.navigation_bookmark);
+            Utils.navigationController(mController, R.id.navigation_bookmark);
         } else if (item.getItemId() == R.id.item_setting) {
-            Utils.navigationController(controller, R.id.navigation_settings);
+            Utils.navigationController(mController, R.id.navigation_settings);
         }
 
         return false;
@@ -148,12 +148,12 @@ public class InchoateActivity extends AppCompatActivity implements
     public void isShowBottomNavigation(boolean isShow) {
         Log.d("Matthew", "isShowBottomNavigation: isShow = " + isShow);
         if (isShow) {
-            bottomNavigationView = findViewById(R.id.bottom_navigation);
-            bottomNavigationView.setVisibility(View.VISIBLE);
-            bottomNavigationView.setOnNavigationItemSelectedListener(this);
+            mBottomNavigationView = findViewById(R.id.bottom_navigation);
+            mBottomNavigationView.setVisibility(View.VISIBLE);
+            mBottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         } else {
-            bottomNavigationView.removeAllViews();
+            mBottomNavigationView.removeAllViews();
         }
     }
 

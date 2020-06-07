@@ -16,23 +16,25 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String KEY_NOTIFICATIONS = "notifications_key";
     public static final String KEY_CONTACT_US = "contact_us_key";
     public static final String KEY_ABOUT = "about_key";
-    Preference logInPreference;
-    Preference textSizeChangePreference;
-    Preference autoDownloadPreference;
-    Preference backgroundDownloadsPreference;
-    Preference notificationPreference;
-    Preference contactUsPreference;
-    Preference aboutPreference;
+    Preference mLogInPreference;
+    Preference mDarkModePreference;
+    Preference mTextSizeChangePreference;
+    Preference mAutoDownloadPreference;
+    Preference mBackgroundDownloadsPreference;
+    Preference mNotificationPreference;
+    Preference mContactUsPreference;
+    Preference mAboutPreference;
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.fragment_settings);
-        logInPreference = findPreference(KEY_DARK_MODE_PREFERENCE);
-        textSizeChangePreference = findPreference(KEY_TEXT_SIZE_CHANGE);
-        autoDownloadPreference = findPreference(KEY_AUTO_DOWNLOAD_DOWNLOAD);
-        backgroundDownloadsPreference = findPreference(KEY_BACKGROUND_DOWNLOADS);
-        notificationPreference = findPreference(KEY_NOTIFICATIONS);
-        contactUsPreference = findPreference(KEY_CONTACT_US);
-        aboutPreference = findPreference(KEY_ABOUT);
+        mLogInPreference = findPreference(KEY_DARK_MODE_PREFERENCE);
+        mDarkModePreference = findPreference(KEY_DARK_MODE_PREFERENCE);
+        mTextSizeChangePreference = findPreference(KEY_TEXT_SIZE_CHANGE);
+        mAutoDownloadPreference = findPreference(KEY_AUTO_DOWNLOAD_DOWNLOAD);
+        mBackgroundDownloadsPreference = findPreference(KEY_BACKGROUND_DOWNLOADS);
+        mNotificationPreference = findPreference(KEY_NOTIFICATIONS);
+        mContactUsPreference = findPreference(KEY_CONTACT_US);
+        mAboutPreference = findPreference(KEY_ABOUT);
     }
 
 }

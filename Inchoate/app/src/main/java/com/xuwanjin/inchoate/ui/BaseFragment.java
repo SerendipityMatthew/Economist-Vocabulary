@@ -9,6 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.xuwanjin.inchoate.InchoateApp;
+import com.xuwanjin.inchoate.Utils;
+
 public abstract class BaseFragment extends Fragment {
     private View mRootView;
     @Nullable
@@ -26,4 +29,7 @@ public abstract class BaseFragment extends Fragment {
     protected abstract void loadData();
 
     protected abstract int getLayoutResId();
+    protected void navigationToFragment(int resId) {
+        Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, resId);
+    }
 }

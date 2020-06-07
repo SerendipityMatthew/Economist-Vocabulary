@@ -393,9 +393,6 @@ public class WeeklyFragment extends BaseFragment {
         });
     }
 
-    private void navigationToFragment(int resId) {
-        Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, resId);
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

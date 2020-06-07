@@ -133,7 +133,7 @@ public class ArticleFragment extends BaseFragment {
         mArticlePlayBarDivider = mArticleContentHeaderView.findViewById(R.id.article_play_bar_divider);
         mGridLayoutManager = new GridLayoutManager(getContext(), 1);
         mArticleContentRV.setLayoutManager(mGridLayoutManager);
-        
+
         mView = view;
     }
 
@@ -175,7 +175,7 @@ public class ArticleFragment extends BaseFragment {
       paragraph 07                    retrenchment
       paragraph 08                    flagrant
       paragraph 08                    dissidents
-       多对多的关系   flatmap
+       多对多的关系   flatmap,
  */
     @SuppressLint("CheckResult")
     private void processArticleText() {

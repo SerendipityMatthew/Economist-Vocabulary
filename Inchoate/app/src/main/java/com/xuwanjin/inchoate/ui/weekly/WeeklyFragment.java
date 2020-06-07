@@ -163,12 +163,6 @@ public class WeeklyFragment extends BaseFragment {
         view = inflater.inflate(R.layout.fragment_weekly, container, false);
         initView();
         initOnClickListener();
-        mWeeklyAdapter = new WeeklyAdapter(getContext(), this);
-        issueContentRecyclerView.setAdapter(mWeeklyAdapter);
-        mWeeklyAdapter.setHeaderView(mSectionHeaderView);
-        mWeeklyAdapter.setFooterView(mFooterView);
-        mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
-        issueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);
 
         mExecutorService.submit(mBindServiceRunnable);
 
@@ -311,6 +305,13 @@ public class WeeklyFragment extends BaseFragment {
         issueDate = mSectionHeaderView.findViewById(R.id.issue_date);
         magazineCover = mSectionHeaderView.findViewById(R.id.magazine_cover);
         magazineHeadline = mSectionHeaderView.findViewById(R.id.magazine_headline);
+
+        mWeeklyAdapter = new WeeklyAdapter(getContext(), this);
+        issueContentRecyclerView.setAdapter(mWeeklyAdapter);
+        mWeeklyAdapter.setHeaderView(mSectionHeaderView);
+        mWeeklyAdapter.setFooterView(mFooterView);
+        mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
+        issueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);
     }
 
     public void updateView(Issue issue) {

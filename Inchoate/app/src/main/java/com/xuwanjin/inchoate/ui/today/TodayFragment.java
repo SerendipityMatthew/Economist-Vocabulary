@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,7 +32,6 @@ import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -45,9 +43,7 @@ import static com.xuwanjin.inchoate.Utils.getTodayArticleList;
 
 public class TodayFragment extends BaseFragment {
     public static final String TAG = "TodayFragment";
-    View view = null;
-    RecyclerView recyclerViewTodayNews;
-    public TodayViewModel todayViewModel = new TodayViewModel();
+    RecyclerView mRecyclerViewTodayNews;
     private static List<Article> sTodayArticleList = new ArrayList<>();
     private TodayNewsAdapter mTodayNewsAdapter;
     private Disposable mDisposable;
@@ -55,14 +51,15 @@ public class TodayFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
-        view = inflater.inflate(R.layout.fragment_today, container, false);
-        recyclerViewTodayNews = view.findViewById(R.id.today_news_recyclerView);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    protected void initView(View view) {
+        mRecyclerViewTodayNews = view.findViewById(R.id.today_news_recyclerView);
         GridLayoutManager manager = new GridLayoutManager(getContext(), 1);
         manager.setOrientation(GridLayoutManager.VERTICAL);
-        recyclerViewTodayNews.setLayoutManager(manager);
-        super.onCreateView(inflater, container, savedInstanceState);
-        return view;
+        mRecyclerViewTodayNews.setLayoutManager(manager);
     }
 
     @Override
@@ -76,6 +73,11 @@ public class TodayFragment extends BaseFragment {
                 loadTodayArticleList();
             }
         }
+    }
+
+    @Override
+    protected int getLayoutResId() {
+        return R.layout.fragment_today;
     }
 
     private List<Article> initFakeData() {
@@ -93,7 +95,7 @@ public class TodayFragment extends BaseFragment {
 
     private void updateTodayFragment(List<Article> articleList) {
         mTodayNewsAdapter = new TodayNewsAdapter(getContext());
-        recyclerViewTodayNews.setAdapter(mTodayNewsAdapter);
+        mRecyclerViewTodayNews.setAdapter(mTodayNewsAdapter);
         mTodayNewsAdapter.updateData(articleList);
     }
 

@@ -50,30 +50,28 @@ public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callbac
     private IEconomistService mEconomistService;
     private Context mContext;
     private List<Article> mArticleList;
-    private boolean isPlayWholeIssue = false;
-    private ImageView playToggle;
-    private AppCompatSeekBar seekBarProgress;
+    private ImageView mPlayToggle;
+    private AppCompatSeekBar mSeekBarProgress;
     private Handler mHandler = new Handler();
     public final int DELAY_TIME = 1000;
-    private TextView audioPlayed;
-    private TextView audioLeft;
-    private ImageView replay;
-    private ImageView forward;
-    private ImageView issueCategoryMenu;
-    private ImageView next;
-    private ImageView articleCoverImage;
-    private ImageView last;
-    private TextView playFlyTitle;
-    private TextView audioPlayTitle;
-    private TextView playSpeed;
-    private View view;
+    private TextView mAudioPlayed;
+    private TextView mAudioLeft;
+    private ImageView mReplay;
+    private ImageView mForward;
+    private ImageView mIssueCategoryMenu;
+    private ImageView mNext;
+    private ImageView mArticleCoverImage;
+    private ImageView mLast;
+    private TextView mPlayFlyTitle;
+    private TextView mAudioPlayTitle;
+    private TextView mPlaySpeed;
     private Article mAudioPlayingArticle;
-    private RecyclerView audioIssueCategoryRV;
-    private ImageView barPlay;
-    private AppCompatSeekBar barPlayingProgress;
-    private ImageView barSkip;
-    private ImageView barPlayingClose;
-    private View.OnClickListener playOrPauseListener = new View.OnClickListener() {
+    private RecyclerView mAudioIssueCategoryRV;
+    private ImageView mBarPlay;
+    private AppCompatSeekBar mBarPlayingProgress;
+    private ImageView mBarSkip;
+    private ImageView mBarPlayingClose;
+    private View.OnClickListener mPlayOrPauseListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             EconomistPlayerTimberStyle.playOrPause();
@@ -88,9 +86,9 @@ public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callbac
 
             int progress = EconomistPlayerTimberStyle.getCurrentPosition();
             updateProgressText(progress);
-            if (progress >= 0 && progress <= seekBarProgress.getMax()) {
-                seekBarProgress.setProgress(progress);
-                barPlayingProgress.setProgress(progress);
+            if (progress >= 0 && progress <= mSeekBarProgress.getMax()) {
+                mSeekBarProgress.setProgress(progress);
+                mBarPlayingProgress.setProgress(progress);
             }
 
             mHandler.postDelayed(mProgressCallback, DELAY_TIME);
@@ -131,11 +129,11 @@ public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callbac
 
     public void updateProgressText(int progress) {
         if (mAudioPlayingArticle != null) {
-            audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress / 1000));
+            mAudioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration - progress / 1000));
         } else {
-            audioLeft.setText(Utils.getDurationFormat(0));
+            mAudioLeft.setText(Utils.getDurationFormat(0));
         }
-        audioPlayed.setText(Utils.getDurationFormat(progress / 1000));
+        mAudioPlayed.setText(Utils.getDurationFormat(progress / 1000));
     }
 
     public View getAudioPlayingBar() {
@@ -150,17 +148,18 @@ public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callbac
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
         mContext = getContext();
-        view = inflater.inflate(R.layout.fragment_audio_play, container, false);
         mArticleList = InchoateApp.getAudioPlayingArticleListCache();
         mAudioPlayingArticle = mArticleList.get(0);
-        Log.d(TAG, "onCreateView: mAudioPlayingArticle = " + mAudioPlayingArticle);
-        initView();
-        initOnListener();
         EventBus.getDefault().register(this);
         mHandler.removeCallbacks(mProgressCallback);
         mHandler.postDelayed(mProgressCallback, 1000);
-        super.onCreateView(inflater, container, savedInstanceState);
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    protected void initView(View view) {
+        initAudioPlayerFragmentView(view);
+        initOnListener();
     }
 
     @Override
@@ -169,33 +168,38 @@ public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callbac
     }
 
     @Override
+    protected int getLayoutResId() {
+        return R.layout.fragment_audio_play;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
     }
 
-    public void initView() {
-        barPlay = view.findViewById(R.id.bar_play);
-        barPlayingProgress = view.findViewById(R.id.bar_playing_progress);
-        barSkip = view.findViewById(R.id.bar_skip_15);
-        barPlayingClose = view.findViewById(R.id.bar_playing_close);
+    protected void initAudioPlayerFragmentView(View view) {
+        mBarPlay = view.findViewById(R.id.bar_play);
+        mBarPlayingProgress = view.findViewById(R.id.bar_playing_progress);
+        mBarSkip = view.findViewById(R.id.bar_skip_15);
+        mBarPlayingClose = view.findViewById(R.id.bar_playing_close);
 
-        last = view.findViewById(R.id.last);
-        next = view.findViewById(R.id.next);
+        mLast = view.findViewById(R.id.last);
+        mNext = view.findViewById(R.id.next);
 
-        articleCoverImage = view.findViewById(R.id.article_cover_image);
-        playFlyTitle = view.findViewById(R.id.audio_play_fly_title);
-        audioPlayTitle = view.findViewById(R.id.audio_play_title);
-        issueCategoryMenu = view.findViewById(R.id.issue_category_menu);
-        audioPlayed = view.findViewById(R.id.audio_played);
-        audioLeft = view.findViewById(R.id.audio_left);
+        mArticleCoverImage = view.findViewById(R.id.article_cover_image);
+        mPlayFlyTitle = view.findViewById(R.id.audio_play_fly_title);
+        mAudioPlayTitle = view.findViewById(R.id.audio_play_title);
+        mIssueCategoryMenu = view.findViewById(R.id.issue_category_menu);
+        mAudioPlayed = view.findViewById(R.id.audio_played);
+        mAudioLeft = view.findViewById(R.id.audio_left);
 
-        replay = view.findViewById(R.id.replay);
-        forward = view.findViewById(R.id.forward);
+        mReplay = view.findViewById(R.id.replay);
+        mForward = view.findViewById(R.id.forward);
 
-        playToggle = view.findViewById(R.id.play_toggle);
-        seekBarProgress = view.findViewById(R.id.playing_progress);
-        playSpeed = view.findViewById(R.id.play_speed);
-        audioIssueCategoryRV = view.findViewById(R.id.audio_issue_category_rv);
+        mPlayToggle = view.findViewById(R.id.play_toggle);
+        mSeekBarProgress = view.findViewById(R.id.playing_progress);
+        mPlaySpeed = view.findViewById(R.id.play_speed);
+        mAudioIssueCategoryRV = view.findViewById(R.id.audio_issue_category_rv);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -215,25 +219,25 @@ public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callbac
                 .error(R.mipmap.the_economist)
                 .timeout(10*1000)
                 .placeholder(R.mipmap.the_economist)
-                .into(articleCoverImage);
-        playFlyTitle.setText(mAudioPlayingArticle.flyTitle);
-        audioPlayTitle.setText(mAudioPlayingArticle.title);
-        audioPlayed.setText(Utils.getDurationFormat(0));
-        audioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration));
-        seekBarProgress.setMax((int) mAudioPlayingArticle.audioDuration * 1000);
-        barPlayingProgress.setMax((int) mAudioPlayingArticle.audioDuration * 1000);
-        playToggle.setImageResource(R.mipmap.pause);
-        barPlay.setImageResource(R.mipmap.pause);
+                .into(mArticleCoverImage);
+        mPlayFlyTitle.setText(mAudioPlayingArticle.flyTitle);
+        mAudioPlayTitle.setText(mAudioPlayingArticle.title);
+        mAudioPlayed.setText(Utils.getDurationFormat(0));
+        mAudioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration));
+        mSeekBarProgress.setMax((int) mAudioPlayingArticle.audioDuration * 1000);
+        mBarPlayingProgress.setMax((int) mAudioPlayingArticle.audioDuration * 1000);
+        mPlayToggle.setImageResource(R.mipmap.pause);
+        mBarPlay.setImageResource(R.mipmap.pause);
     }
 
     public void initOnListener() {
-        barPlay.setOnClickListener(playOrPauseListener);
+        mBarPlay.setOnClickListener(mPlayOrPauseListener);
 
-        seekBarProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
-        barPlayingProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
-        playToggle.setOnClickListener(playOrPauseListener);
+        mSeekBarProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
+        mBarPlayingProgress.setOnSeekBarChangeListener(mSeekBarChangeListener);
+        mPlayToggle.setOnClickListener(mPlayOrPauseListener);
 
-        barPlayingClose.setOnClickListener(new View.OnClickListener() {
+        mBarPlayingClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
@@ -243,7 +247,7 @@ public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callbac
             }
         });
 
-        replay.setOnClickListener(new View.OnClickListener() {
+        mReplay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences preferences =
@@ -253,7 +257,7 @@ public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callbac
             }
         });
 
-        forward.setOnClickListener(new View.OnClickListener() {
+        mForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences preferences =
@@ -263,14 +267,14 @@ public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callbac
             }
         });
 
-        last.setOnClickListener(new View.OnClickListener() {
+        mLast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EconomistPlayerTimberStyle.playPrevious();
             }
         });
 
-        next.setOnClickListener(new View.OnClickListener() {
+        mNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EconomistPlayerTimberStyle.playNext();
@@ -289,8 +293,8 @@ public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callbac
     }
 
     public void updatePlayButton(boolean isPlaying) {
-        playToggle.setImageResource(isPlaying ? R.mipmap.pause : R.mipmap.play);
-        barPlay.setImageResource(isPlaying ? R.mipmap.pause : R.mipmap.play);
+        mPlayToggle.setImageResource(isPlaying ? R.mipmap.pause : R.mipmap.play);
+        mBarPlay.setImageResource(isPlaying ? R.mipmap.pause : R.mipmap.play);
     }
 
     @Override

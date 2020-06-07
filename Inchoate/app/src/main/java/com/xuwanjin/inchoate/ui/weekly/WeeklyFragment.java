@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,7 +55,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -80,26 +78,23 @@ import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setE
 
 public class WeeklyFragment extends BaseFragment {
     public static final String TAG = "WeeklyFragment";
-    RecyclerView issueContentRecyclerView;
+    RecyclerView mIssueContentRecyclerView;
     private View mSectionHeaderView;
-    private View mFooterView;
-    private TextView previousEdition;
-    private List<Article> mArticlesList;
+    private TextView mPreviousEdition;
     private FloatingActionButton mFab;
-    private HashMap<String, List<Article>> issueHashMap = new HashMap<>();
     private View mDownloadAudio;
     private View mStreamAudio;
-    private TextView issueDate;
-    private TextView magazineHeadline;
-    private ImageView magazineCover;
+    private TextView mIssueDate;
+    private TextView mMagazineHeadline;
+    private ImageView mMagazineCover;
     private WeeklyAdapter mWeeklyAdapter;
     private StickHeaderDecoration mStickHeaderDecoration;
-    private View view;
+
     public DownloadService mDownloadService;
     private static Issue sIssueCache = new Issue();
 
     CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-    public static String formatIssueDateStr = NEWEST_ISSUE_DATE;
+    public static String mFormatIssueDateStr = NEWEST_ISSUE_DATE;
     private static ScheduledExecutorService mExecutorService = Executors.newSingleThreadScheduledExecutor();
     private LinearLayoutManager mLinearLayoutManager;
     private Handler mHandler = new Handler();
@@ -160,24 +155,14 @@ public class WeeklyFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_weekly, container, false);
-        initView();
-        initOnClickListener();
-
         mExecutorService.submit(mBindServiceRunnable);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
-        int sectionToPosition = InchoateApp.getScrollToPosition();
-        Log.d(TAG, "onCreateView: sectionToPosition = " +sectionToPosition);
-        if (sectionToPosition > 0) {
-            int scrollToPosition = Utils.getArticleSumBySection(sectionToPosition - 2, sIssueCache);
-            Log.d(TAG, "onCreateView: scrollToPosition = " + scrollToPosition);
-            if (scrollToPosition > 0){
-                mLinearLayoutManager.scrollToPosition(scrollToPosition);
-            }
-        }
-
-        super.onCreateView(inflater, container, savedInstanceState);
-        return view;
+    @Override
+    protected void initView(View view) {
+        initWeeklyFragmentView(view);
+        initOnClickListener();
     }
 
     @Override
@@ -190,6 +175,11 @@ public class WeeklyFragment extends BaseFragment {
             updateWeeklyFragmentContent(issue);
         }
         loadTodayArticleList();
+    }
+
+    @Override
+    protected int getLayoutResId() {
+        return R.layout.fragment_weekly;
     }
 
     public void updateWeeklyFragmentContent(Issue issue) {
@@ -236,7 +226,7 @@ public class WeeklyFragment extends BaseFragment {
                 isInsertData = false;
             }
         };
-        if (!isInsertData){
+        if (!isInsertData) {
             mExecutorService.schedule(mInsertIssueData, 10, TimeUnit.SECONDS);
         }
         // 延迟插入数据, 防止线程竞争打开数据库的问题.
@@ -254,14 +244,16 @@ public class WeeklyFragment extends BaseFragment {
             String issueUrlId = value[1];
             issue = loadWholeIssue(issueDate, issueUrlId);
         } else {
-            issue = loadWholeIssue(formatIssueDateStr, WEEK_FRAGMENT_QUERY_05_30_URL);
+            issue = loadWholeIssue(mFormatIssueDateStr, WEEK_FRAGMENT_QUERY_05_30_URL);
         }
         return issue;
     }
 
-    // 先查看 load 哪一期, 然后是否从数据库, 还是 网络上 load.
-    // 通过 issueDate 查看是否存在数据库当中,
-    // 通过 urlId 从网络上加载
+    /*
+        先查看 load 哪一期, 然后是否从数据库, 还是 网络上 load.
+        通过 issueDate 查看是否存在数据库当中,
+        通过 urlId 从网络上加载
+     */
     public Issue loadWholeIssue(String issueDate, String urlId) {
         // 数据库 (数据库插入不全)---> 网络
         Issue issue = getIssueDataFromDB(issueDate);
@@ -276,7 +268,7 @@ public class WeeklyFragment extends BaseFragment {
                 // 没有完全插入接入
                 if (!ArticleCategorySection.OBITUARY.getName().equals(lastArticle.section)) {
                     shouldLoadFromNetwork = true;
-                }else {
+                } else {
                     return issue;
                 }
             }
@@ -291,36 +283,48 @@ public class WeeklyFragment extends BaseFragment {
         return issue;
     }
 
-    public void initView() {
-        issueContentRecyclerView = view.findViewById(R.id.issue_content_recyclerView);
+    public void initWeeklyFragmentView(View view) {
+        mIssueContentRecyclerView = view.findViewById(R.id.issue_content_recyclerView);
         mLinearLayoutManager = new LinearLayoutManager(getContext());
         mLinearLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        issueContentRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mIssueContentRecyclerView.setLayoutManager(mLinearLayoutManager);
 
-        // 这种 header 的出现, 他会 inflate 在 RecyclerView 的上面, 这个时候, 画第一个 item 的 header,
-        //也会出现在 RecyclerView 的上面, 但是他会出现, HeaderView 的上面
+        /*
+            这种 header 的出现, 他会 inflate 在 RecyclerView 的上面, 这个时候, 画第一个 item 的 header,
+            也会出现在 RecyclerView 的上面, 但是他会出现, HeaderView 的上面
+         */
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        mSectionHeaderView = layoutInflater.inflate(R.layout.weekly_section_header, issueContentRecyclerView, false);
-        mFooterView = layoutInflater.inflate(R.layout.weekly_footer, issueContentRecyclerView, false);
+        mSectionHeaderView = layoutInflater.inflate(R.layout.weekly_section_header, mIssueContentRecyclerView, false);
+        View mFooterView = layoutInflater.inflate(R.layout.weekly_footer, mIssueContentRecyclerView, false);
 
         mFab = view.findViewById(R.id.issue_category_fab);
         mFab.setFocusable(true);
         mFab.setClickable(true);
         mFab.setVisibility(View.VISIBLE);
 
-        previousEdition = mSectionHeaderView.findViewById(R.id.previous_edition);
+        mPreviousEdition = mSectionHeaderView.findViewById(R.id.previous_edition);
         mDownloadAudio = mSectionHeaderView.findViewById(R.id.download_audio);
         mStreamAudio = mSectionHeaderView.findViewById(R.id.stream_audio);
-        issueDate = mSectionHeaderView.findViewById(R.id.issue_date);
-        magazineCover = mSectionHeaderView.findViewById(R.id.magazine_cover);
-        magazineHeadline = mSectionHeaderView.findViewById(R.id.magazine_headline);
+        mIssueDate = mSectionHeaderView.findViewById(R.id.issue_date);
+        mMagazineCover = mSectionHeaderView.findViewById(R.id.magazine_cover);
+        mMagazineHeadline = mSectionHeaderView.findViewById(R.id.magazine_headline);
 
         mWeeklyAdapter = new WeeklyAdapter(getContext(), this);
-        issueContentRecyclerView.setAdapter(mWeeklyAdapter);
+        mIssueContentRecyclerView.setAdapter(mWeeklyAdapter);
         mWeeklyAdapter.setHeaderView(mSectionHeaderView);
         mWeeklyAdapter.setFooterView(mFooterView);
-        mStickHeaderDecoration = new StickHeaderDecoration(issueContentRecyclerView, getContext());
-        issueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);
+        mStickHeaderDecoration = new StickHeaderDecoration(mIssueContentRecyclerView, getContext());
+        mIssueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);
+
+        int sectionToPosition = InchoateApp.getScrollToPosition();
+        Log.d(TAG, "onCreateView: sectionToPosition = " + sectionToPosition);
+        if (sectionToPosition > 0) {
+            int scrollToPosition = Utils.getArticleSumBySection(sectionToPosition - 2, sIssueCache);
+            Log.d(TAG, "onCreateView: scrollToPosition = " + scrollToPosition);
+            if (scrollToPosition > 0) {
+                mLinearLayoutManager.scrollToPosition(scrollToPosition);
+            }
+        }
     }
 
     public void updateView(Issue issue) {
@@ -328,9 +332,9 @@ public class WeeklyFragment extends BaseFragment {
                 .load(issue.coverImageUrl)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.mipmap.the_economist_cover_placeholder)
-                .into(magazineCover);
-        issueDate.setText(issue.issueDate);
-        magazineHeadline.setText(issue.headline);
+                .into(mMagazineCover);
+        mIssueDate.setText(issue.issueDate);
+        mMagazineHeadline.setText(issue.headline);
         mWeeklyAdapter.updateData(issue.containArticle);
     }
 
@@ -381,7 +385,7 @@ public class WeeklyFragment extends BaseFragment {
             }
         });
 
-        previousEdition.setOnClickListener(new View.OnClickListener() {
+        mPreviousEdition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 navigationToFragment(R.id.navigation_previous_edition);
@@ -469,7 +473,6 @@ public class WeeklyFragment extends BaseFragment {
         WeekJson weekJson = gson.fromJson(jsonResult, WeekJson.class);
         Issue issue = getIssue(weekJson);
         InchoateApp.setNewestIssueCache(issue);
-        mArticlesList = issue.containArticle;
         return issue;
     }
 

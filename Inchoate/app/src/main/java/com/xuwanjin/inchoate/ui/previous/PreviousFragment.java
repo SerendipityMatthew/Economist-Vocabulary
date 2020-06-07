@@ -41,26 +41,27 @@ import okhttp3.Response;
 public class PreviousFragment extends BaseFragment {
     public static final String TAG = "PreviousFragment";
 
-    RecyclerView issueListRecyclerView;
+    RecyclerView mIssueListRecyclerView;
     GridLayoutManager mGridLayoutManager;
-    PreviousAdapter previousAdapter;
+    PreviousAdapter mPreviousAdapter;
     public static List<Issue> sIssueList = new ArrayList<>();
-    public static final int FETCH_DATA_AND_NOTIFY_MSG = 1000;
     private Disposable mDisposable;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_previous, container, false);
-        issueListRecyclerView = view.findViewById(R.id.issue_list_recyclerView);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    protected void initView(View view) {
+        mIssueListRecyclerView = view.findViewById(R.id.issue_list_recyclerView);
         mGridLayoutManager = new GridLayoutManager(getContext(), 2);
         mGridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        issueListRecyclerView.setLayoutManager(mGridLayoutManager);
-        previousAdapter = new PreviousAdapter(getContext());
-        issueListRecyclerView.setAdapter(previousAdapter);
-        super.onCreateView(inflater, container, savedInstanceState);
-        return view;
+        mIssueListRecyclerView.setLayoutManager(mGridLayoutManager);
+        mPreviousAdapter = new PreviousAdapter(getContext());
+        mIssueListRecyclerView.setAdapter(mPreviousAdapter);
     }
 
     @Override
@@ -73,6 +74,11 @@ public class PreviousFragment extends BaseFragment {
             updatePreviousFragmentContent(issueList);
             loadPreviousIssue();
         }
+    }
+
+    @Override
+    protected int getLayoutResId() {
+        return R.layout.fragment_previous;
     }
 
     private List<Issue> initFakeData() {
@@ -153,7 +159,7 @@ public class PreviousFragment extends BaseFragment {
     }
 
     private void updatePreviousFragmentContent(List<Issue> issueList) {
-        previousAdapter.updateData(issueList);
+        mPreviousAdapter.updateData(issueList);
     }
 
     @Override

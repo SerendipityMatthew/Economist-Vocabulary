@@ -29,23 +29,19 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class BookmarkFragment extends BaseFragment {
-    RecyclerView bookmarkRecycleView;
+    RecyclerView mBookmarkRecycleView;
     TextView mTextView;
     private Disposable mDisposable;
     private BookmarkAdapter mBookmarkAdapter;
     static List<Article> sArticleList = new ArrayList<>();
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_bookmark, container, false);
-        bookmarkRecycleView = view.findViewById(R.id.bookmark_recyclerView);
+    protected void initView(View view) {
+        mBookmarkRecycleView = view.findViewById(R.id.bookmark_recyclerView);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1);
         gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        bookmarkRecycleView.setLayoutManager(gridLayoutManager);
+        mBookmarkRecycleView.setLayoutManager(gridLayoutManager);
         mTextView = view.findViewById(R.id.bookmark_title);
-        super.onCreateView(inflater, container, savedInstanceState);
-        return view;
     }
 
     @Override
@@ -55,6 +51,11 @@ public class BookmarkFragment extends BaseFragment {
         } else {
             loadBookmarkData();
         }
+    }
+
+    @Override
+    protected int getLayoutResId() {
+        return R.layout.fragment_bookmark;
     }
 
     private void loadBookmarkData() {
@@ -84,8 +85,8 @@ public class BookmarkFragment extends BaseFragment {
 
     private void updateFragmentContent(List<Article> articleList) {
         mBookmarkAdapter = new BookmarkAdapter(getContext(), BookmarkFragment.this);
-        bookmarkRecycleView.setAdapter(mBookmarkAdapter);
-        bookmarkRecycleView.addItemDecoration(new StickHeaderDecoration(bookmarkRecycleView, getContext()));
+        mBookmarkRecycleView.setAdapter(mBookmarkAdapter);
+        mBookmarkRecycleView.addItemDecoration(new StickHeaderDecoration(mBookmarkRecycleView, getContext()));
         mBookmarkAdapter.updateData(articleList);
     }
 

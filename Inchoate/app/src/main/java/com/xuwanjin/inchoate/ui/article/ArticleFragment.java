@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,16 +28,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
-import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.Paragraph;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
+import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -58,7 +56,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.xuwanjin.inchoate.Utils.getDurationFormat;
 
-public class ArticleFragment extends Fragment {
+public class ArticleFragment extends BaseFragment {
     public static final String TAG = "ArticleFragment";
     RecyclerView mArticleContentRV;
     public ArticleContentAdapter mArticleContentAdapter;
@@ -66,23 +64,23 @@ public class ArticleFragment extends Fragment {
     public GridLayoutManager mGridLayoutManager;
     public View mArticleContentHeaderView;
     public View mArticleContentFooterView;
-    TextView sectionAndDate;
-    ImageView play;
-    TextView duration;
-    TextView articleTitle;
-    TextView articleFlyTitle;
-    TextView articleRubric;
-    ImageView articleCoverImage;
-    Article article;
-    View view;
-    TextView backToWeeklyToolbar;
-    ImageView fontSizeToolbar;
-    ImageView bookmarkArticleToolbar;
-    ImageView articleShareToolbar;
+    TextView mSectionAndDate;
+    ImageView mPlay;
+    TextView mDuration;
+    TextView mArticleTitle;
+    TextView mArticleFlyTitle;
+    TextView mArticleRubric;
+    ImageView mArticleCoverImage;
+    Article mArticle;
+    TextView mBackToWeeklyToolbar;
+    ImageView mFontSizeToolbar;
+    ImageView mBookmarkArticleToolbar;
+    ImageView mArticleShareToolbar;
     LinearLayout mLinearLayout;
-    View articlePlayBarDivider;
-    int count = 0;
-    private List<String> collectedVocabularyList = new ArrayList<>();
+    View mArticlePlayBarDivider;
+    int mCount = 0;
+    private View mView;
+    private List<String> mCollectedVocabularyList = new ArrayList<>();
     private IEconomistService mEconomistService;
     private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -102,32 +100,68 @@ public class ArticleFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        article = InchoateApp.getDisplayArticleCache();
-        if (article != null) {
-            mParagraphList = article.paragraphList;
-        }
-        view = inflater.inflate(R.layout.fragment_article_detail, container, false);
-        initView();
-        initData();
-        initOnClickListener();
+        return super.onCreateView(inflater,container, savedInstanceState);
+    }
 
+    @Override
+    protected void initView(View view) {
+        initArticleFragment(view);
+        initOnClickListener();
+    }
+
+    private void initArticleFragment(View view) {
+        mArticleContentRV = view.findViewById(R.id.article_content_recyclerview);
+        mBackToWeeklyToolbar = view.findViewById(R.id.back_to_weekly_toolbar);
+        mFontSizeToolbar = view.findViewById(R.id.font_size_toolbar);
+        mBookmarkArticleToolbar = view.findViewById(R.id.bookmark_article_toolbar);
+        mArticleShareToolbar = view.findViewById(R.id.article_share_toolbar);
+
+        mArticleContentHeaderView = LayoutInflater.from(getContext())
+                .inflate(R.layout.fragment_article_header_view, mArticleContentRV, false);
+        mArticleContentFooterView = LayoutInflater.from(getContext())
+                .inflate(R.layout.fragment_article_detail_footer, mArticleContentRV, false);
+
+        mDuration = mArticleContentHeaderView.findViewById(R.id.duration);
+        mPlay = mArticleContentHeaderView.findViewById(R.id.play);
+        mArticleCoverImage = mArticleContentHeaderView.findViewById(R.id.article_cover_image);
+        mSectionAndDate = mArticleContentHeaderView.findViewById(R.id.section_and_date);
+        mArticleTitle = mArticleContentHeaderView.findViewById(R.id.article_title);
+        mArticleFlyTitle = mArticleContentHeaderView.findViewById(R.id.article_fly_title);
+        mArticleRubric = mArticleContentHeaderView.findViewById(R.id.article_rubric);
+
+        mLinearLayout = mArticleContentHeaderView.findViewById(R.id.article_play_bar);
+        mArticlePlayBarDivider = mArticleContentHeaderView.findViewById(R.id.article_play_bar_divider);
         mGridLayoutManager = new GridLayoutManager(getContext(), 1);
         mArticleContentRV.setLayoutManager(mGridLayoutManager);
-        mArticleContentAdapter = new ArticleContentAdapter(getContext(), mParagraphList, view);
+        
+        mView = view;
+    }
+
+    @Override
+    protected void loadData() {
+        initData();
+        setArticleAdapter();
+        initFillCollectedVocabulary();
+        processArticleText();
+    }
+    private void setArticleAdapter(){
+        mArticleContentAdapter = new ArticleContentAdapter(getContext(), mParagraphList, mView);
         ArticleItemDecoration articleItemDecoration = new ArticleItemDecoration(mArticleContentRV, getContext());
         mArticleContentRV.addItemDecoration(articleItemDecoration);
         mArticleContentRV.setAdapter(mArticleContentAdapter);
         mArticleContentAdapter.setHeaderView(mArticleContentHeaderView);
         mArticleContentAdapter.setFooterView(mArticleContentFooterView);
-        mArticleContentAdapter.setArticle(article);
-        initFillCollectedVocabulary();
-        processArticleText();
-        return view;
+        mArticleContentAdapter.setArticle(mArticle);
+    }
+
+    @Override
+    protected int getLayoutResId() {
+        return R.layout.fragment_article_detail;
     }
 
     private void initFillCollectedVocabulary() {
-        collectedVocabularyList.addAll(InchoateApp.sCollectedVocabularyList);
-        Log.d(TAG, "initFillCollectedVocabulary:collectedVocabularyList.size =  " + collectedVocabularyList.size());
+        mCollectedVocabularyList.addAll(InchoateApp.sCollectedVocabularyList);
+        Log.d(TAG, "initFillCollectedVocabulary:collectedVocabularyList.size =  " + mCollectedVocabularyList.size());
     }
 
     /*
@@ -146,9 +180,9 @@ public class ArticleFragment extends Fragment {
     @SuppressLint("CheckResult")
     private void processArticleText() {
 
-        List<Paragraph> paragraphList = article.paragraphList;
+        List<Paragraph> paragraphList = mArticle.paragraphList;
         List<Paragraph> adapterDataList = new ArrayList<>();
-        adapterDataList.addAll(article.paragraphList);
+        adapterDataList.addAll(mArticle.paragraphList);
         Log.d(TAG, "processArticleText: paragraphList.size = " + paragraphList.size());
         Flowable.fromIterable(paragraphList)
                 .map(new Function<Paragraph, HashMap<Integer, Paragraph>>() {
@@ -165,7 +199,7 @@ public class ArticleFragment extends Fragment {
                         // 更新 Article 的 ParagraphList .
                         Integer index = integerParagraphHashMap.keySet().iterator().next();
                         adapterDataList.add(index, integerParagraphHashMap.get(index));
-                        if (count == adapterDataList.size() - 1) {
+                        if (mCount == adapterDataList.size() - 1) {
                             mArticleContentAdapter.updateData(adapterDataList);
                         }
                     }
@@ -176,13 +210,13 @@ public class ArticleFragment extends Fragment {
         String paragraphText = paragraph.paragraph.toString();
         HashMap<Integer, Paragraph> hashMap = new HashMap<>(0);
         HashMap<Integer, CharSequence> collectedVocabularyHashMap = new HashMap<>();
-        for (int i = 0; i < collectedVocabularyList.size(); i++) {
-            String collectedVocabulary = collectedVocabularyList.get(i);
+        for (int i = 0; i < mCollectedVocabularyList.size(); i++) {
+            String collectedVocabulary = mCollectedVocabularyList.get(i);
             if (isSkipVocabulary(collectedVocabulary)) {
                 continue;
             }
             // //? ! . , : "  特殊情况
-            String collectedVocabularyPattern = " " + collectedVocabularyList.get(i) + " ";
+            String collectedVocabularyPattern = " " + mCollectedVocabularyList.get(i) + " ";
             boolean isExisted = paragraphText.contains(collectedVocabularyPattern);
             // 如果一个段落里多个不认识的单词, 存在 hashmap 里
             if (isExisted) {
@@ -222,61 +256,42 @@ public class ArticleFragment extends Fragment {
         return false;
     }
 
-    public void initView() {
-        mArticleContentRV = view.findViewById(R.id.article_content_recyclerview);
-        backToWeeklyToolbar = view.findViewById(R.id.back_to_weekly_toolbar);
-        fontSizeToolbar = view.findViewById(R.id.font_size_toolbar);
-        bookmarkArticleToolbar = view.findViewById(R.id.bookmark_article_toolbar);
-        articleShareToolbar = view.findViewById(R.id.article_share_toolbar);
-
-        mArticleContentHeaderView = LayoutInflater.from(getContext())
-                .inflate(R.layout.fragment_article_header_view, mArticleContentRV, false);
-        mArticleContentFooterView = LayoutInflater.from(getContext())
-                .inflate(R.layout.fragment_article_detail_footer, mArticleContentRV, false);
-
-        duration = mArticleContentHeaderView.findViewById(R.id.duration);
-        play = mArticleContentHeaderView.findViewById(R.id.play);
-        articleCoverImage = mArticleContentHeaderView.findViewById(R.id.article_cover_image);
-        sectionAndDate = mArticleContentHeaderView.findViewById(R.id.section_and_date);
-        articleTitle = mArticleContentHeaderView.findViewById(R.id.article_title);
-        articleFlyTitle = mArticleContentHeaderView.findViewById(R.id.article_fly_title);
-        articleRubric = mArticleContentHeaderView.findViewById(R.id.article_rubric);
-
-        mLinearLayout = mArticleContentHeaderView.findViewById(R.id.article_play_bar);
-        articlePlayBarDivider = mArticleContentHeaderView.findViewById(R.id.article_play_bar_divider);
-    }
-
     public void initData() {
-        articleTitle.setText(article.title);
-        articleFlyTitle.setText(article.flyTitle);
-        articleRubric.setText(article.articleRubric);
-        String sectionAndDateStr = article.section + "  |  " + article.date;
-        SpannableString sectionSpannable = new SpannableString(sectionAndDateStr);
-        sectionSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, article.section.length(),
-                Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        sectionAndDate.setText(sectionSpannable);
-
-        duration.setText(getDurationFormat(article.audioDuration));
-        Glide.with(getContext())
-                .load(article.mainArticleImage)
-                .placeholder(R.mipmap.article_cover_placeholder)
-                .into(articleCoverImage);
-        Log.d(TAG, "initData: article = " + article);
-
-        if (article != null) {
-            Glide.with(getActivity())
-                    .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.mipmap.bookmark_white)
-                    .into(bookmarkArticleToolbar);
+        mArticle = InchoateApp.getDisplayArticleCache();
+        if (mArticle != null) {
+            mParagraphList = mArticle.paragraphList;
         }
 
-        if (article != null
-                && (article.audioUrl == null
-                || article.audioUrl.trim().equals("")
-                || article.audioUrl.equalsIgnoreCase("null"))) {
+        mArticleTitle.setText(mArticle.title);
+        mArticleFlyTitle.setText(mArticle.flyTitle);
+        mArticleRubric.setText(mArticle.articleRubric);
+        String sectionAndDateStr = mArticle.section + "  |  " + mArticle.date;
+        SpannableString sectionSpannable = new SpannableString(sectionAndDateStr);
+        sectionSpannable.setSpan(new StyleSpan(Typeface.BOLD), 0, mArticle.section.length(),
+                Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        mSectionAndDate.setText(sectionSpannable);
+
+        mDuration.setText(getDurationFormat(mArticle.audioDuration));
+        Glide.with(getContext())
+                .load(mArticle.mainArticleImage)
+                .placeholder(R.mipmap.article_cover_placeholder)
+                .into(mArticleCoverImage);
+        Log.d(TAG, "initData: article = " + mArticle);
+
+        if (mArticle != null) {
+            Glide.with(getActivity())
+                    .load(mArticle.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.mipmap.bookmark_white)
+                    .into(mBookmarkArticleToolbar);
+        }
+
+        if (mArticle != null
+                && (mArticle.audioUrl == null
+                || mArticle.audioUrl.trim().equals("")
+                || mArticle.audioUrl.equalsIgnoreCase("null"))) {
             mLinearLayout.setVisibility(View.GONE);
-            articlePlayBarDivider.setVisibility(View.GONE);
+            mArticlePlayBarDivider.setVisibility(View.GONE);
         }
     }
 
@@ -284,39 +299,39 @@ public class ArticleFragment extends Fragment {
         Runnable playArticleRunnable = new Runnable() {
             @Override
             public void run() {
-                InchoateApp.setDisplayArticleCache(article);
+                InchoateApp.setDisplayArticleCache(mArticle);
                 ArrayList<Article> arrayList = new ArrayList<>();
-                arrayList.add(article);
+                arrayList.add(mArticle);
                 InchoateApp.setAudioPlayingArticleListCache(arrayList);
                 SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                 panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                 EventBus.getDefault().post(panelState);
-                EconomistPlayerTimberStyle.playWholeIssueByIssueDate(article, article.date);
+                EconomistPlayerTimberStyle.playWholeIssueByIssueDate(mArticle, mArticle.date);
             }
         };
 
-        play.setOnClickListener(new View.OnClickListener() {
+        mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mExecutorService.submit(playArticleRunnable);
             }
         });
 
-        bookmarkArticleToolbar.setOnClickListener(new View.OnClickListener() {
+        mBookmarkArticleToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (article.isBookmark) {
-                    article.isBookmark = false;
+                if (mArticle.isBookmark) {
+                    mArticle.isBookmark = false;
                 } else {
-                    article.isBookmark = true;
+                    mArticle.isBookmark = true;
                 }
                 Glide.with(getActivity())
-                        .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                        .load(mArticle.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.mipmap.bookmark_white)
-                        .into(bookmarkArticleToolbar);
+                        .into(mBookmarkArticleToolbar);
                 InchoateDBHelper dbHelper = new InchoateDBHelper(getActivity(), null, null);
-                dbHelper.setBookmarkStatus(article, article.isBookmark);
+                dbHelper.setBookmarkStatus(mArticle, mArticle.isBookmark);
                 dbHelper.close();
             }
         });
@@ -328,7 +343,7 @@ public class ArticleFragment extends Fragment {
                 }
             }
         };
-        backToWeeklyToolbar.setOnClickListener(onClickListener);
+        mBackToWeeklyToolbar.setOnClickListener(onClickListener);
     }
 
     @Override

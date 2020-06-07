@@ -156,4 +156,10 @@ public class InchoateActivity extends AppCompatActivity implements
             bottomNavigationView.removeAllViews();
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

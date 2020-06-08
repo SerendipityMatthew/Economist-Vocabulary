@@ -58,16 +58,21 @@ public class BookmarkFragment extends BaseFragment {
         return R.layout.fragment_bookmark;
     }
 
+    @Override
+    protected List<Article> fetchDataFromDBOrNetwork() {
+        List<Article> articleList = new ArrayList<>();
+        InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
+        articleList = helper.queryBookmarkedArticle();
+        helper.close();
+        return articleList;
+    }
+
     private void loadBookmarkData() {
         mDisposable = Single.create(new SingleOnSubscribe<List<Article>>() {
             @Override
             public void subscribe(SingleEmitter<List<Article>> emitter) throws Exception {
-                List<Article> articleList = new ArrayList<>();
-                InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
-                articleList = helper.queryBookmarkedArticle();
-                helper.close();
-                sArticleList = articleList;
-                emitter.onSuccess(articleList);
+                sArticleList = fetchDataFromDBOrNetwork();
+                emitter.onSuccess(sArticleList);
             }
         })
                 .subscribeOn(Schedulers.io())

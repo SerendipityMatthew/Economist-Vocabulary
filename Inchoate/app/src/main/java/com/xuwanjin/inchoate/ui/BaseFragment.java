@@ -29,6 +29,7 @@ public abstract class BaseFragment extends Fragment {
     protected abstract void loadData();
 
     protected abstract int getLayoutResId();
+    protected abstract <T> T fetchDataFromDBOrNetwork();
     protected void navigationToFragment(int resId) {
         Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, resId);
     }

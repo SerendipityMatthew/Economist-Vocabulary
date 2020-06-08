@@ -60,6 +60,11 @@ public class FloatActionFragment extends BaseFragment {
     }
 
     @Override
+    protected <T> T fetchDataFromDBOrNetwork() {
+        return null;
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }

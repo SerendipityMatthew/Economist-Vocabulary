@@ -228,6 +228,26 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         }
         return issueList;
     }
+    public List<Issue> queryAllIssue() {
+        List<Issue> issueList = new ArrayList<>();
+        SQLiteDatabase database = openInchoateDB();
+        // Select * from article where issue_date='';
+        String query = "SELECT * FROM " + TABLE_NAME_ISSUE;
+        Log.d(TAG, "queryIssueByIssueDate: query = " + query);
+        Cursor cursor = database.rawQuery(query, null);
+        while (cursor != null && cursor.moveToNext()) {
+            Issue issue;
+            issue = getIssueFromCursor(cursor);
+            issueList.add(issue);
+        }
+        if (database != null) {
+            database.close();
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return issueList;
+    }
 
 
     public Cursor queryArticleByIssueDateResultCursor(String issueDate) {

@@ -97,7 +97,7 @@ public class PreviousFragment extends BaseFragment {
             @Override
             public void subscribe(SingleEmitter<List<Issue>> emitter) throws Exception {
 
-                sIssueList = getPreviousIssueDataFromNetwork();
+                sIssueList = fetchDataFromDBOrNetwork();
                 Log.d(TAG, "loadPreviousIssue: subscribe: sIssueList = " + sIssueList.size());
                 emitter.onSuccess(sIssueList);
             }
@@ -116,7 +116,8 @@ public class PreviousFragment extends BaseFragment {
                 });
     }
 
-    private List<Issue> getPreviousIssueDataFromNetwork() {
+    @Override
+    protected List<Issue> fetchDataFromDBOrNetwork() {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(Constants.ARCHIVE_QUERY_URL)

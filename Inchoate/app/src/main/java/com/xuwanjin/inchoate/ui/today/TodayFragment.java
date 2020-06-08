@@ -128,19 +128,18 @@ public class TodayFragment extends BaseFragment {
         mDisposable = Single.create(new SingleOnSubscribe<List<Article>>() {
             @Override
             public void subscribe(SingleEmitter<List<Article>> emitter) throws Exception {
-                List<Article> articleList = loadDataFromNetwork(emitter);
+                List<Article> articleList = fetchDataFromDBOrNetwork();
                 emitter.onSuccess(articleList);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()
                 ).subscribe(articles -> {
                     mTodayNewsAdapter.updateData(articles);
-
                 });
 
     }
 
-    public List<Article> loadDataFromNetwork(SingleEmitter<List<Article>> emitter) {
+    protected List<Article> fetchDataFromDBOrNetwork() {
         Log.d(TAG, "loadDataFromNetwork: ");
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()

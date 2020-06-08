@@ -54,7 +54,11 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -74,6 +78,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static com.xuwanjin.inchoate.Utils.getIssue;
+import static com.xuwanjin.inchoate.model.ArticleCategorySection.OBITUARY;
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setEconomistService;
 
 public class WeeklyFragment extends BaseFragment {
@@ -167,7 +172,18 @@ public class WeeklyFragment extends BaseFragment {
 
     @Override
     public void loadData() {
-        if (sIssueCache != null && sIssueCache.containArticle != null && sIssueCache.containArticle.size() > 0) {
+        /*
+            1. 从缓存里获取数据
+                存在就显示
+                如果不存在,
+                        从数据库里获取数据: 1. 根据 xml最新的期刊日期,去数据里获取最新的期刊,
+                                         2. 如果没有, 从数据库获取最新的一集,
+                                               数据库里什么都没有, 从网络获取
+                        从网络上获取数据 ---> 并写入数据库
+                        如果以上都没有, 填入假数据
+
+         */
+        if (isLoadFromCache()) {
             InchoateApp.setNewestIssueCache(sIssueCache);
             updateWeeklyFragmentContent(sIssueCache);
         } else {
@@ -175,6 +191,10 @@ public class WeeklyFragment extends BaseFragment {
             updateWeeklyFragmentContent(issue);
         }
         loadTodayArticleList();
+    }
+
+    public boolean isLoadFromCache() {
+        return sIssueCache != null && sIssueCache.containArticle != null && sIssueCache.containArticle.size() > 0;
     }
 
     @Override
@@ -190,7 +210,7 @@ public class WeeklyFragment extends BaseFragment {
         Disposable disposable = Single.create(new SingleOnSubscribe<Issue>() {
             @Override
             public void subscribe(SingleEmitter<Issue> emitter) throws Exception {
-                Issue issue = specificIssueByIssueDateAndUrlID();
+                Issue issue = fetchDataFromDBOrNetwork();
                 sIssueCache = issue;
                 if (issue == null) {
                     return;
@@ -232,11 +252,10 @@ public class WeeklyFragment extends BaseFragment {
         // 延迟插入数据, 防止线程竞争打开数据库的问题.
     }
 
-    public Issue specificIssueByIssueDateAndUrlID() {
+    public Issue fetchDataFromDBOrNetwork() {
         Issue issue;
-        SharedPreferences preferences =
-                getContext().getSharedPreferences(Constants.INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
-        String urlIdString = preferences.getString(Constants.CURRENT_DISPLAY_ISSUE_URL_ID, "");
+        getCurrentIssueDateFromPreference();
+        String urlIdString = getCurrentIssueDateFromPreference();
         if (!urlIdString.equals("")
                 && !urlIdString.contains("null")) {
             String[] value = urlIdString.split(",");
@@ -244,9 +263,16 @@ public class WeeklyFragment extends BaseFragment {
             String issueUrlId = value[1];
             issue = loadWholeIssue(issueDate, issueUrlId);
         } else {
-            issue = loadWholeIssue(mFormatIssueDateStr, WEEK_FRAGMENT_QUERY_05_30_URL);
+            issue = loadDataFromNetwork(WEEK_FRAGMENT_QUERY_05_30_URL);
         }
         return issue;
+    }
+
+    private String getCurrentIssueDateFromPreference() {
+        SharedPreferences preferences =
+                getContext().getSharedPreferences(Constants.INCHOATE_PREFERENCE_FILE_NAME, Context.MODE_PRIVATE);
+        String urlIdString = preferences.getString(Constants.CURRENT_DISPLAY_ISSUE_URL_ID, "");
+        return urlIdString;
     }
 
     /*
@@ -260,21 +286,24 @@ public class WeeklyFragment extends BaseFragment {
         boolean shouldLoadFromNetwork = false;
         if (issue != null) {
             List<Article> articleList = issue.containArticle;
+            // 所有的文章都没被插入
             if (articleList == null || articleList.size() == 0) {
                 shouldLoadFromNetwork = true;
             } else {
+                // 可能插入了部分文章
                 int size = articleList.size();
                 Article lastArticle = articleList.get(size - 1);
-                // 没有完全插入接入
-                if (!ArticleCategorySection.OBITUARY.getName().equals(lastArticle.section)) {
+                // 最后一篇文章不是 OBITUARY,  没有完全插入接入
+                if (!OBITUARY.getName().equals(lastArticle.section)) {
                     shouldLoadFromNetwork = true;
-                } else {
-                    return issue;
                 }
             }
 
         } else {
-            shouldLoadFromNetwork = true;
+            issue = getNewestIssueDataFromDB();
+            if (issue == null || issue.containArticle == null || issue.containArticle.size() == 0){
+                shouldLoadFromNetwork = true;
+            }
         }
 
         if (shouldLoadFromNetwork) {
@@ -282,6 +311,7 @@ public class WeeklyFragment extends BaseFragment {
         }
         return issue;
     }
+
 
     public void initWeeklyFragmentView(View view) {
         mIssueContentRecyclerView = view.findViewById(R.id.issue_content_recyclerView);
@@ -426,6 +456,34 @@ public class WeeklyFragment extends BaseFragment {
         }
         helper.close();
         return issue;
+    }
+
+    private Issue getNewestIssueDataFromDB() {
+        InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
+        List<Issue> issueList = helper.queryAllIssue();
+        long currentTime = System.currentTimeMillis();
+
+        Issue newestIssue = null;
+        int minIndex = 0;
+        long minDiff = 0;
+        if (issueList != null && issueList.size() > 0) {
+            for (int i = 0; i < issueList.size(); i++) {
+                Issue is = issueList.get(i);
+                long time = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"))
+                        .parse(is.issueFormatDate + " 00:00:00", new ParsePosition(0)).getTime();
+                long diff = Math.abs((currentTime - time));
+                if (i == 0){
+                    minDiff = diff;
+                }
+                if (minDiff > diff){
+                    minDiff = diff;
+                    minIndex = i;
+                }
+            }
+            newestIssue = issueList.get(minIndex);
+        }
+        helper.close();
+        return newestIssue;
     }
 
     public Issue loadDataFromNetwork(String urlId) {

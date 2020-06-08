@@ -162,6 +162,11 @@ public class ArticleFragment extends BaseFragment {
         return R.layout.fragment_article_detail;
     }
 
+    @Override
+    protected <T> T fetchDataFromDBOrNetwork() {
+        return null;
+    }
+
     private void initFillCollectedVocabulary() {
         mCollectedVocabularyList.addAll(InchoateApp.sCollectedVocabularyList);
     }

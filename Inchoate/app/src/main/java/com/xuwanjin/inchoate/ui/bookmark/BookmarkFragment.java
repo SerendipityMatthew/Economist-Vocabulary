@@ -59,6 +59,11 @@ public class BookmarkFragment extends BaseFragment {
     }
 
     @Override
+    protected <T> T initFakeData() {
+        return null;
+    }
+
+    @Override
     protected List<Article> fetchDataFromDBOrNetwork() {
         List<Article> articleList = new ArrayList<>();
         InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);

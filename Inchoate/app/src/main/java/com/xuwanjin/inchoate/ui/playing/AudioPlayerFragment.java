@@ -178,6 +178,11 @@ public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callbac
     }
 
     @Override
+    protected <T> T initFakeData() {
+        return null;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
     }

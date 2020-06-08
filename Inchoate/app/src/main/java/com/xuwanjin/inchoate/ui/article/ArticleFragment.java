@@ -167,6 +167,11 @@ public class ArticleFragment extends BaseFragment {
         return null;
     }
 
+    @Override
+    protected <T> T initFakeData() {
+        return null;
+    }
+
     private void initFillCollectedVocabulary() {
         mCollectedVocabularyList.addAll(InchoateApp.sCollectedVocabularyList);
     }

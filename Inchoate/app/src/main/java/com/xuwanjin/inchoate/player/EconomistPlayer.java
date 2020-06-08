@@ -20,9 +20,11 @@ public class EconomistPlayer implements IPlayer, MediaPlayer.OnCompletionListene
     private static volatile EconomistPlayer sInstance;
     MediaPlayer mMediaPlayer;
     private List<Callback> mCallbacks = new ArrayList<>(2);
-    // 播放列表, 在 today news 界面, 播放列表里只有一个,
-    // 在 weekly 界面的, 播放列表里是所有的文章
-    // issue date, section name , article title 确定唯一的一篇文章
+    /*
+        播放列表, 在 today news 界面, 播放列表里只有一个,
+        在 weekly 界面的, 播放列表里是所有的文章
+        issue date, section name , article title 确定唯一的一篇文章
+     */
     private List<Article> mPlayList = new ArrayList<>();
     private Article mCurrentArticle;
     private boolean isPaused;

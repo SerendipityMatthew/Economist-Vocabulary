@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
@@ -22,7 +21,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -255,7 +253,7 @@ public class ArticleFragment extends BaseFragment {
         SpannableString vocabularySpannable = new SpannableString(paragraph.paragraph);
         if (isExisted) {
             int index = 0;
-            index = paragraphText.indexOf(collectedVocabulary);
+                index = paragraphText.indexOf(collectedVocabulary);
             vocabularySpannable.setSpan(
                     new BackgroundColorSpan(Color.GREEN),
                     index, index + collectedVocabulary.length(),
@@ -363,7 +361,7 @@ public class ArticleFragment extends BaseFragment {
                 InchoateApp.setDisplayArticleCache(mArticle);
                 ArrayList<Article> arrayList = new ArrayList<>();
                 arrayList.add(mArticle);
-                InchoateApp.setAudioPlayingArticleListCache(arrayList);
+                InchoateApp.setsAudioPlayingArticleListCache(arrayList);
                 SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                 panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                 EventBus.getDefault().post(panelState);

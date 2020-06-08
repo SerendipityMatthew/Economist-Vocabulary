@@ -343,7 +343,7 @@ public class WeeklyFragment extends BaseFragment {
             @Override
             public void run() {
                 List<Article> articleList = sIssueCache.containArticle;
-                InchoateApp.setAudioPlayingArticleListCache(articleList);
+                InchoateApp.setsAudioPlayingArticleListCache(articleList);
                 SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
                 panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
                 EventBus.getDefault().post(panelState);

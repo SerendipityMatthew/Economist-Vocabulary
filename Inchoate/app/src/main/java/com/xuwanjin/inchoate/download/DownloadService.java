@@ -26,24 +26,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-// 输入 issue 下载整个期刊
-// 输入 Article 下载一篇文章
+/*
+    输入 issue 下载整个期刊
+    输入 Article 下载一篇文章
+    下载每篇文章的音频文件
+    下载完成后更新数据库字段
 
-//下载每篇文章的音频文件
-// 下载完成后更新数据库字段
+ */
 public class DownloadService extends Service {
     public static final String TAG = "DownloadService";
     private final IBinder mBinder = new LocalBinder();
     private Issue mIssue = new Issue();
-    private List<Article> downloadArticle = new ArrayList<>();
+    private List<Article> mDownloadArticle = new ArrayList<>();
     public static int percent = 0;
-    public ArrayMap<String, Boolean> localAudioUrlMap = new ArrayMap<>();
+    public ArrayMap<String, Boolean> mLocalAudioUrlMap = new ArrayMap<>();
     final Runnable mDownloadRunnable = new Runnable() {
         @Override
         public void run() {
             Log.d(TAG, "mDownloadRunnable: run: ");
             ArrayList<Article> audioArticle = new ArrayList<>();
-            for (Article article : downloadArticle) {
+            for (Article article : mDownloadArticle) {
                 if (article.audioUrl != null
                         && !article.audioUrl.trim().equals("")) {
                     audioArticle.add(article);
@@ -52,9 +54,10 @@ public class DownloadService extends Service {
 
             File commonFile = getBaseContext().getExternalCacheDirs()[0];
 
-            //     issueDate/Section/article_title
-            //N 个     article_audio_url
-            //
+            /*
+                issueDate/Section/article_title
+                N 个     article_audio_url
+             */
             final String issueDate = mIssue.issueDate;
             DownloadTask[] downloadTasks = new DownloadTask[audioArticle.size()];
             for (int i = 0; i < audioArticle.size(); i++) {
@@ -70,7 +73,7 @@ public class DownloadService extends Service {
                                 .addTag(12, article);
                 downloadTasks[i] = task;
                 String fullPath = noSpacePath + noSpaceName;
-                localAudioUrlMap.put(fullPath, false);
+                mLocalAudioUrlMap.put(fullPath, false);
                 Log.d(TAG, "mDownloadRunnable: run: ");
             }
             DownloadTask.enqueue(downloadTasks, downloadListener);
@@ -100,13 +103,13 @@ public class DownloadService extends Service {
         Article article = intent.getParcelableExtra(Constants.DOWNLOAD_ARTICLE);
         Log.d(TAG, "onStartCommand: mIssue = " + mIssue);
         if (mIssue != null && article == null) {
-            downloadArticle = mIssue.containArticle;
+            mDownloadArticle = mIssue.containArticle;
         }
         if (mIssue == null && article != null) {
-            downloadArticle.add(article);
+            mDownloadArticle.add(article);
         }
         if (mIssue != null && article != null) {
-            downloadArticle = mIssue.containArticle;
+            mDownloadArticle = mIssue.containArticle;
         }
         mExecutorService.submit(mDownloadRunnable);
         if (mIssue == null && article == null) {
@@ -121,16 +124,16 @@ public class DownloadService extends Service {
     }
 
     public float getDownloadPercent() {
-        if (localAudioUrlMap == null || !(localAudioUrlMap.size()>0)){
+        if (mLocalAudioUrlMap == null || !(mLocalAudioUrlMap.size()>0)){
             return 0;
         }
         int count = 0;
-        for (int i = 0; i < localAudioUrlMap.size();i++ ){
-            if (localAudioUrlMap.valueAt(i)){
+        for (int i = 0; i < mLocalAudioUrlMap.size(); i++ ){
+            if (mLocalAudioUrlMap.valueAt(i)){
                 count++;
             }
         }
-        float percent = (float) ((count*100.0)/localAudioUrlMap.size());
+        float percent = (float) ((count*100.0)/ mLocalAudioUrlMap.size());
         Log.d(TAG, "getDownloadPercent: percent = " + percent);
         return percent;
     }
@@ -196,7 +199,7 @@ public class DownloadService extends Service {
             InchoateDBHelper helper = new InchoateDBHelper(getBaseContext(), null, null);
             helper.updateArticleAudioLocaleUrl(article, article.date);
             helper.close();
-            localAudioUrlMap.put(localeAudioUrl, true);
+            mLocalAudioUrlMap.put(localeAudioUrl, true);
         }
     };
 }

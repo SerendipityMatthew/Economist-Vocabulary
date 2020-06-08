@@ -148,7 +148,7 @@ public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callbac
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
         mContext = getContext();
-        mArticleList = InchoateApp.getAudioPlayingArticleListCache();
+        mArticleList = InchoateApp.getsAudioPlayingArticleListCache();
         mAudioPlayingArticle = mArticleList.get(0);
         EventBus.getDefault().register(this);
         mHandler.removeCallbacks(mProgressCallback);

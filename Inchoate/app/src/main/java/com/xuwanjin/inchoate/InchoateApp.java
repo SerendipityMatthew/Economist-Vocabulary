@@ -1,7 +1,6 @@
 package com.xuwanjin.inchoate;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.navigation.NavController;
 
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,13 +20,13 @@ import java.util.concurrent.Executors;
 
 public class InchoateApp extends Application {
     private static final String TAG = "InchoateApp";
-    public static InchoateApp inchoateApp;
+    public static InchoateApp mInchoateApp;
     public static NavController NAVIGATION_CONTROLLER;
     public final static String ECONOMIST_URL = "";
-    public static List<Issue> cacheNewestIssue = new ArrayList<>(1);
+    public static List<Issue> sCacheNewestIssue = new ArrayList<>(1);
     public static LinkedHashMap<String, List<Article>> sArticleLinkedHashMap = new LinkedHashMap<>();
-    public static Article cacheDisplayArticle;
-    public static List<Article> audioPlayingArticleListCache;
+    public static Article sCacheDisplayArticle;
+    public static List<Article> sAudioPlayingArticleListCache;
     public static List<String> sCollectedVocabularyList;
     public static int SCROLL_TO_POSITION = -1;
 
@@ -46,7 +44,7 @@ public class InchoateApp extends Application {
         };
 
         Executors.newSingleThreadExecutor().submit(openDatabaseRunnable);
-        inchoateApp = this;
+        mInchoateApp = this;
         Runnable openVocabularyRunnable = new Runnable() {
             @Override
             public void run() {
@@ -85,19 +83,19 @@ public class InchoateApp extends Application {
     }
 
     public static void setNewestIssueCache(Issue issue) {
-        cacheNewestIssue.add(0,issue);
+        sCacheNewestIssue.add(0,issue);
     }
 
     public static List<Issue> getNewestIssueCache() {
-        return cacheNewestIssue;
+        return sCacheNewestIssue;
     }
 
     public static void setDisplayArticleCache(Article article) {
-        cacheDisplayArticle = article;
+        sCacheDisplayArticle = article;
     }
 
     public static Article getDisplayArticleCache() {
-        return cacheDisplayArticle;
+        return sCacheDisplayArticle;
     }
 
     public static void setScrollToPosition(int position) {
@@ -108,11 +106,11 @@ public class InchoateApp extends Application {
         return SCROLL_TO_POSITION;
     }
 
-    public static void setAudioPlayingArticleListCache(List<Article> list) {
-        audioPlayingArticleListCache = list;
+    public static void setsAudioPlayingArticleListCache(List<Article> list) {
+        sAudioPlayingArticleListCache = list;
     }
 
-    public static List<Article> getAudioPlayingArticleListCache() {
-        return audioPlayingArticleListCache;
+    public static List<Article> getsAudioPlayingArticleListCache() {
+        return sAudioPlayingArticleListCache;
     }
 }

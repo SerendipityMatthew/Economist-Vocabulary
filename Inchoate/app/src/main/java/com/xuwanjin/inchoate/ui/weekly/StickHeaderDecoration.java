@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
     public StickHeaderInterface headerInterface;
     private RecyclerView recyclerView;
-    private WeeklyAdapter adapter;
+    private WeeklyAdapter mAdapter;
     private RecyclerView.LayoutManager manager;
     private Paint mItemHeaderPaint;
     private Paint mTextPaint;
@@ -30,8 +30,8 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
     }
 
     public StickHeaderDecoration(RecyclerView recyclerView, Context context) {
-        this.adapter = (WeeklyAdapter) recyclerView.getAdapter();
-        this.headerInterface = (StickHeaderInterface) adapter;
+        this.mAdapter = (WeeklyAdapter) recyclerView.getAdapter();
+        this.headerInterface = (StickHeaderInterface) mAdapter;
         this.recyclerView = recyclerView;
         this.manager = recyclerView.getLayoutManager();
         this.mContext = context;
@@ -87,11 +87,11 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
             View view = parent.getChildAt(i);
             // view 是 RecyclerView 里的每一项, 包括填充进去的 HeaderView
             int position = parent.getChildLayoutPosition(view);
-            boolean isHeader = adapter.isItemHeader(position);
+            boolean isHeader = mAdapter.isItemHeader(position);
             if (isHeader) {
                 //draw left 矩形的左边位置, top 矩形的上边位置, right 矩形的右边位置, bottom 矩形的下边位置
                 int y = view.getTop() - mItemHeaderHeight;
-                String groupName = adapter.getGroupName(position - 1);
+                String groupName = mAdapter.getGroupName(position - 1);
                 canvas.drawRect(0, y, parent.getWidth(), view.getTop(), mItemHeaderPaint);
                 mTextPaint.getTextBounds(groupName, 0, groupName.length(), mTextRect);
                 canvas.drawText(groupName, 50,

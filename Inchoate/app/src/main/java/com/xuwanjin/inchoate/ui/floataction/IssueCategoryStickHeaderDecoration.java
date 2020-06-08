@@ -13,9 +13,9 @@ import android.graphics.Paint;
 
 
 public class IssueCategoryStickHeaderDecoration extends RecyclerView.ItemDecoration {
-    private RecyclerView recyclerView;
-    private IssueCategoryAdapter categoryAdapter;
-    private RecyclerView.LayoutManager manager;
+    private RecyclerView mRecyclerView;
+    private IssueCategoryAdapter mCategoryAdapter;
+    private RecyclerView.LayoutManager mManager;
 
     private int mItemHeaderHeight;
     private Context mContext;
@@ -24,9 +24,9 @@ public class IssueCategoryStickHeaderDecoration extends RecyclerView.ItemDecorat
     private Paint mLinePaint;
 
     public IssueCategoryStickHeaderDecoration(RecyclerView recyclerView, Context context) {
-        this.categoryAdapter = (IssueCategoryAdapter) recyclerView.getAdapter();
-        this.recyclerView = recyclerView;
-        this.manager = recyclerView.getLayoutManager();
+        this.mCategoryAdapter = (IssueCategoryAdapter) recyclerView.getAdapter();
+        this.mRecyclerView = recyclerView;
+        this.mManager = recyclerView.getLayoutManager();
         this.mContext = context;
 
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);

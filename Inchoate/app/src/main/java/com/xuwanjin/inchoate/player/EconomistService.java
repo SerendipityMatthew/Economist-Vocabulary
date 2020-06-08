@@ -1,6 +1,5 @@
 package com.xuwanjin.inchoate.player;
 
-import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;

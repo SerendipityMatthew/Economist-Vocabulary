@@ -27,7 +27,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.fragment_settings);
-        mLogInPreference = findPreference(KEY_DARK_MODE_PREFERENCE);
+        mLogInPreference = findPreference(KEY_LOG_IN);
         mDarkModePreference = findPreference(KEY_DARK_MODE_PREFERENCE);
         mTextSizeChangePreference = findPreference(KEY_TEXT_SIZE_CHANGE);
         mAutoDownloadPreference = findPreference(KEY_AUTO_DOWNLOAD_DOWNLOAD);

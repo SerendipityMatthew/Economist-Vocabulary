@@ -1,6 +1,7 @@
 package com.xuwanjin.inchoate.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +15,17 @@ import com.google.gson.Gson;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.Utils;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public abstract class BaseFragment extends Fragment {
     private View mRootView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,8 +41,10 @@ public abstract class BaseFragment extends Fragment {
     protected abstract void loadData();
 
     protected abstract int getLayoutResId();
+
     protected abstract <T> T fetchDataFromDBOrNetwork();
-    protected Gson getGsonInstance(){
+
+    protected Gson getGsonInstance() {
         Gson gson = new Gson()
                 .newBuilder()
                 .setFieldNamingStrategy(new FieldNamingStrategy() {
@@ -49,6 +59,33 @@ public abstract class BaseFragment extends Fragment {
                 }) // setFieldNamingPolicy 有什么区别
                 .create();
         return gson;
+    }
+
+    protected String fetchJsonFromServer(String wholeUrl) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(wholeUrl)
+                .build();
+        Call call = client.newCall(request);
+        Response response = null;
+        try {
+            response = call.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (response == null || !response.isSuccessful()) {
+            return null;
+        }
+        String jsonResult = null;
+        try {
+            jsonResult = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (jsonResult == null) {
+            return null;
+        }
+        return jsonResult;
     }
 
     protected void navigationToFragment(int resId) {

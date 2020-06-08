@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.R;
@@ -21,11 +20,8 @@ import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.today.TodayJson;
 import com.xuwanjin.inchoate.ui.BaseFragment;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
@@ -33,11 +29,6 @@ import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 import static com.xuwanjin.inchoate.Utils.getTodayArticleList;
 
@@ -141,44 +132,7 @@ public class TodayFragment extends BaseFragment {
 
     protected List<Article> fetchDataFromDBOrNetwork() {
         Log.d(TAG, "loadDataFromNetwork: ");
-
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .build();
-        Request request = new Request.Builder()
-                .url(Constants.TODAY_SECTION_QUERY_URL)
-                .build();
-        Call call = okHttpClient.newCall(request);
-
-        Response response = null;
-        ResponseBody responseBody = null;
-        try {
-            response = call.execute();
-            responseBody = response.body();
-        } catch (IOException e) {
-            Log.d(TAG, "loadDataFromNetwork: IOException e = " + e);
-            initFakeDataAndUpdateUI();
-            e.printStackTrace();
-        }
-        if (response == null || !response.isSuccessful()) {
-            Log.d(TAG, "subscribe: today news json result response unsuccessfully! " +
-                    "response code " + response);
-            return null;
-        }
-        if (responseBody == null) {
-            Log.d(TAG, "no result that server return");
-            return null;
-        }
-        String jsonResult = null;
-        try {
-            jsonResult = responseBody.string();
-        } catch (IOException e) {
-            Log.d(TAG, "loadDataFromNetwork: responseBody to string exception = ");
-            e.printStackTrace();
-        }
-
+        String jsonResult = fetchJsonFromServer(Constants.TODAY_SECTION_QUERY_URL);
         Gson gson = getGsonInstance();
         TodayJson todayJson = gson.fromJson(jsonResult, TodayJson.class);
         sTodayArticleList = getTodayArticleList(todayJson);

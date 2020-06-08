@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.Constants;
@@ -52,13 +51,9 @@ import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -72,10 +67,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 import static com.xuwanjin.inchoate.Utils.getIssue;
 import static com.xuwanjin.inchoate.model.ArticleCategorySection.OBITUARY;
@@ -487,31 +478,8 @@ public class WeeklyFragment extends BaseFragment {
     }
 
     public Issue loadDataFromNetwork(String urlId) {
-        String wholeUrlId = WEEK_FRAGMENT_COMMON_URL + urlId + TAIL;
-        Log.d(TAG, "loadDataFromNetwork: urlId = " + urlId);
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(wholeUrlId)
-                .build();
-        Call call = client.newCall(request);
-        Response response = null;
-        try {
-            response = call.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (response == null || !response.isSuccessful()) {
-            return null;
-        }
-        String jsonResult = null;
-        try {
-            jsonResult = response.body().string();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (jsonResult == null) {
-            return null;
-        }
+        String wholeUrl = WEEK_FRAGMENT_COMMON_URL + urlId + TAIL;
+        String jsonResult = fetchJsonFromServer(wholeUrl);
         Gson gson = getGsonInstance();
         WeekJson weekJson = gson.fromJson(jsonResult, WeekJson.class);
         Issue issue = getIssue(weekJson);

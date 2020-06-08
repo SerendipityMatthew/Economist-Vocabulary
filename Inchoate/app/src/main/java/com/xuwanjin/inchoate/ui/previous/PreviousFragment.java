@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.R;
@@ -20,11 +19,8 @@ import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.archive.Archive;
 import com.xuwanjin.inchoate.ui.BaseFragment;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
@@ -33,10 +29,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.internal.operators.single.SingleAmb;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class PreviousFragment extends BaseFragment {
     public static final String TAG = "PreviousFragment";
@@ -96,7 +88,6 @@ public class PreviousFragment extends BaseFragment {
         mDisposable = SingleAmb.create(new SingleOnSubscribe<List<Issue>>() {
             @Override
             public void subscribe(SingleEmitter<List<Issue>> emitter) throws Exception {
-
                 sIssueList = fetchDataFromDBOrNetwork();
                 Log.d(TAG, "loadPreviousIssue: subscribe: sIssueList = " + sIssueList.size());
                 emitter.onSuccess(sIssueList);
@@ -118,29 +109,7 @@ public class PreviousFragment extends BaseFragment {
 
     @Override
     protected List<Issue> fetchDataFromDBOrNetwork() {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(Constants.ARCHIVE_QUERY_URL)
-                .build();
-        Call call = client.newCall(request);
-        Response response = null;
-        try {
-            response = call.execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (response == null || !response.isSuccessful()) {
-            return null;
-        }
-        String jsonResult = null;
-        try {
-            jsonResult = Objects.requireNonNull(response.body()).string();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (jsonResult == null) {
-            return null;
-        }
+        String jsonResult = fetchJsonFromServer(Constants.ARCHIVE_QUERY_URL);
         Gson gson = getGsonInstance();
         Archive data = gson.fromJson(jsonResult, Archive.class);
         sIssueList = Utils.getIssueList(data);

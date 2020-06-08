@@ -73,7 +73,8 @@ public class PreviousFragment extends BaseFragment {
         return R.layout.fragment_previous;
     }
 
-    private List<Issue> initFakeData() {
+    @Override
+    protected List<Issue> initFakeData() {
         List<Issue> issueList = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
             Issue issue = new Issue();

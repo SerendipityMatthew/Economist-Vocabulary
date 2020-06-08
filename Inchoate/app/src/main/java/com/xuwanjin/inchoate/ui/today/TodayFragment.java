@@ -74,7 +74,8 @@ public class TodayFragment extends BaseFragment {
         return R.layout.fragment_today;
     }
 
-    private List<Article> initFakeData() {
+    @Override
+    protected List<Article> initFakeData() {
         List<Article> articleList = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             Article article = new Article();

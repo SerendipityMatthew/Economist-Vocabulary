@@ -43,6 +43,7 @@ public abstract class BaseFragment extends Fragment {
     protected abstract int getLayoutResId();
 
     protected abstract <T> T fetchDataFromDBOrNetwork();
+    protected abstract <T> T initFakeData();
 
     protected Gson getGsonInstance() {
         Gson gson = new Gson()

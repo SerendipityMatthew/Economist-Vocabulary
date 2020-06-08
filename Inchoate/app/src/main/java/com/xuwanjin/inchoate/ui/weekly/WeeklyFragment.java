@@ -420,7 +420,8 @@ public class WeeklyFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    private Issue initFakeData() {
+    @Override
+    protected Issue initFakeData() {
         Issue issue = new Issue();
         List<Article> articleList = new ArrayList<>();
         for (int i = 0; i < 82; i++) {

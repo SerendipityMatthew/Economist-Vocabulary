@@ -512,19 +512,7 @@ public class WeeklyFragment extends BaseFragment {
         if (jsonResult == null) {
             return null;
         }
-        Gson gson = new Gson()
-                .newBuilder()
-                .setFieldNamingStrategy(new FieldNamingStrategy() {
-                    @Override
-                    public String translateName(Field f) {
-                        String name = f.getName();
-                        if (name.contains("-")) {
-                            return name.replaceAll("-", "");
-                        }
-                        return name;
-                    }
-                }) // setFieldNamingPolicy 有什么区别
-                .create();
+        Gson gson = getGsonInstance();
         WeekJson weekJson = gson.fromJson(jsonResult, WeekJson.class);
         Issue issue = getIssue(weekJson);
         InchoateApp.setNewestIssueCache(issue);

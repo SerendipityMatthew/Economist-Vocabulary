@@ -179,19 +179,7 @@ public class TodayFragment extends BaseFragment {
             e.printStackTrace();
         }
 
-        Gson gson = new Gson()
-                .newBuilder()
-                .setFieldNamingStrategy(new FieldNamingStrategy() {
-                    @Override
-                    public String translateName(Field f) {
-                        String name = f.getName();
-                        if (name.contains("-")) {
-                            return name.replaceAll("-", "");
-                        }
-                        return name;
-                    }
-                })
-                .create();
+        Gson gson = getGsonInstance();
         TodayJson todayJson = gson.fromJson(jsonResult, TodayJson.class);
         sTodayArticleList = getTodayArticleList(todayJson);
         return sTodayArticleList;

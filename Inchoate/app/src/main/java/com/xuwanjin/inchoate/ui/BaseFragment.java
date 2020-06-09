@@ -63,6 +63,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected String fetchJsonFromServer(String wholeUrl) {
+        Log.d("Matthew", "fetchJsonFromServer: isNetworkAvailable = "  + Utils.isNetworkAvailable(getContext()));
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(wholeUrl)
@@ -82,9 +83,6 @@ public abstract class BaseFragment extends Fragment {
             jsonResult = response.body().string();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        if (jsonResult == null) {
-            return null;
         }
         return jsonResult;
     }

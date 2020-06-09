@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
@@ -74,6 +75,7 @@ import static com.xuwanjin.inchoate.model.ArticleCategorySection.OBITUARY;
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setEconomistService;
 
 public class WeeklyFragment extends BaseFragment {
+    AtomicBoolean mAtomicBoolean = new AtomicBoolean();
     public static final String TAG = "WeeklyFragment";
     RecyclerView mIssueContentRecyclerView;
     private View mSectionHeaderView;
@@ -219,6 +221,13 @@ public class WeeklyFragment extends BaseFragment {
                         updateDatabase(sIssueCache);
                         updateWeeklyFragmentContent(sIssueCache);
                         Log.d(TAG, "loadTodayArticleList: issue.containArticle.size: " + issue.containArticle.size());
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Issue issue = initFakeData();
+                        updateWeeklyFragmentContent(issue);
+                        Log.d(TAG, "loadTodayArticleList: accept: throwable = " + throwable);
                     }
                 });
         mCompositeDisposable.add(disposable);

@@ -28,6 +28,7 @@ import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.xuwanjin.inchoate.Utils.getTodayArticleList;
@@ -124,15 +125,20 @@ public class TodayFragment extends BaseFragment {
                 emitter.onSuccess(articleList);
             }
         }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()
-                ).subscribe(articles -> {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(articles -> {
                     mTodayNewsAdapter.updateData(articles);
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        initFakeDataAndUpdateUI();
+                        Log.d(TAG, "accept: throwable = " + throwable);
+                    }
                 });
 
     }
 
     protected List<Article> fetchDataFromDBOrNetwork() {
-        Log.d(TAG, "loadDataFromNetwork: ");
         String jsonResult = fetchJsonFromServer(Constants.TODAY_SECTION_QUERY_URL);
         Gson gson = getGsonInstance();
         TodayJson todayJson = gson.fromJson(jsonResult, TodayJson.class);

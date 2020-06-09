@@ -22,12 +22,12 @@ import com.xuwanjin.inchoate.ui.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.internal.operators.single.SingleAmb;
 import io.reactivex.schedulers.Schedulers;
 
 public class PreviousFragment extends BaseFragment {
@@ -86,7 +86,7 @@ public class PreviousFragment extends BaseFragment {
     }
 
     public void loadPreviousIssue() {
-        mDisposable = SingleAmb.create(new SingleOnSubscribe<List<Issue>>() {
+        mDisposable = Single.create(new SingleOnSubscribe<List<Issue>>() {
             @Override
             public void subscribe(SingleEmitter<List<Issue>> emitter) throws Exception {
                 sIssueList = fetchDataFromDBOrNetwork();

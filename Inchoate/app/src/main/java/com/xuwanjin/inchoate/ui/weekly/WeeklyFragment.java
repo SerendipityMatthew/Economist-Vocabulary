@@ -252,6 +252,8 @@ public class WeeklyFragment extends BaseFragment {
             String[] value = urlIdString.split(",");
             String issueDate = value[0];
             String issueUrlId = value[1];
+            Log.d(TAG, "fetchDataFromDBOrNetwork: issueDate = " + issueDate);
+            Log.d(TAG, "fetchDataFromDBOrNetwork: issueUrlId = " + issueUrlId);
             issue = loadWholeIssue(issueDate, issueUrlId);
         } else {
             issue = loadDataFromNetwork(WEEK_FRAGMENT_QUERY_05_30_URL);
@@ -274,13 +276,16 @@ public class WeeklyFragment extends BaseFragment {
     public Issue loadWholeIssue(String issueDate, String urlId) {
         // 数据库 (数据库插入不全)---> 网络
         Issue issue = getIssueDataFromDB(issueDate);
+        Log.d(TAG, "loadWholeIssue: issue = " + issue);
         boolean shouldLoadFromNetwork = false;
         if (issue != null) {
             List<Article> articleList = issue.containArticle;
             // 所有的文章都没被插入
             if (articleList == null || articleList.size() == 0) {
+                Log.d(TAG, "loadWholeIssue: if: if: ");
                 shouldLoadFromNetwork = true;
             } else {
+                Log.d(TAG, "loadWholeIssue: if: else: ");
                 // 可能插入了部分文章
                 int size = articleList.size();
                 Article lastArticle = articleList.get(size - 1);
@@ -291,10 +296,11 @@ public class WeeklyFragment extends BaseFragment {
             }
 
         } else {
-            issue = getNewestIssueDataFromDB();
-            if (issue == null || issue.containArticle == null || issue.containArticle.size() == 0){
+//            issue = getNewestIssueDataFromDB();
+            Log.d(TAG, "loadWholeIssue: issue = " + issue);
+//            if (issue == null || issue.containArticle == null || issue.containArticle.size() == 0){
                 shouldLoadFromNetwork = true;
-            }
+//            }
         }
 
         if (shouldLoadFromNetwork) {
@@ -453,14 +459,19 @@ public class WeeklyFragment extends BaseFragment {
     private Issue getNewestIssueDataFromDB() {
         InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
         List<Issue> issueList = helper.queryAllIssue();
+        helper.close();
         long currentTime = System.currentTimeMillis();
 
         Issue newestIssue = null;
         int minIndex = 0;
         long minDiff = 0;
-        if (issueList != null && issueList.size() > 0) {
+        if (issueList != null && issueList.size() ==1){
+            newestIssue = issueList.get(0);
+        }
+        if (issueList != null && issueList.size() > 1) {
             for (int i = 0; i < issueList.size(); i++) {
                 Issue is = issueList.get(i);
+                Log.d(TAG, "getNewestIssueDataFromDB: is.issueFormatDate = " + is.issueFormatDate);
                 long time = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"))
                         .parse(is.issueFormatDate + " 00:00:00", new ParsePosition(0)).getTime();
                 long diff = Math.abs((currentTime - time));
@@ -474,12 +485,13 @@ public class WeeklyFragment extends BaseFragment {
             }
             newestIssue = issueList.get(minIndex);
         }
-        helper.close();
+
         return newestIssue;
     }
 
     public Issue loadDataFromNetwork(String urlId) {
         String wholeUrl = WEEK_FRAGMENT_COMMON_URL + urlId + TAIL;
+        Log.d(TAG, "loadDataFromNetwork: urlId = " + urlId);
         String jsonResult = fetchJsonFromServer(wholeUrl);
         Gson gson = getGsonInstance();
         WeekJson weekJson = gson.fromJson(jsonResult, WeekJson.class);

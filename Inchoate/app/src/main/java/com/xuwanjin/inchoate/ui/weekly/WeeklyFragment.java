@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -256,7 +257,12 @@ public class WeeklyFragment extends BaseFragment {
             Log.d(TAG, "fetchDataFromDBOrNetwork: issueUrlId = " + issueUrlId);
             issue = loadWholeIssue(issueDate, issueUrlId);
         } else {
-            issue = loadDataFromNetwork(WEEK_FRAGMENT_QUERY_05_30_URL);
+            if (Utils.isNetworkAvailable(getContext())){
+                issue = loadDataFromNetwork(WEEK_FRAGMENT_QUERY_05_30_URL);
+            }else {
+                issue = initFakeData();
+            }
+
         }
         return issue;
     }
@@ -304,7 +310,11 @@ public class WeeklyFragment extends BaseFragment {
         }
 
         if (shouldLoadFromNetwork) {
-            issue = loadDataFromNetwork(urlId);
+            if (Utils.isNetworkAvailable(getContext())){
+                issue = loadDataFromNetwork(urlId);
+            }else {
+                issue = initFakeData();
+            }
         }
         return issue;
     }

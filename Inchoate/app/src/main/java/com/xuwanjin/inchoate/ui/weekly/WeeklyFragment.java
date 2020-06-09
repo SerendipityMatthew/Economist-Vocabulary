@@ -266,12 +266,7 @@ public class WeeklyFragment extends BaseFragment {
             Log.d(TAG, "fetchDataFromDBOrNetwork: issueUrlId = " + issueUrlId);
             issue = loadWholeIssue(issueDate, issueUrlId);
         } else {
-            if (Utils.isNetworkAvailable(getContext())){
-                issue = loadDataFromNetwork(WEEK_FRAGMENT_QUERY_05_30_URL);
-            }else {
-                issue = initFakeData();
-            }
-
+            issue = loadDataFromNetwork(WEEK_FRAGMENT_QUERY_05_30_URL);
         }
         return issue;
     }
@@ -314,16 +309,12 @@ public class WeeklyFragment extends BaseFragment {
 //            issue = getNewestIssueDataFromDB();
             Log.d(TAG, "loadWholeIssue: issue = " + issue);
 //            if (issue == null || issue.containArticle == null || issue.containArticle.size() == 0){
-                shouldLoadFromNetwork = true;
+            shouldLoadFromNetwork = true;
 //            }
         }
 
         if (shouldLoadFromNetwork) {
-            if (Utils.isNetworkAvailable(getContext())){
-                issue = loadDataFromNetwork(urlId);
-            }else {
-                issue = initFakeData();
-            }
+            issue = loadDataFromNetwork(urlId);
         }
         return issue;
     }
@@ -484,7 +475,7 @@ public class WeeklyFragment extends BaseFragment {
         Issue newestIssue = null;
         int minIndex = 0;
         long minDiff = 0;
-        if (issueList != null && issueList.size() ==1){
+        if (issueList != null && issueList.size() == 1) {
             newestIssue = issueList.get(0);
         }
         if (issueList != null && issueList.size() > 1) {
@@ -494,10 +485,10 @@ public class WeeklyFragment extends BaseFragment {
                 long time = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"))
                         .parse(is.issueFormatDate + " 00:00:00", new ParsePosition(0)).getTime();
                 long diff = Math.abs((currentTime - time));
-                if (i == 0){
+                if (i == 0) {
                     minDiff = diff;
                 }
-                if (minDiff > diff){
+                if (minDiff > diff) {
                     minDiff = diff;
                     minIndex = i;
                 }
@@ -512,6 +503,9 @@ public class WeeklyFragment extends BaseFragment {
         String wholeUrl = WEEK_FRAGMENT_COMMON_URL + urlId + TAIL;
         Log.d(TAG, "loadDataFromNetwork: urlId = " + urlId);
         String jsonResult = fetchJsonFromServer(wholeUrl);
+        if (jsonResult == null) {
+            return null;
+        }
         Gson gson = getGsonInstance();
         WeekJson weekJson = gson.fromJson(jsonResult, WeekJson.class);
         Issue issue = getIssue(weekJson);

@@ -60,12 +60,11 @@ public class TodayFragment extends BaseFragment {
             updateTodayFragment(sTodayArticleList);
         } else {
             initFakeDataAndUpdateUI();
-            if (Utils.isNetworkAvailable(getContext())) {
-                loadTodayArticleList();
-            }
+            loadTodayArticleList();
         }
     }
-    private void initFakeDataAndUpdateUI(){
+
+    private void initFakeDataAndUpdateUI() {
         List<Article> articleList = initFakeData();
         updateTodayFragment(articleList);
     }

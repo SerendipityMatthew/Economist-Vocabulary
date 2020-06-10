@@ -30,15 +30,9 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
     public static final String TAG = "BookmarkAdapter";
     private Context mContext;
     private List<Article> mArticleList = new ArrayList<>();
-    private Fragment mFragment;
 
-    public BookmarkAdapter(Context context, Fragment fragment) {
+    public BookmarkAdapter(Context context) {
         mContext = context;
-        mFragment = fragment;
-    }
-
-    public Fragment getFragment() {
-        return mFragment;
     }
 
     public void updateData(List<Article> articleList) {

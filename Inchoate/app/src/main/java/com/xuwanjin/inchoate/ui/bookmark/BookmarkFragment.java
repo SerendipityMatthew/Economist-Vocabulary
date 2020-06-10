@@ -29,11 +29,11 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class BookmarkFragment extends BaseFragment {
-    RecyclerView mBookmarkRecycleView;
-    TextView mTextView;
+    private RecyclerView mBookmarkRecycleView;
+    private TextView mTextView;
     private Disposable mDisposable;
     private BookmarkAdapter mBookmarkAdapter;
-    static List<Article> sArticleList = new ArrayList<>();
+    private static List<Article> sArticleList = new ArrayList<>();
 
     @Override
     protected void initView(View view) {
@@ -94,7 +94,7 @@ public class BookmarkFragment extends BaseFragment {
     }
 
     private void updateFragmentContent(List<Article> articleList) {
-        mBookmarkAdapter = new BookmarkAdapter(getContext(), BookmarkFragment.this);
+        mBookmarkAdapter = new BookmarkAdapter(getContext());
         mBookmarkRecycleView.setAdapter(mBookmarkAdapter);
         mBookmarkRecycleView.addItemDecoration(new StickHeaderDecoration(mBookmarkRecycleView, getContext()));
         mBookmarkAdapter.updateData(articleList);

@@ -1,91 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:ignore="MissingConstraints">
+
+
+    <ImageView
+        android:id="@+id/magazine_cover"
+        android:layout_width="250dp"
+        android:layout_height="350dp"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:id="@+id/magazine_headline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/issue_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        tools:ignore="MissingConstraints">
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
 
-
-        <ImageView
-            android:id="@+id/magazine_cover"
-            android:layout_width="250dp"
-            android:layout_height="350dp"
-            android:layout_gravity="center" />
-
-        <TextView
-            android:id="@+id/magazine_headline"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/issue_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="20sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <Button
-                android:id="@+id/stream_audio"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="40dp"
-                android:drawableStart="@mipmap/play_stream"
-                android:drawablePadding="10dp"
-                android:text="@string/stream_audio"
-                android:textAllCaps="false" />
-
-            <Button
-                android:id="@+id/download_audio"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:drawableStart="@mipmap/download"
-                android:drawablePadding="10dp"
-                android:text="@string/download_audio"
-                android:textAllCaps="false" />
-        </LinearLayout>
-
-        <View
+        <Button
+            android:id="@+id/stream_audio"
             android:layout_width="wrap_content"
-            android:layout_height="1px"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:background="@android:color/darker_gray" />
+            android:layout_height="match_parent"
+            android:layout_marginStart="40dp"
+            android:drawableStart="@mipmap/play_stream"
+            android:drawablePadding="10dp"
+            android:text="@string/stream_audio"
+            android:textAllCaps="false" />
 
-        <TextView
-            android:id="@+id/previous_edition"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_gravity="start"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/previous"
-            android:textSize="20sp" />
-
-        <View
+        <Button
+            android:id="@+id/download_audio"
             android:layout_width="wrap_content"
-            android:layout_height="1px"
+            android:layout_height="match_parent"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="20dp"
-            android:background="@android:color/darker_gray" />
+            android:drawableStart="@mipmap/download"
+            android:drawablePadding="10dp"
+            android:text="@string/download_audio"
+            android:textAllCaps="false" />
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1px"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/grey" />
+
+    <TextView
+        android:id="@+id/previous_edition"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_gravity="start"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/previous"
+        android:textSize="20sp" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1px"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/grey" />
+</LinearLayout>

@@ -52,7 +52,7 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'androidx.appcompat:appcompat:1.1.0'
     //noinspection GradleCompatible
-    implementation 'com.google.android.material:material:1.1.0' 
+    implementation 'com.google.android.material:material:1.1.0'
 
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
     // LiveData
@@ -64,7 +64,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
 
     implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
-    implementation  'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
 
     implementation "com.airbnb.android:lottie:$lottieVersion"
@@ -87,9 +87,9 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:$arch_version"
 
 
-
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    // For Kotlin use kapt instead of annotationProcessor
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$room_version"
@@ -107,5 +107,7 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'androidx.preference:preference:1.0.0'
     implementation 'com.liulishuo.okdownload:okdownload:1.0.6'
+
+    implementation 'com.squareup.leakcanary:leakcanary-android:2.3'
 
 }

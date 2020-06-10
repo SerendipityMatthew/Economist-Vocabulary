@@ -52,6 +52,8 @@ public class TodayFragment extends BaseFragment {
         GridLayoutManager manager = new GridLayoutManager(getContext(), 1);
         manager.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerViewTodayNews.setLayoutManager(manager);
+        mTodayNewsAdapter = new TodayNewsAdapter(getContext());
+        mRecyclerViewTodayNews.setAdapter(mTodayNewsAdapter);
     }
 
     @Override
@@ -89,8 +91,6 @@ public class TodayFragment extends BaseFragment {
     }
 
     private void updateTodayFragment(List<Article> articleList) {
-        mTodayNewsAdapter = new TodayNewsAdapter(getContext());
-        mRecyclerViewTodayNews.setAdapter(mTodayNewsAdapter);
         mTodayNewsAdapter.updateData(articleList);
     }
 

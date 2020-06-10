@@ -33,7 +33,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public abstract class BaseFragment extends Fragment {
-    private View mRootView;
+
     private static final int CALL_TIMEOUT = 10;
     private static final int CONNECT_TIMEOUT = 10;
     private static final int READ_TIMEOUT = 10;
@@ -43,7 +43,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         int layoutResId = getLayoutResId();
-        mRootView = inflater.inflate(layoutResId, container, false);
+        View mRootView = inflater.inflate(layoutResId, container, false);
         initView(mRootView);
         loadData();
         return mRootView;

@@ -15,6 +15,8 @@ import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.Paragraph;
 import com.xuwanjin.inchoate.model.Vocabulary;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -741,6 +743,37 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             cursor.close();
         }
         return paragraphList;
+    }
+
+    private Issue getNewestIssueDataFromDB() {
+        List<Issue> issueList = queryAllIssue();
+        long currentTime = System.currentTimeMillis();
+
+        Issue newestIssue = null;
+        int minIndex = 0;
+        long minDiff = 0;
+        if (issueList != null && issueList.size() == 1) {
+            newestIssue = issueList.get(0);
+        }
+        if (issueList != null && issueList.size() > 1) {
+            for (int i = 0; i < issueList.size(); i++) {
+                Issue is = issueList.get(i);
+                Log.d(TAG, "getNewestIssueDataFromDB: is.issueFormatDate = " + is.issueFormatDate);
+                long time = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"))
+                        .parse(is.issueFormatDate + " 00:00:00", new ParsePosition(0)).getTime();
+                long diff = Math.abs((currentTime - time));
+                if (i == 0) {
+                    minDiff = diff;
+                }
+                if (minDiff > diff) {
+                    minDiff = diff;
+                    minIndex = i;
+                }
+            }
+            newestIssue = issueList.get(minIndex);
+        }
+
+        return newestIssue;
     }
 
     private Paragraph getParagraphFromCursor(Cursor cursor) {

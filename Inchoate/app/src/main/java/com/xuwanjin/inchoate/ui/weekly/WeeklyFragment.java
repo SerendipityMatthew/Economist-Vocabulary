@@ -466,39 +466,6 @@ public class WeeklyFragment extends BaseFragment {
         return issue;
     }
 
-    private Issue getNewestIssueDataFromDB() {
-        InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
-        List<Issue> issueList = helper.queryAllIssue();
-        helper.close();
-        long currentTime = System.currentTimeMillis();
-
-        Issue newestIssue = null;
-        int minIndex = 0;
-        long minDiff = 0;
-        if (issueList != null && issueList.size() == 1) {
-            newestIssue = issueList.get(0);
-        }
-        if (issueList != null && issueList.size() > 1) {
-            for (int i = 0; i < issueList.size(); i++) {
-                Issue is = issueList.get(i);
-                Log.d(TAG, "getNewestIssueDataFromDB: is.issueFormatDate = " + is.issueFormatDate);
-                long time = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"))
-                        .parse(is.issueFormatDate + " 00:00:00", new ParsePosition(0)).getTime();
-                long diff = Math.abs((currentTime - time));
-                if (i == 0) {
-                    minDiff = diff;
-                }
-                if (minDiff > diff) {
-                    minDiff = diff;
-                    minIndex = i;
-                }
-            }
-            newestIssue = issueList.get(minIndex);
-        }
-
-        return newestIssue;
-    }
-
     public Issue loadDataFromNetwork(String urlId) {
         String wholeUrl = WEEK_FRAGMENT_COMMON_URL + urlId + TAIL;
         Log.d(TAG, "loadDataFromNetwork: urlId = " + urlId);

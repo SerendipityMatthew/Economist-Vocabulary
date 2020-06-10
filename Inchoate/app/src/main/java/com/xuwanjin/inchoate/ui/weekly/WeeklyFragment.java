@@ -218,9 +218,9 @@ public class WeeklyFragment extends BaseFragment {
                     @Override
                     public void accept(Issue issue) throws Exception {
                         sIssueCache = issue;
-                        updateDatabase(sIssueCache);
-                        updateWeeklyFragmentContent(sIssueCache);
                         Log.d(TAG, "loadTodayArticleList: issue.containArticle.size: " + issue.containArticle.size());
+                        updateWeeklyFragmentContent(sIssueCache);
+                        updateDatabase(sIssueCache);
                     }
                 }, new Consumer<Throwable>() {
                     @Override

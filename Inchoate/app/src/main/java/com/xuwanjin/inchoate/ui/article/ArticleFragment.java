@@ -54,6 +54,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.xuwanjin.inchoate.Utils.getDurationFormat;
@@ -214,7 +215,7 @@ public class ArticleFragment extends BaseFragment {
                         if (mCount == adapterDataList.size() - 1) {
                             mArticleContentAdapter.updateData(adapterDataList);
                         }
-                        mCount ++;
+                        mCount++;
                     }
                 });
     }
@@ -237,14 +238,24 @@ public class ArticleFragment extends BaseFragment {
             }
         };
 //       key: orderOfParagraph  value: SpannableString
+        /*
+        switch to rxjava filter operator
         List<String> collectedList = new ArrayList<>();
+
         for (String vocabulary : mCollectedVocabularyList) {
             if (!isSkipVocabulary(vocabulary)) {
                 collectedList.add(vocabulary);
             }
         }
+        */
 
-        Observable.fromIterable(collectedList)
+        Observable.fromIterable(mCollectedVocabularyList)
+                .filter(new Predicate<String>() {
+                    @Override
+                    public boolean test(String vocabulary) throws Exception {
+                        return !isSkipVocabulary(vocabulary);
+                    }
+                })
                 .flatMapIterable(func, resFunc)
                 .subscribeOn(Schedulers.computation())
                 .delay(10, TimeUnit.SECONDS)
@@ -263,7 +274,7 @@ public class ArticleFragment extends BaseFragment {
         SpannableString vocabularySpannable = new SpannableString(paragraph.paragraph);
         if (isExisted) {
             int index = 0;
-                index = paragraphText.indexOf(collectedVocabulary);
+            index = paragraphText.indexOf(collectedVocabulary);
             vocabularySpannable.setSpan(
                     new BackgroundColorSpan(Color.GREEN),
                     index, index + collectedVocabulary.length(),

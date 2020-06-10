@@ -482,10 +482,8 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                 .map(new Function<Article, HashMap<Long, Article>>() {
                     @Override
                     public HashMap<Long, Article> apply(Article article) throws Exception {
-//                        Log.d(TAG, "insertWholeData: apply: article.section = " + article.section);
-//                        Log.d(TAG, "insertWholeData: apply: article.date = " + article.date);
+                        Log.d(TAG, "insertWholeData: apply: article.title = " + article.title);
                         long id = articleRowIDInDB(article, issue.issueDate);
-//                        Log.d(TAG, "insertWholeData: apply: id = " + id);
                         long articleRowID = RECORD_NOT_EXISTED_IN_DB;
                         if (id == RECORD_NOT_EXISTED_IN_DB) {
                             articleRowID = insertArticleData(article, finalIssueRowID, issue.issueDate);
@@ -551,7 +549,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             Article a = getArticleIDFromCursor(cursor);
             articleList.add(a);
         }
-        if (articleList == null || articleList.size() == 0) {
+        if (articleList.size() == 0) {
             return RECORD_NOT_EXISTED_IN_DB;
         }
         if (articleList.size() == 1) {

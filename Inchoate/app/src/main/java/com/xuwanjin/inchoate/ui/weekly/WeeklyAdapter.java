@@ -108,7 +108,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             holder.articleTitle.setText(article.title);
             holder.articleFlyTitle.setText(article.flyTitle);
             holder.dateAndReadTime.setText(position - 1 + " min read");
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            View.OnClickListener viewArticleOnClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (article == null
@@ -121,7 +121,9 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                     Utils.navigationController(
                             InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
                 }
-            });
+
+            };
+            holder.titleAndMainImage.setOnClickListener(viewArticleOnClickListener);
 
             Glide.with(mContext)
                     .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
@@ -222,12 +224,14 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
         ImageView article_image;
         TextView dateAndReadTime;
         ImageView bookmark;
+        View titleAndMainImage;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             if (itemView == mHeaderView) {
                 return;
             }
+            titleAndMainImage = itemView.findViewById(R.id.title_and_main_image);
             articleTitle = itemView.findViewById(R.id.article_title);
             articleFlyTitle = itemView.findViewById(R.id.article_fly_title);
             article_image = itemView.findViewById(R.id.article_image);

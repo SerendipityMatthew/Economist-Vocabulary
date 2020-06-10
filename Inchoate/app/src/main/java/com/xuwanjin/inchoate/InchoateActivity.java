@@ -35,15 +35,14 @@ public class InchoateActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener,
         BottomNavigationController {
     public static final String TAG = "InchoateActivity";
-    NavController mController;
-    BottomNavigationView mBottomNavigationView;
-    ConstraintLayout mConstraintLayout;
-    FrameLayout mNowPlayingControl;
-    public SlidingUpPanelLayout mSlidingUpPanelLayout;
-    public IEconomistService mEconomistService;
+    private NavController mController;
+    private BottomNavigationView mBottomNavigationView;
+    private FrameLayout mNowPlayingControl;
+    private SlidingUpPanelLayout mSlidingUpPanelLayout;
+    private IEconomistService mEconomistService;
     private boolean isSuccess = false;
-    AudioPlayerFragment mAudioPlayerFragment = new AudioPlayerFragment();
-    FragmentManager mFragmentManager = getSupportFragmentManager();
+    private AudioPlayerFragment mAudioPlayerFragment = new AudioPlayerFragment();
+    private FragmentManager mFragmentManager = getSupportFragmentManager();
 
     ServiceConnection economistServiceConnection = new ServiceConnection() {
         @Override
@@ -98,7 +97,6 @@ public class InchoateActivity extends AppCompatActivity implements
     }
 
     public void initView() {
-        mConstraintLayout = findViewById(R.id.main_activity);
         mBottomNavigationView = findViewById(R.id.bottom_navigation);
         mSlidingUpPanelLayout = findViewById(R.id.slide_layout);
         mNowPlayingControl = findViewById(R.id.now_playing_control);
@@ -107,7 +105,6 @@ public class InchoateActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-//        EconomistPlayerTimberStyle.binToService(this, economistServiceConnection);
     }
     public boolean isAudioPlying(){
        return EconomistPlayerTimberStyle.isPlaying();
@@ -161,5 +158,6 @@ public class InchoateActivity extends AppCompatActivity implements
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        mController = null;
     }
 }

@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.xuwanjin.inchoate.customtext.SelectableTextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/paragraph"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <com.xuwanjin.inchoate.customtext.SelectableTextView
-        android:id="@+id/paragraph"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:lineSpacingExtra="8dp"
-        android:textColor="@color/black"
-        android:textIsSelectable="true"
-        android:textSize="30sp"
-        tools:ignore="MissingConstraints" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_height="wrap_content"
+    android:lineSpacingExtra="8dp"
+    android:textColor="@color/black"
+    android:textIsSelectable="true"
+    android:textSize="30sp"
+    tools:ignore="MissingConstraints" />

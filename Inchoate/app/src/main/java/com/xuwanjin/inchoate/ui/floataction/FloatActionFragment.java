@@ -18,7 +18,7 @@ import java.util.List;
 
 public class FloatActionFragment extends BaseFragment {
     public static final String TAG = "FloatActionFragment";
-    private View mHeaderSectionView;
+
     private List<String> mSectionList = new ArrayList<>();
 
     @Nullable
@@ -31,7 +31,7 @@ public class FloatActionFragment extends BaseFragment {
     protected void initView(View view) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         RecyclerView recyclerView = view.findViewById(R.id.float_action_recyclerView);
-        mHeaderSectionView = LayoutInflater.from(getContext()).inflate(R.layout.float_action_header, recyclerView, false);
+        View mHeaderSectionView = LayoutInflater.from(getContext()).inflate(R.layout.float_action_header, recyclerView, false);
         IssueCategoryAdapter categoryAdapter = new IssueCategoryAdapter(
                 getContext(), mSectionList);
         categoryAdapter.setHeaderView(mHeaderSectionView);

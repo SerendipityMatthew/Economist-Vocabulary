@@ -1,8 +1,6 @@
 package com.xuwanjin.inchoate.ui.floataction;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
-import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import java.util.ArrayList;

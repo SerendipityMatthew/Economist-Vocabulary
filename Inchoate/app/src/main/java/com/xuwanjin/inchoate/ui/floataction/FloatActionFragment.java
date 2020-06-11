@@ -1,5 +1,6 @@
 package com.xuwanjin.inchoate.ui.floataction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +28,7 @@ public class FloatActionFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater,container, savedInstanceState);
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -45,12 +46,15 @@ public class FloatActionFragment extends BaseFragment {
 
     @Override
     protected void loadData() {
-        Issue issue = InchoateApp.getNewestIssueCache().get(0);
-        if (issue == null || issue.categorySection == null || issue.categorySection.size() == 0) {
-            Log.d(TAG, "onCreateView: issue " + issue);
+        if (getActivity() == null) {
             return;
         }
-        mSectionList.addAll(issue.categorySection);
+        ArrayList<String> sequenceArrayList = getActivity().getIntent().getStringArrayListExtra("issue_section");
+        if (sequenceArrayList == null || sequenceArrayList.size() == 0) {
+            return;
+        }
+        mSectionList.clear();
+        mSectionList.addAll(sequenceArrayList);
         mSectionList.add(0, "This week");
     }
 

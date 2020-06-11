@@ -418,6 +418,8 @@ public class WeeklyFragment extends BaseFragment {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ArrayList<String> sectionList = new ArrayList<>(sIssueCache.categorySection);
+                getActivity().getIntent().putStringArrayListExtra("issue_section", sectionList);
                 navigationToFragment(R.id.navigation_float_action);
             }
         });

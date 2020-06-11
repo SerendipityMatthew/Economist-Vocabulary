@@ -410,7 +410,8 @@ public class ArticleFragment extends BaseFragment {
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.mipmap.bookmark_white)
                         .into(mBookmarkArticleToolbar);
-                InchoateDBHelper dbHelper = new InchoateDBHelper(getActivity(), null, null);
+
+                InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(getContext());
                 dbHelper.setBookmarkStatus(mArticle, mArticle.isBookmark);
                 dbHelper.close();
             }

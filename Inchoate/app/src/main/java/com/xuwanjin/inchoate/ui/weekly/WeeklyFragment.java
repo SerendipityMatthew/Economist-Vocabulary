@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -52,8 +51,6 @@ import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -239,8 +236,8 @@ public class WeeklyFragment extends BaseFragment {
             public void run() {
                 isInsertData = true;
                 final Disposable disposable;
-                InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
                 Log.d(TAG, "mInsertIssueData: run: ");
+                InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
                 disposable = helper.insertWholeData(issue);
                 mCompositeDisposable.add(disposable);
                 helper.close();
@@ -459,8 +456,8 @@ public class WeeklyFragment extends BaseFragment {
 
     private Issue getIssueDataFromDB(String issueDate) {
         Issue issue = null;
-        InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
-        List<Issue> issueList = helper.queryIssueByFormatIssueDate(issueDate);
+        InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
+        List<Issue> issueList =helper.queryIssueByFormatIssueDate(issueDate);
         if (issueList != null && issueList.size() > 0) {
             issue = issueList.get(0);
         }

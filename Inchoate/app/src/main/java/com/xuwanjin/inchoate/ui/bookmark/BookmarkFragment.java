@@ -1,9 +1,8 @@
 package com.xuwanjin.inchoate.ui.bookmark;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,6 +28,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class BookmarkFragment extends BaseFragment {
+    private static final String TAG = "BookmarkFragment";
     private RecyclerView mBookmarkRecycleView;
     private TextView mTextView;
     private Disposable mDisposable;
@@ -66,8 +66,9 @@ public class BookmarkFragment extends BaseFragment {
     @Override
     protected List<Article> fetchDataFromDBOrNetwork() {
         List<Article> articleList = new ArrayList<>();
-        InchoateDBHelper helper = new InchoateDBHelper(getContext(), null, null);
-        articleList = helper.queryBookmarkedArticle();
+        Log.d(TAG, "fetchDataFromDBOrNetwork: ");
+        InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
+        helper.queryBookmarkedArticle();
         helper.close();
         return articleList;
     }
@@ -79,17 +80,22 @@ public class BookmarkFragment extends BaseFragment {
                 sArticleList = fetchDataFromDBOrNetwork();
                 emitter.onSuccess(sArticleList);
             }
+        }).doOnError(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                Log.d(TAG, "loadBookmarkData: accept: fetch data from db or network get wrong.");
+            }
         })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<Article>>() {
-                    @Override
-                    public void accept(List<Article> articles) throws Exception {
-                        if (articles.size() > 0) {
-                            updateFragmentContent(articles);
-                        }
-                    }
-                });
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Consumer<List<Article>>() {
+            @Override
+            public void accept(List<Article> articles) throws Exception {
+                if (articles.size() > 0) {
+                    updateFragmentContent(articles);
+                }
+            }
+        });
 
     }
 

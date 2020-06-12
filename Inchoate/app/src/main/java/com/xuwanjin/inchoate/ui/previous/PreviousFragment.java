@@ -93,7 +93,8 @@ public class PreviousFragment extends BaseFragment {
                 Log.d(TAG, "loadPreviousIssue: subscribe: sIssueList = " + sIssueList.size());
                 emitter.onSuccess(sIssueList);
             }
-        }).subscribeOn(Schedulers.io())
+        })
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<Issue>>() {
                     @Override

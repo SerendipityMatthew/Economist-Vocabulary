@@ -50,9 +50,8 @@ public class BookmarkFragment extends BaseFragment {
     public void loadData() {
         if (sArticleList.size() > 0) {
             updateFragmentContent(sArticleList);
-        } else {
-            loadBookmarkData();
         }
+        loadBookmarkData();
     }
 
     @Override
@@ -89,17 +88,17 @@ public class BookmarkFragment extends BaseFragment {
                 Log.d(TAG, "loadBookmarkData: accept: fetch data from db or network get wrong.");
             }
         })
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Consumer<List<Article>>() {
-            @Override
-            public void accept(List<Article> articles) throws Exception {
-                Log.d(TAG, "loadBookmarkData: accept: articles.size() = " + articles.size());
-                if (articles.size() > 0) {
-                    updateFragmentContent(articles);
-                }
-            }
-        });
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Article>>() {
+                    @Override
+                    public void accept(List<Article> articles) throws Exception {
+                        Log.d(TAG, "loadBookmarkData: accept: articles.size() = " + articles.size());
+                        if (articles.size() > 0) {
+                            updateFragmentContent(articles);
+                        }
+                    }
+                });
 
     }
 

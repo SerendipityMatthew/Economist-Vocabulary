@@ -42,6 +42,8 @@ public class BookmarkFragment extends BaseFragment {
         gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         mBookmarkRecycleView.setLayoutManager(gridLayoutManager);
         mTextView = view.findViewById(R.id.bookmark_title);
+        mBookmarkAdapter = new BookmarkAdapter(getContext());
+        mBookmarkRecycleView.setAdapter(mBookmarkAdapter);
     }
 
     @Override
@@ -65,11 +67,11 @@ public class BookmarkFragment extends BaseFragment {
 
     @Override
     protected List<Article> fetchDataFromDBOrNetwork() {
-        List<Article> articleList = new ArrayList<>();
-        Log.d(TAG, "fetchDataFromDBOrNetwork: ");
+        List<Article> articleList;
         InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
-        helper.queryBookmarkedArticle();
-        helper.close();
+        articleList = helper.queryBookmarkedArticle();
+        Log.d(TAG, "fetchDataFromDBOrNetwork: articleList.size = " + articleList.size());
+//        helper.close();
         return articleList;
     }
 
@@ -78,6 +80,7 @@ public class BookmarkFragment extends BaseFragment {
             @Override
             public void subscribe(SingleEmitter<List<Article>> emitter) throws Exception {
                 sArticleList = fetchDataFromDBOrNetwork();
+                Log.d(TAG, "loadBookmarkData: sArticleList.size() = " + sArticleList.size());
                 emitter.onSuccess(sArticleList);
             }
         }).doOnError(new Consumer<Throwable>() {
@@ -91,6 +94,7 @@ public class BookmarkFragment extends BaseFragment {
         .subscribe(new Consumer<List<Article>>() {
             @Override
             public void accept(List<Article> articles) throws Exception {
+                Log.d(TAG, "loadBookmarkData: accept: articles.size() = " + articles.size());
                 if (articles.size() > 0) {
                     updateFragmentContent(articles);
                 }
@@ -100,8 +104,7 @@ public class BookmarkFragment extends BaseFragment {
     }
 
     private void updateFragmentContent(List<Article> articleList) {
-        mBookmarkAdapter = new BookmarkAdapter(getContext());
-        mBookmarkRecycleView.setAdapter(mBookmarkAdapter);
+        Log.d(TAG, "updateFragmentContent: articleList = " + articleList.size());
         mBookmarkRecycleView.addItemDecoration(new StickHeaderDecoration(mBookmarkRecycleView, getContext()));
         mBookmarkAdapter.updateData(articleList);
     }

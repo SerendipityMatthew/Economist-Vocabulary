@@ -152,7 +152,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     public synchronized void closeInchoateDB() {
         if (mInchoateDBCounter.decrementAndGet() == 0) {
             if (sDatabase != null) {
-                sDatabase.close();
+//                sDatabase.close();
             }
         }
     }
@@ -242,7 +242,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             issueList.add(issue);
         }
         if (cursor != null) {
-            cursor.close();
+            closeInchoateDB();
         }
         if (sDatabase != null) {
             closeInchoateDB();

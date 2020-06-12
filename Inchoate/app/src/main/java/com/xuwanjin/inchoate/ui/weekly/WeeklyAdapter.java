@@ -147,7 +147,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
 
                     InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(mContext);
                     dbHelper.setBookmarkStatus(article, article.isBookmark);
-                    dbHelper.close();
+//                    dbHelper.close();
                 }
             });
         }

@@ -130,7 +130,7 @@ public class EconomistServiceTimberStyle extends Service {
                 mCurrentPlayingArticleList.add(article);
             }
         }
-        helper.close();
+//        helper.close();
         mPlayer.setArticleAudioPlayingList();
     }
 
@@ -151,7 +151,7 @@ public class EconomistServiceTimberStyle extends Service {
         InchoateDBHelper helper = InchoateDBHelper.getInstance(getApplicationContext());
         List<Issue> issueList = helper.queryIssueByIssueDate(issue.issueDate);
         mCurrentIssue = issueList.get(0);
-        helper.close();
+//        helper.close();
     }
 
     public void playTheRestOfWholeIssue(Article article) {

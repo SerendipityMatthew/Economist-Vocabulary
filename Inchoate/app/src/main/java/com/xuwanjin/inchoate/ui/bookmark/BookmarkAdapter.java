@@ -140,7 +140,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
                         .into(holder.bookmark);
                 InchoateDBHelper helper = InchoateDBHelper.getInstance(mContext);
                 helper.setBookmarkStatus(article, article.isBookmark);
-                helper.close();
+//                helper.close();
             }
         });
     }

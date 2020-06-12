@@ -240,7 +240,7 @@ public class WeeklyFragment extends BaseFragment {
                 InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
                 disposable = helper.insertWholeData(issue);
                 mCompositeDisposable.add(disposable);
-                helper.close();
+//                helper.close();
                 isInsertData = false;
             }
         };
@@ -461,7 +461,7 @@ public class WeeklyFragment extends BaseFragment {
         if (issueList != null && issueList.size() > 0) {
             issue = issueList.get(0);
         }
-        helper.close();
+//        helper.close();
         return issue;
     }
 

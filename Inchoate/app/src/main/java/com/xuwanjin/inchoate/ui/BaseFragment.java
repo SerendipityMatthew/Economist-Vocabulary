@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
@@ -29,6 +30,7 @@ import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -104,6 +106,7 @@ public abstract class BaseFragment extends Fragment {
         try {
             client = new OkHttpClient
                     .Builder()
+                    .protocols(Collections.singletonList(Protocol.HTTP_1_1))
                     .callTimeout(CALL_TIMEOUT, TimeUnit.SECONDS)
                     .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
                     .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)

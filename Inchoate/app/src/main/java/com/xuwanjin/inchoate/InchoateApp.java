@@ -39,7 +39,7 @@ public class InchoateApp extends Application {
             public void run() {
                 InchoateDBHelper helper = InchoateDBHelper.getInstance(getApplicationContext());
                 helper.getReadableDatabase();
-                helper.close();
+//                helper.close();
             }
         };
 

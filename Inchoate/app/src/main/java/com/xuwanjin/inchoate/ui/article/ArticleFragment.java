@@ -413,7 +413,7 @@ public class ArticleFragment extends BaseFragment {
 
                 InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(getContext());
                 dbHelper.setBookmarkStatus(mArticle, mArticle.isBookmark);
-                dbHelper.close();
+//                dbHelper.close();
             }
         });
         View.OnClickListener onClickListener = new View.OnClickListener() {

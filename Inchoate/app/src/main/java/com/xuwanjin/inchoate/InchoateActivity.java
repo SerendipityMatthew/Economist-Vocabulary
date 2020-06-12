@@ -138,7 +138,7 @@ public class InchoateActivity extends AppCompatActivity implements
             Utils.navigationController(mController, R.id.navigation_settings);
         }
 
-        return false;
+        return true;
     }
 
     @Override

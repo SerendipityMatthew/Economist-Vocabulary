@@ -198,7 +198,7 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
                         ||"null".equalsIgnoreCase(vocabularyString)) {
                         return;
                     }
-                    InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(mContext);
+                    InchoateDBHelper dbHelper = new InchoateDBHelper(mContext, null, null);
                     Vocabulary vocabulary = new Vocabulary();
                     vocabulary.belongedParagraph = paragraph.paragraph.toString();
                     vocabulary.belongedArticleTitle = paragraph.articleName;

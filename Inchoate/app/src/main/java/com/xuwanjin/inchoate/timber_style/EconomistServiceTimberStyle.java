@@ -110,7 +110,7 @@ public class EconomistServiceTimberStyle extends Service {
     }
 
     public void setCurrentPlayingArticleListBySource(int sourceFlag, String issueDateStr) {
-        InchoateDBHelper helper = InchoateDBHelper.getInstance(getApplicationContext());
+        InchoateDBHelper helper = new InchoateDBHelper(getApplicationContext(), null, null);
         List<Article> articleList = new ArrayList<>();
         if (sourceFlag == WEEKLY_PLAYING_SOURCE) {
             mCurrentIssue = helper.queryIssueByIssueDate(issueDateStr).get(0);
@@ -148,7 +148,7 @@ public class EconomistServiceTimberStyle extends Service {
 
     public void setCurrentIssue(Issue issue) {
         Log.d(TAG, "setCurrentIssue: ");
-        InchoateDBHelper helper = InchoateDBHelper.getInstance(getApplicationContext());
+        InchoateDBHelper helper = new InchoateDBHelper(getBaseContext(), null, null);
         List<Issue> issueList = helper.queryIssueByIssueDate(issue.issueDate);
         mCurrentIssue = issueList.get(0);
         helper.close();

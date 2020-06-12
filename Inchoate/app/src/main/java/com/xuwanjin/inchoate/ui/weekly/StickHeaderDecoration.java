@@ -13,10 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
-    public StickHeaderInterface headerInterface;
-    private RecyclerView recyclerView;
+    public StickHeaderInterface mHeaderInterface;
+    private RecyclerView mRecyclerView;
     private WeeklyAdapter mAdapter;
-    private RecyclerView.LayoutManager manager;
+    private RecyclerView.LayoutManager mManager;
     private Paint mItemHeaderPaint;
     private Paint mTextPaint;
     private int mItemHeaderHeight;
@@ -29,11 +29,11 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
         boolean isItemHeader(int position);
     }
 
-    public StickHeaderDecoration(RecyclerView recyclerView, Context context) {
-        this.mAdapter = (WeeklyAdapter) recyclerView.getAdapter();
-        this.headerInterface = (StickHeaderInterface) mAdapter;
-        this.recyclerView = recyclerView;
-        this.manager = recyclerView.getLayoutManager();
+    public StickHeaderDecoration(RecyclerView mRecyclerView, Context context) {
+        this.mAdapter = (WeeklyAdapter) mRecyclerView.getAdapter();
+        this.mHeaderInterface = (StickHeaderInterface) mAdapter;
+        this.mRecyclerView = mRecyclerView;
+        this.mManager = mRecyclerView.getLayoutManager();
         this.mContext = context;
 
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -147,7 +147,7 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
 
     private int getPinnedHeaderViewPosition(int adapterFirstVisible, RecyclerView.Adapter adapter) {
         for (int index = adapterFirstVisible; index >= 0; index--) {
-            if (headerInterface.isItemHeader(index)) {
+            if (mHeaderInterface.isItemHeader(index)) {
                 return index;
             }
         }

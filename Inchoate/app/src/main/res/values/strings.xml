@@ -41,4 +41,14 @@
     <string name="wifi">Wi-Fi only</string>
     <string name="wifi_and_mobile_date">Wi-Fi and Mobile data</string>
 
+    <string name="bookmark_group_policy">Bookmark Sorted Policy</string>
+    <string name="sorted_by_section_key">sorted_by_section</string>
+    <string name="sorted_by_date_key">sorted_by_date</string>
+    <string name="sorted_by_bookmark_date_key">sorted_by_bookmark_date</string>
+    <string name="sorted_by_topic_key">sorted_by_bookmark_topic</string>
+
+    <string name="sorted_by_section">Sorted By Section</string>
+    <string name="sorted_by_date">Sorted by Published Date</string>
+    <string name="sorted_by_bookmark_date">Sorted by Bookmark Date</string>
+    <string name="sorted_by_topic">Sorted by Topic</string>
 </resources>

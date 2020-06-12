@@ -43,6 +43,15 @@
             app:allowDividerAbove="true"
             app:allowDividerBelow="true"
             app:iconSpaceReserved="false" />
+        <ListPreference
+            android:defaultValue="@string/sorted_by_section_key"
+            android:entries="@array/bookmark_group_policy_description"
+            android:entryValues="@array/bookmark_group_policy_values"
+            android:key="bookmark_group_policy"
+            android:title="@string/bookmark_group_policy"
+            app:allowDividerAbove="true"
+            app:allowDividerBelow="true"
+            app:iconSpaceReserved="false" />
         <Preference
             android:defaultValue="false"
             android:key="notifications_key"

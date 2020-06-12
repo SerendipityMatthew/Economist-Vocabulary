@@ -13,6 +13,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String KEY_TEXT_SIZE_CHANGE = "text_size_change_key";
     public static final String KEY_AUTO_DOWNLOAD_DOWNLOAD = "auto_download_download_key";
     public static final String KEY_BACKGROUND_DOWNLOADS = "background_downloads_key";
+    public static final String KEY_BOOKMARK_GROUP_POLICY = "bookmark_group_policy";
     public static final String KEY_NOTIFICATIONS = "notifications_key";
     public static final String KEY_CONTACT_US = "contact_us_key";
     public static final String KEY_ABOUT = "about_key";
@@ -21,6 +22,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     Preference mTextSizeChangePreference;
     Preference mAutoDownloadPreference;
     Preference mBackgroundDownloadsPreference;
+    Preference mBookmarkGroupPolicyPreference;
     Preference mNotificationPreference;
     Preference mContactUsPreference;
     Preference mAboutPreference;
@@ -32,6 +34,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         mTextSizeChangePreference = findPreference(KEY_TEXT_SIZE_CHANGE);
         mAutoDownloadPreference = findPreference(KEY_AUTO_DOWNLOAD_DOWNLOAD);
         mBackgroundDownloadsPreference = findPreference(KEY_BACKGROUND_DOWNLOADS);
+        mBookmarkGroupPolicyPreference = findPreference(KEY_BOOKMARK_GROUP_POLICY);
         mNotificationPreference = findPreference(KEY_NOTIFICATIONS);
         mContactUsPreference = findPreference(KEY_CONTACT_US);
         mAboutPreference = findPreference(KEY_ABOUT);

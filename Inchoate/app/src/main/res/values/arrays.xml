@@ -8,4 +8,17 @@
         <item>@string/wifi</item>
         <item>@string/wifi_and_mobile_date</item>
     </string-array>
+
+    <string-array name="bookmark_group_policy_description">
+        <item>@string/sorted_by_section</item>
+        <item>@string/sorted_by_date</item>
+        <item>@string/sorted_by_bookmark_date</item>
+        <item>@string/sorted_by_topic</item>
+    </string-array>
+    <string-array name="bookmark_group_policy_values">
+        <item>@string/sorted_by_section_key</item>
+        <item>@string/sorted_by_date_key</item>
+        <item>@string/sorted_by_bookmark_date_key</item>
+        <item>@string/sorted_by_topic_key</item>
+    </string-array>
 </resources>

@@ -47,7 +47,7 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
                 .into(holder.articleImage);
         holder.sectionText.setText(article.section);
         holder.title.setText(article.title);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: article = " + article);
@@ -57,7 +57,10 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
                             InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
                 }
             }
-        });
+        };
+        holder.articleImage.setOnClickListener(onClickListener);
+        holder.sectionText.setOnClickListener(onClickListener);
+        holder.title.setOnClickListener(onClickListener);
     }
 
     @Override

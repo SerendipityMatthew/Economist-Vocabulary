@@ -20,6 +20,7 @@ import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.model.Issue;
 
 
 import java.util.ArrayList;
@@ -137,9 +138,9 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.mipmap.bookmark_white)
                         .into(holder.bookmark);
-                InchoateDBHelper dbHelper = new InchoateDBHelper(mContext, null, null);
-                dbHelper.setBookmarkStatus(article, article.isBookmark);
-                dbHelper.close();
+                InchoateDBHelper helper = InchoateDBHelper.getInstance(mContext);
+                helper.setBookmarkStatus(article, article.isBookmark);
+                helper.close();
             }
         });
     }

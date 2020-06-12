@@ -97,7 +97,7 @@ public class DownloadService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String formatIssueDate = intent.getStringExtra(Constants.PENDING_DOWNLOAD_ISSUE_DATE);
-        InchoateDBHelper helper = new InchoateDBHelper(getApplicationContext(), null, null);
+        InchoateDBHelper helper = InchoateDBHelper.getInstance(getApplicationContext());
         mIssue = helper.queryIssueByFormatIssueDate(formatIssueDate).get(0);
         helper.close();
         Article article = intent.getParcelableExtra(Constants.DOWNLOAD_ARTICLE);
@@ -196,7 +196,7 @@ public class DownloadService extends Service {
             Article article = (Article) task.getTag(12);
             article.localeAudioUrl = localeAudioUrl;
             Log.d(TAG, "taskEnd: localeAudioUrl = " + localeAudioUrl);
-            InchoateDBHelper helper = new InchoateDBHelper(getBaseContext(), null, null);
+            InchoateDBHelper helper = InchoateDBHelper.getInstance(getApplication());
             helper.updateArticleAudioLocaleUrl(article, article.date);
             helper.close();
             mLocalAudioUrlMap.put(localeAudioUrl, true);

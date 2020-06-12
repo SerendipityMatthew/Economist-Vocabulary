@@ -37,7 +37,7 @@ public class InchoateApp extends Application {
         Runnable openDatabaseRunnable = new Runnable() {
             @Override
             public void run() {
-                InchoateDBHelper helper = new InchoateDBHelper(getApplicationContext(), null, null);
+                InchoateDBHelper helper = InchoateDBHelper.getInstance(getApplicationContext());
                 helper.getReadableDatabase();
                 helper.close();
             }

@@ -141,7 +141,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             + TABLE_NAME_ISSUE + " (" + " ON ";
 
     public synchronized SQLiteDatabase openInchoateDB() {
-        if (sDatabase == null || !sDatabase.isOpen() || !sDatabase.isReadOnly()) {
+        if (sDatabase == null || !sDatabase.isOpen() || sDatabase.isReadOnly()) {
             if (mInchoateDBCounter.incrementAndGet() == 1) {
                 sDatabase = getWritableDatabase();
             }
@@ -157,12 +157,25 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public InchoateDBHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory) {
+    private static volatile InchoateDBHelper sIntance;
+
+    public static InchoateDBHelper getInstance(Context context) {
+        if (sIntance == null) {
+            synchronized (InchoateDBHelper.class) {
+                if (sIntance == null) {
+                    sIntance = new InchoateDBHelper(context, null, null);
+                }
+            }
+        }
+        return sIntance;
+    }
+
+    private InchoateDBHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory) {
         super(context, DATABASE_NAME, factory, 100);
         this.mContext = context;
     }
 
-    public InchoateDBHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version, @Nullable DatabaseErrorHandler errorHandler) {
+    private InchoateDBHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version, @Nullable DatabaseErrorHandler errorHandler) {
         super(context, DATABASE_NAME, factory, version, errorHandler);
         this.mContext = context;
     }
@@ -176,7 +189,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     }
 
     public List<Article> queryBookmarkedArticle() {
-         sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         // Select * from article where is_bookmark='true';
         String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE " + KEY_IS_BOOKMARK + " =\'0\'";
         Cursor cursor = sDatabase.rawQuery(query, null);
@@ -197,7 +210,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
 
     public List<Issue> queryIssueByFormatIssueDate(String formatIssueDate) {
         List<Issue> issueList = new ArrayList<>();
-         sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         // Select * from article where issue_date='';
         String query = "SELECT * FROM " + TABLE_NAME_ISSUE + " WHERE " + KEY_ISSUE_FORMAT_DATE + " =\'" + formatIssueDate + "\'";
         Log.d(TAG, "queryIssueByFormatIssueDate: query = " + query);
@@ -297,7 +310,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     private List<Paragraph> queryParagraphByContentAndArticleID(String content, long articleRowID) {
         // 如果 Paragraph 的表里查不出一个含有 articleRowID 的数据,
         // 表示这个 article 的 paragraph 没有被存入过
-       sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         if (content.contains("'")) {
             content = content.replace("'", "''");
         }
@@ -321,7 +334,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     }
 
     private long insertIssueData(Issue issue) {
-       sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_COVER_IMAGE_URL, issue.coverImageUrl);
         contentValues.put(KEY_IS_DOWNLOADED, issue.isDownloaded);
@@ -345,7 +358,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     }
 
     public long insertArticleData(Article article, long issueRowId, String issueDate) {
-       sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_ISSUE_DATE, issueDate);
         contentValues.put(KEY_SECTION, article.section);
@@ -369,7 +382,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     }
 
     public List<Vocabulary> getVocabularyList(String vocabularyContent) {
-       sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         // Select * from vocabulary where vocabulary_content='';
         String queryByArticleID = "SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE "
                 + KEY_VOCABULARY_CONTENT + " =\'" + vocabularyContent + "\'";
@@ -386,7 +399,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     }
 
     public boolean isVocabularyExistedInDB(String vocabularyContent, int limit) {
-       sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         // Select * from vocabulary where vocabulary_content='';
         String queryByArticleID = "SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE "
                 + KEY_VOCABULARY_CONTENT + " =\'" + vocabularyContent + "\'"
@@ -410,7 +423,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     }
 
     public long insertVocabulary(Vocabulary vocabulary) {
-       sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_VOCABULARY_CONTENT, vocabulary.vocabularyContent);
         contentValues.put(KEY_COLLECTED_DATE, vocabulary.collectedDate);
@@ -433,7 +446,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             Log.d(TAG, "updateArticleAudioLocaleUrl: ");
             return RECORD_NOT_EXISTED_IN_DB;
         }
-       sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_ISSUE_DATE, issueDate);
         contentValues.put(KEY_SECTION, article.section);
@@ -458,7 +471,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     }
 
     public long insertParagraphData(Paragraph paragraph, long articleRowID) {
-       sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_IS_EDITORS_NOTE, paragraph.isEditorsNote);
         contentValues.put(KEY_IS_RELATED_SUGGESTION, paragraph.isRelatedSuggestion);
@@ -541,7 +554,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
 
 
     private long articleRowIDInDB(Article article, String issueDate) {
-       sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         // Select * from article where issue_date='' and section='' and title = '' ;
 
         String articleTitle = article.title;
@@ -696,7 +709,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     }
 
     private List<Article> getArticleListByIssueDate(String issueDate) {
-       sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         // Select * from article where issue_date='' ;
         String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE "
                 + KEY_ISSUE_DATE + " =\'" + issueDate + "\'";
@@ -734,7 +747,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     private List<Paragraph> queryParagraphListByArticleID(int articleRowID) {
         // 如果 Paragraph 的表里查不出一个含有 articleRowID 的数据,
         // 表示这个 article 的 paragraph 没有被存入过
-       sDatabase = openInchoateDB();
+        sDatabase = openInchoateDB();
         // Select * from paragraph where belonged_article_id='' or paragraph_content='';
         String queryByArticleID = "SELECT * FROM " + TABLE_NAME_PARAGRAPH + " WHERE "
                 + KEY_BELONGED_ARTICLE_ID + " =\'" + articleRowID + "\'";

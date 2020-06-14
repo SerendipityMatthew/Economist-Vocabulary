@@ -51,7 +51,7 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: article = " + article);
-                if (article.section != null && !"null".equalsIgnoreCase(article.section)){
+                if (article.section != null && !"null".equalsIgnoreCase(article.section)) {
                     InchoateApp.setDisplayArticleCache(article);
                     Utils.navigationController(
                             InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
@@ -63,11 +63,36 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsAdapter.View
         holder.title.setOnClickListener(onClickListener);
     }
 
+    public List<Article> getTodayNewsArticleList() {
+        return mTodayNewsArticleList;
+    }
+
+    public String getGroupName(int position) {
+        return mTodayNewsArticleList.get(position).headline;
+    }
+
+    public boolean isItemHeader(int position) {
+        if (position == 0) {
+            return true;
+        }
+        // 因为我们有一个 HeaderView, 这个 Position 是
+        // RecyclerView 里的是 List.size() +1 项, 为了数据对应. 这里的需要  position -2
+        String lastGroupName = mTodayNewsArticleList.get(position - 1).headline;
+        String currentGroupName = mTodayNewsArticleList.get(position).headline;
+        Log.d(TAG, "isItemHeader: lastGroupName = " + lastGroupName + ", currentGroupName " + currentGroupName);
+        if (lastGroupName.equals(currentGroupName)) {
+            return false;
+        }
+        return true;
+    }
+
+
     @Override
     public int getItemCount() {
         return mTodayNewsArticleList == null ? 0 : mTodayNewsArticleList.size();
     }
-    public void updateData(List<Article> articleList){
+
+    public void updateData(List<Article> articleList) {
         mTodayNewsArticleList.clear();
         mTodayNewsArticleList.addAll(articleList);
         notifyDataSetChanged();

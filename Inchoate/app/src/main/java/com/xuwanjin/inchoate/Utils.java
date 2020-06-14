@@ -164,12 +164,14 @@ public class Utils {
     public static List<Article> getTodayArticleList(TodayJson todayJson) {
         List<Article> articleList = new ArrayList<>();
         List<TodayFirstParts> todayFirstPartsList = todayJson.data.canonical.hasPart.parts;
+
         for (TodayFirstParts firstParts : todayFirstPartsList) {
             List<TodaySecondParts> todaySecondPartsList = firstParts.hasPart.parts;
             for (TodaySecondParts secondParts : todaySecondPartsList) {
                 Article article = new Article();
                 article.articleRubric = secondParts.rubric;
                 article.title = secondParts.title;
+                article.headline = firstParts.headline;
                 article.flyTitle = secondParts.flyTitle;
                 List<Internal> internalList = secondParts.articleSection.internal;
                 if (internalList != null) {

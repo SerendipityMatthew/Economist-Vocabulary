@@ -304,7 +304,7 @@ public class WeeklyFragment extends BaseFragment {
 
         } else {
 //            issue = getNewestIssueDataFromDB();
-            Log.d(TAG, "loadWholeIssue: issue = " + issue);
+//            Log.d(TAG, "loadWholeIssue: issue = " + issue);
 //            if (issue == null || issue.containArticle == null || issue.containArticle.size() == 0){
             shouldLoadFromNetwork = true;
 //            }

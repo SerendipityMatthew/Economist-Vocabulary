@@ -12,6 +12,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -91,6 +92,25 @@ public class InchoateActivity extends AppCompatActivity implements
 
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if (newState == SlidingUpPanelLayout.PanelState.EXPANDED){
+                    panel.setFocusableInTouchMode(true);
+                    panel.requestFocus();
+                    panel.setOnKeyListener(new View.OnKeyListener() {
+                        @Override
+                        public boolean onKey(View v, int keyCode, KeyEvent event) {
+                            if (event.getAction() == KeyEvent.ACTION_UP
+                                    && keyCode == KeyEvent.KEYCODE_BACK) {
+                                SlidingUpControllerEvent panelState = new SlidingUpControllerEvent();
+                                panelState.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED;
+                                EventBus.getDefault().post(panelState);
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
+                }else {
+                    panel.setOnKeyListener(null);
+                }
 
             }
         });

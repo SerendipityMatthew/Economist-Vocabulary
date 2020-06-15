@@ -1,11 +1,8 @@
 package com.xuwanjin.inchoate.ui.article;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
-import android.text.Spannable;
 import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.ActionMode;
@@ -24,8 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.xuwanjin.inchoate.R;
-import com.xuwanjin.inchoate.customtext.OnWordClickListener;
-import com.xuwanjin.inchoate.customtext.SelectableTextView;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Paragraph;
@@ -36,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executors;
 
 public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAdapter.ViewHolder> {
     public static final String TAG = "ArticleContentAdapter";
@@ -179,39 +175,56 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
                     int itemId = item.getItemId();
 
                     if (itemId == R.id.text_menu_collect) {
-                        int min = 0;
-                        int max = paragraphTextView.getText().length();
+                        int wordStart = 0;
+                        int wordEnd = paragraphTextView.getText().length();
                         if (paragraphTextView.isFocused()) {
                             final int selStart = paragraphTextView.getSelectionStart();
                             final int selEnd = paragraphTextView.getSelectionEnd();
 
-                            min = Math.max(0, Math.min(selStart, selEnd));
-                            max = Math.max(0, Math.max(selStart, selEnd));
+                            wordStart = Math.max(0, Math.min(selStart, selEnd));
+                            wordEnd = Math.max(0, Math.max(selStart, selEnd));
                         }
+                        int wordStartTemp = wordStart;
+                        int wordEndTemp = wordEnd;
                         // Perform your definition lookup with the selected text
-                        final CharSequence selectedText = paragraphTextView.getText().subSequence(min, max);
+                        final CharSequence selectedText = paragraphTextView.getText().subSequence(wordStart, wordEnd);
                         if (selectedText.toString().contains(" ")) {
                             Snackbar.make(paragraphTextView, "please select a word", Snackbar.LENGTH_SHORT).show();
                             return false;
                         } else {
-                            collectTheVocabulary(mParagraph, selectedText.toString());
+                            Runnable saveVocabulary = new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    collectTheVocabulary(mParagraph, selectedText.toString(), wordStartTemp, wordEndTemp);
+                                }
+                            };
+                            Executors.newSingleThreadExecutor().submit(saveVocabulary);
                             Snackbar.make(paragraphTextView, selectedText, Snackbar.LENGTH_SHORT).show();
                             Log.d(TAG, "onActionItemClicked: selectedText = " + selectedText);
                         }
                     }
+
+                    if (itemId == R.id.text_menu_corral){
+                    }
                     // Finish and close the ActionMode
                     mode.finish();
-                    return false;
+                    return true;
                 }
 
-                private void collectTheVocabulary(Paragraph paragraph, String vocabularyString) {
-                    if (paragraph == null || paragraph.paragraph.length() == 0
+                private void collectTheVocabulary(Paragraph paragraph,
+                                                  String vocabularyString, int wordStart, int wordEnd) {
+                    if (paragraph == null
+                            || paragraph.paragraph.length() == 0
                             || "null".equalsIgnoreCase(vocabularyString)) {
                         return;
                     }
                     InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(mContext);
                     Vocabulary vocabulary = new Vocabulary();
-                    vocabulary.belongedParagraph = paragraph.paragraph.toString();
+                    String paragraphText = paragraph.paragraph.toString();
+                    vocabulary.belongedParagraph = paragraphText;
+                    String belongedSentence = getSentence(paragraphText, vocabularyString, wordStart, wordEnd);
+                    vocabulary.belongedSentence = belongedSentence;
                     vocabulary.belongedArticleTitle = paragraph.articleName;
                     vocabulary.belongedIssueDate = paragraph.issueDate;
                     vocabulary.vocabularyContent = vocabularyString;
@@ -223,6 +236,7 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
                     String dateString = simpleDateFormat.format(date);
                     vocabulary.collectedDate = dateString.substring(0, 11);
                     vocabulary.collectedTime = dateString.substring(11, dateString.length() - 1);
+
                     Log.d(TAG, "collectTheVocabulary: vocabularyString = " + vocabularyString);
                     dbHelper.insertVocabulary(vocabulary);
                 }
@@ -230,6 +244,29 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
                 @Override
                 public void onDestroyActionMode(ActionMode mode) {
                     mode.getMenu().close();
+                }
+
+                public String getSentence(String text, String vocabulary, int start, int end) {
+                    Locale locale = Locale.US;
+                    BreakIterator breakIterator = BreakIterator.getSentenceInstance(locale);
+                    String belongedSentence = "";
+                    breakIterator.setText(text);
+                    int boundaryIndex = breakIterator.first();
+                    int lastBoundaryIndex = boundaryIndex;
+                    while (boundaryIndex != BreakIterator.DONE) {
+                        if (boundaryIndex > 0) {
+                            lastBoundaryIndex = boundaryIndex;
+                        }
+                        boundaryIndex = breakIterator.next();
+                        if (boundaryIndex < 0) {
+                            break;
+                        }
+                        if (lastBoundaryIndex < start && boundaryIndex > start) {
+                            belongedSentence = text.substring(lastBoundaryIndex, boundaryIndex).replace("\n", "").trim();
+                        }
+                    }
+
+                    return belongedSentence;
                 }
             });
         }

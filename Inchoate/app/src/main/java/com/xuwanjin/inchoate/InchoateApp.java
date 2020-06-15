@@ -1,6 +1,7 @@
 package com.xuwanjin.inchoate;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.navigation.NavController;
 
@@ -31,7 +32,6 @@ public class InchoateApp extends Application {
     public static int SCROLL_TO_POSITION = -1;
 
     @Override
-
     public void onCreate() {
         super.onCreate();
         Runnable openDatabaseRunnable = new Runnable() {
@@ -81,6 +81,8 @@ public class InchoateApp extends Application {
 //                .setClassInstanceLimit(InchoateActivity.class, 1)
 //                .build());
     }
+
+
 
     public static void setNewestIssueCache(Issue issue) {
         sCacheNewestIssue.add(0,issue);

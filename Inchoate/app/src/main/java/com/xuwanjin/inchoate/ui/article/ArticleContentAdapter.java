@@ -3,6 +3,10 @@ package com.xuwanjin.inchoate.ui.article;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.Spannable;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -27,9 +31,11 @@ import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Paragraph;
 import com.xuwanjin.inchoate.model.Vocabulary;
 
+import java.text.BreakIterator;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAdapter.ViewHolder> {
     public static final String TAG = "ArticleContentAdapter";
@@ -87,7 +93,7 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (position >= 1 && position < getItemCount() - 1) {
             Paragraph paragraph = mParagraphList.get(position - 1);
-            holder.paragraphTextView.setText(paragraph.paragraph);
+            holder.paragraphTextView.setText(paragraph.paragraph, TextView.BufferType.SPANNABLE);
             holder.setCurrentParagraph(paragraph);
 
         }
@@ -144,12 +150,8 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
                     || itemView == mFooterView) {
                 return;
             }
-            final String[] selectedVocabulary = new String[1];
             paragraphTextView = itemView.findViewById(R.id.paragraph);
             paragraphTextView.setTextIsSelectable(true);
-            paragraphTextView.setClickable(false);
-            paragraphTextView.setLongClickable(true);
-            paragraphTextView.setFocusable(true);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.milote_textita);
             paragraphTextView.setFocusableInTouchMode(true);
             paragraphTextView.setTypeface(typeface);
@@ -175,21 +177,36 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
                 @Override
                 public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                     int itemId = item.getItemId();
+
                     if (itemId == R.id.text_menu_collect) {
-                        Snackbar
-                                .make(mView, selectedVocabulary[0], Snackbar.LENGTH_LONG)
-                                .setTextColor(Color.RED)
-                                .show();
-                        collectTheVocabulary(mParagraph, selectedVocabulary[0]);
-                        mode.finish();
-                        mMenu.close();
+                        int min = 0;
+                        int max = paragraphTextView.getText().length();
+                        if (paragraphTextView.isFocused()) {
+                            final int selStart = paragraphTextView.getSelectionStart();
+                            final int selEnd = paragraphTextView.getSelectionEnd();
+
+                            min = Math.max(0, Math.min(selStart, selEnd));
+                            max = Math.max(0, Math.max(selStart, selEnd));
+                        }
+                        // Perform your definition lookup with the selected text
+                        final CharSequence selectedText = paragraphTextView.getText().subSequence(min, max);
+                        if (selectedText.toString().contains(" ")) {
+                            Snackbar.make(paragraphTextView, "please select a word", Snackbar.LENGTH_SHORT).show();
+                            return false;
+                        } else {
+                            collectTheVocabulary(mParagraph, selectedText.toString());
+                            Snackbar.make(paragraphTextView, selectedText, Snackbar.LENGTH_SHORT).show();
+                            Log.d(TAG, "onActionItemClicked: selectedText = " + selectedText);
+                        }
                     }
+                    // Finish and close the ActionMode
+                    mode.finish();
                     return false;
                 }
 
                 private void collectTheVocabulary(Paragraph paragraph, String vocabularyString) {
                     if (paragraph == null || paragraph.paragraph.length() == 0
-                        ||"null".equalsIgnoreCase(vocabularyString)) {
+                            || "null".equalsIgnoreCase(vocabularyString)) {
                         return;
                     }
                     InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(mContext);
@@ -219,6 +236,28 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
 
         public void setCurrentParagraph(Paragraph paragraph) {
             this.mParagraph = paragraph;
+        }
+
+        private ClickableSpan getClickableSpan(final String word) {
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                final String mWord;
+
+                {
+                    mWord = word;
+                }
+
+                @Override
+                public void onClick(View widget) {
+                    Log.d("tapped on:", mWord);
+                    Toast.makeText(widget.getContext(), mWord, Toast.LENGTH_SHORT)
+                            .show();
+                }
+
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                }
+            };
+            return clickableSpan;
         }
     }
 }

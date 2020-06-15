@@ -73,6 +73,14 @@ public class InchoateActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
         initView();
+
+    }
+
+    private void initView() {
+        mBottomNavigationView = findViewById(R.id.bottom_navigation);
+        mSlidingUpPanelLayout = findViewById(R.id.slide_layout);
+        mNowPlayingControl = findViewById(R.id.now_playing_control);
+
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);
         mController = Navigation.findNavController(this, R.id.nav_host_fragment);
         InchoateApp.NAVIGATION_CONTROLLER = mController;
@@ -114,12 +122,6 @@ public class InchoateActivity extends AppCompatActivity implements
         });
     }
 
-    public void initView() {
-        mBottomNavigationView = findViewById(R.id.bottom_navigation);
-        mSlidingUpPanelLayout = findViewById(R.id.slide_layout);
-        mNowPlayingControl = findViewById(R.id.now_playing_control);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -135,7 +137,7 @@ public class InchoateActivity extends AppCompatActivity implements
         inflateAudioPlaying(event.panelState);
     }
 
-    public void inflateAudioPlaying(PanelState panelState) {
+    private void inflateAudioPlaying(PanelState panelState) {
         mFragmentManager
                 .beginTransaction()
                 .replace(R.id.now_playing_control, mAudioPlayerFragment)

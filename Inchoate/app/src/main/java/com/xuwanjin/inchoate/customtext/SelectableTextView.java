@@ -66,6 +66,7 @@ public class SelectableTextView extends AppCompatTextView {
     @Override
     public void setText(CharSequence text, BufferType type) {
         super.setText(text, type);
+        setTextIsSelectable(false);
         mBufferType = type;
         mText = text;
         mSpannableString = new SpannableString(mText);

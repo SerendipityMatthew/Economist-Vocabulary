@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -134,7 +135,7 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public SelectableTextView paragraphTextView;
+        public TextView paragraphTextView;
         public Paragraph mParagraph;
 
         public ViewHolder(@NonNull final View itemView) {
@@ -146,19 +147,12 @@ public class ArticleContentAdapter extends RecyclerView.Adapter<ArticleContentAd
             final String[] selectedVocabulary = new String[1];
             paragraphTextView = itemView.findViewById(R.id.paragraph);
             paragraphTextView.setTextIsSelectable(true);
+            paragraphTextView.setClickable(false);
+            paragraphTextView.setLongClickable(true);
             paragraphTextView.setFocusable(true);
-            paragraphTextView.setSelectTextBackColorRes(R.color.colorAccent);
-            paragraphTextView.setSelectTextFrontColorRes(R.color.colorPrimary);
             Typeface typeface = ResourcesCompat.getFont(mContext, R.font.milote_textita);
             paragraphTextView.setFocusableInTouchMode(true);
             paragraphTextView.setTypeface(typeface);
-            paragraphTextView.setOnWordClickListener(new OnWordClickListener() {
-                @Override
-                protected void onNoDoubleClick(String word) {
-                    selectedVocabulary[0] = word;
-                    Toast.makeText(mContext, selectedVocabulary[0].toString(), Toast.LENGTH_LONG).show();
-                }
-            });
             paragraphTextView.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
                 private Menu mMenu;
 

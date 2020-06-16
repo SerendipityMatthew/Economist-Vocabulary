@@ -97,8 +97,8 @@ public class ArticleItemDecoration extends RecyclerView.ItemDecoration {
             }
             View childView = parent.findViewHolderForAdapterPosition(position).itemView;
             int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
-            String paragraph = adapter.getParagraphList().get(position - 1).paragraph.toString();
-            int paragraphWordCount = getArticleWordCount(adapter.getParagraphList());
+            String paragraph = adapter.getDataList().get(position - 1).paragraph.toString();
+            int paragraphWordCount = getArticleWordCount(adapter.getDataList());
 
             // 如果把下面的注释掉, 会出现即使下一个分类小组没有滑动到顶部, 顶部的 stick header 会消失
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);

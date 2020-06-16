@@ -42,8 +42,22 @@ public class BookmarkFragment extends BaseFragment {
         gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         mBookmarkRecycleView.setLayoutManager(gridLayoutManager);
         mTextView = view.findViewById(R.id.bookmark_title);
-        mBookmarkAdapter = new BookmarkAdapter(getContext());
+        mBookmarkAdapter = new BookmarkAdapter(getContext(),initFakeData());
         mBookmarkRecycleView.setAdapter(mBookmarkAdapter);
+    }
+    @Override
+    protected List<Article> initFakeData() {
+        List<Article> articleList = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            Article article = new Article();
+            article.flyTitle = "";
+            article.title = "";
+            article.headline = "Matthew";
+            article.articleUrl = "";
+            article.imageUrl = "";
+            articleList.add(article);
+        }
+        return articleList;
     }
 
     @Override
@@ -59,10 +73,6 @@ public class BookmarkFragment extends BaseFragment {
         return R.layout.fragment_bookmark;
     }
 
-    @Override
-    protected <T> T initFakeData() {
-        return null;
-    }
 
     @Override
     protected List<Article> fetchDataFromDBOrNetwork() {

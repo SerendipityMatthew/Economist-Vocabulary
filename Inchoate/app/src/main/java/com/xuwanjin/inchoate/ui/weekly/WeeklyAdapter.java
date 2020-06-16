@@ -1,15 +1,9 @@
 package com.xuwanjin.inchoate.ui.weekly;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -18,22 +12,13 @@ import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.ui.BaseAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyViewHolder>
+public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article>
         implements StickHeaderDecoration.StickHeaderInterface {
-    private Context mContext;
-    private List<Article> mArticleList = new ArrayList<>();
-    private View mHeaderView;
-    private View mFooterView;
-    public static final int TYPE_HEADER = 0;
-    public static final int TYPE_FOOTER = 1;
-    public static final int TYPE_NORMAL = 2;
 
     public WeeklyAdapter(Context context) {
-        mContext = context;
+        super(context, null);
     }
 
     public boolean isFirstItem(int position) {
@@ -45,57 +30,22 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyViewHolder>
         return false;
     }
 
-    public boolean isHasHeader() {
-        return mHeaderView != null;
-    }
-
-    public void setHeaderView(View headerView) {
-        this.mHeaderView = headerView;
-    }
-
-    public View getHeaderView() {
-        return mHeaderView;
-    }
-
-    public void setFooterView(View footerView) {
-        this.mFooterView = footerView;
-    }
-
-    @NonNull
     @Override
-    public WeeklyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view;
-        switch (viewType) {
-            case TYPE_HEADER:
-                view = mHeaderView;
-                break;
-            case TYPE_FOOTER:
-                view = mFooterView;
-                break;
-            case TYPE_NORMAL:
-            default:
-                view = LayoutInflater.from(mContext).inflate(R.layout.weekly_content_list, parent, false);
-                break;
-        }
-        if (view== mHeaderView || view==mFooterView){
-            return new WeeklyViewHolder(view, true);
-        }
-
-        return new WeeklyViewHolder(view, false);
-    }
-
-    public void updateData(List<Article> articleList) {
-        mArticleList.clear();
-        mArticleList.addAll(articleList);
-        notifyDataSetChanged();
+    protected int getLayoutItemResId() {
+        return R.layout.weekly_content_list;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WeeklyViewHolder holder, final int position) {
+    protected WeeklyViewHolder getViewHolder(View view, boolean isHeaderOrFooter) {
+        return new WeeklyViewHolder(view, isHeaderOrFooter);
+    }
+
+    @Override
+    public void onBindViewHolderImpl(@NonNull WeeklyViewHolder holder, final int position) {
         int viewType = getItemViewType(position);
         if (viewType == TYPE_NORMAL) {
             //  mArticleList.get(position) 会出现第一个 item 不显示的状况
-            Article article = mArticleList.get(position - 1);
+            Article article = mDataList.get(position - 1);
             Glide.with(mContext)
                     .load(article.mainArticleImage)
                     .error(R.mipmap.the_economist)
@@ -150,43 +100,8 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyViewHolder>
         }
     }
 
-    public int getItemViewType(int position) {
-        if (mHeaderView == null && mFooterView == null) {
-            return TYPE_NORMAL;
-        }
-        // position 为零, 同时 mHeaderView 不为空, 那么第一个应该是 TYPE_HEADER
-        if (position == 0) {
-            if (mHeaderView != null) {
-                return TYPE_HEADER;
-            }
-        }
-        // 最后一个
-        if (position == getItemCount() - 1) {
-            if (mFooterView != null) {
-                //最后一个,应该加载Footer
-                return TYPE_FOOTER;
-            } else {
-                return TYPE_NORMAL;
-            }
-        }
-        return TYPE_NORMAL;
-    }
-
-
-    @Override
-    public int getItemCount() {
-        if ((mHeaderView != null && mFooterView == null) ||
-                mHeaderView == null && mFooterView != null) {
-            return mArticleList == null ? 0 : mArticleList.size() + 1;
-        }
-        if (mHeaderView != null && mFooterView != null) {
-            return mArticleList == null ? 0 : mArticleList.size() + 2;
-        }
-        return mArticleList == null ? 0 : mArticleList.size();
-    }
-
     public String getGroupName(int position) {
-        return mArticleList.get(position).section;
+        return mDataList.get(position).section;
     }
 
     // 判断当前的 position 对应的 item1 是否是相应的组的第一项
@@ -208,8 +123,8 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyViewHolder>
 
         // 因为我们有一个 HeaderView, 这个 Position 是
         // RecyclerView 里的是 List.size() +1 项, 为了数据对应. 这里的需要  position -2
-        String lastGroupName = mArticleList.get(position - 2).section;
-        String currentGroupName = mArticleList.get(position - 1).section;
+        String lastGroupName = mDataList.get(position - 2).section;
+        String currentGroupName = mDataList.get(position - 1).section;
         if (lastGroupName.equals(currentGroupName)) {
             return false;
         }

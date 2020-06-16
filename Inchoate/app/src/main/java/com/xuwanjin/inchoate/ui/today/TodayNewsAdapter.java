@@ -17,29 +17,31 @@ import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.ui.BaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsViewHolder> {
+public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> {
     public static final String TAG = "TodayNewsAdapter";
-    private List<Article> mTodayNewsArticleList = new ArrayList<>();
-    private Context mContext;
 
     public TodayNewsAdapter(Context context) {
-        mContext = context;
+        super(context, null);
     }
 
-    @NonNull
     @Override
-    public TodayNewsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.today_news_item, parent, false);
+    protected int getLayoutItemResId() {
+        return R.layout.today_news_item;
+    }
+
+    @Override
+    protected TodayNewsViewHolder getViewHolder(View view, boolean isHeaderOrFooter) {
         return new TodayNewsViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TodayNewsViewHolder holder, final int position) {
-        final Article article = mTodayNewsArticleList.get(position);
+    public void onBindViewHolderImpl(@NonNull TodayNewsViewHolder holder, final int position) {
+        final Article article = mDataList.get(position);
         Glide.with(mContext)
                 .load(article.mainArticleImage)
                 .placeholder(R.mipmap.the_economist)
@@ -64,11 +66,11 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsViewHolder> 
     }
 
     public List<Article> getTodayNewsArticleList() {
-        return mTodayNewsArticleList;
+        return mDataList;
     }
 
     public String getGroupName(int position) {
-        return mTodayNewsArticleList.get(position).headline;
+        return mDataList.get(position).headline;
     }
 
     public boolean isItemHeader(int position) {
@@ -77,8 +79,8 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsViewHolder> 
         }
         // 因为我们有一个 HeaderView, 这个 Position 是
         // RecyclerView 里的是 List.size() +1 项, 为了数据对应. 这里的需要  position -2
-        String lastGroupName = mTodayNewsArticleList.get(position - 1).headline;
-        String currentGroupName = mTodayNewsArticleList.get(position).headline;
+        String lastGroupName = mDataList.get(position - 1).headline;
+        String currentGroupName = mDataList.get(position).headline;
         Log.d(TAG, "isItemHeader: lastGroupName = " + lastGroupName + ", currentGroupName " + currentGroupName);
         if (lastGroupName.equals(currentGroupName)) {
             return false;
@@ -89,12 +91,7 @@ public class TodayNewsAdapter extends RecyclerView.Adapter<TodayNewsViewHolder> 
 
     @Override
     public int getItemCount() {
-        return mTodayNewsArticleList == null ? 0 : mTodayNewsArticleList.size();
+        return mDataList == null ? 0 : mDataList.size();
     }
 
-    public void updateData(List<Article> articleList) {
-        mTodayNewsArticleList.clear();
-        mTodayNewsArticleList.addAll(articleList);
-        notifyDataSetChanged();
-    }
 }

@@ -149,7 +149,7 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private void setArticleAdapter() {
-        mArticleContentAdapter = new ArticleContentAdapter(getContext(), mParagraphList, mView);
+        mArticleContentAdapter = new ArticleContentAdapter(getContext(), mParagraphList);
         ArticleItemDecoration articleItemDecoration = new ArticleItemDecoration(mArticleContentRV, getContext());
         mArticleContentRV.addItemDecoration(articleItemDecoration);
         mArticleContentRV.setAdapter(mArticleContentAdapter);

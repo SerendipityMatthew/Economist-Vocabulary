@@ -3,12 +3,9 @@ package com.xuwanjin.inchoate.ui.bookmark;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -17,29 +14,23 @@ import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.ui.BaseAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkViewHolder>
+
+public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article>
         implements StickHeaderDecoration.StickHeaderInterface {
     public static final String TAG = "BookmarkAdapter";
-    private Context mContext;
-    private List<Article> mArticleList = new ArrayList<>();
 
-    public BookmarkAdapter(Context context) {
-        mContext = context;
-    }
 
-    public void updateData(List<Article> articleList) {
-        mArticleList.clear();
-        mArticleList.addAll(articleList);
-        notifyDataSetChanged();
+    public BookmarkAdapter(Context context, List<Article> articleList) {
+        super(context, articleList);
     }
 
     //Item header 按照 section, issueDate, bookmarkDate, Topic,
     public String getGroupName(int position) {
-        Article article = mArticleList.get(position);
+        Article article = mDataList.get(position);
         String groupName;
         String groupPolicy = bookmarkGroupPolicy();
         switch (groupPolicy) {
@@ -77,25 +68,27 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkViewHolder>
 
         // 因为我们有一个 HeaderView, 这个 Position 是
         // RecyclerView 里的是 List.size() +1 项, 为了数据对应. 这里的需要  position -2
-        String lastGroupName = mArticleList.get(position - 1).section;
-        String currentGroupName = mArticleList.get(position).section;
+        String lastGroupName = mDataList.get(position - 1).section;
+        String currentGroupName = mDataList.get(position).section;
         if (lastGroupName.equals(currentGroupName)) {
             return false;
         }
         return true;
     }
 
-    @NonNull
     @Override
-    public  BookmarkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.bookmark_list, parent, false);
+    protected int getLayoutItemResId() {
+        return R.layout.bookmark_list;
+    }
+
+    @Override
+    protected BookmarkViewHolder getViewHolder(View view, boolean isHeaderOrFooter) {
         return new BookmarkViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BookmarkViewHolder holder, final int position) {
-
-        Article article = mArticleList.get(position);
+    public void onBindViewHolderImpl(@NonNull BookmarkViewHolder holder, final int position) {
+        Article article = mDataList.get(position);
         Glide.with(mContext)
                 .load(article.mainArticleImage)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -114,7 +107,7 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkViewHolder>
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InchoateApp.setDisplayArticleCache(mArticleList.get(position));
+                InchoateApp.setDisplayArticleCache(mDataList.get(position));
                 Utils.navigationController(
                         InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
             }
@@ -138,12 +131,6 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkViewHolder>
 //                helper.close();
             }
         });
-    }
-
-
-    @Override
-    public int getItemCount() {
-        return mArticleList == null ? 0 : mArticleList.size();
     }
 
     @Override

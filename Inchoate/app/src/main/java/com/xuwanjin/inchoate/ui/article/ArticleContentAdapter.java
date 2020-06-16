@@ -36,11 +36,21 @@ public class ArticleContentAdapter extends BaseAdapter<ArticleParagraphViewHolde
     }
 
     @Override
+    public String getGroupName(int position) {
+        return null;
+    }
+
+    @Override
     public void onBindViewHolderImpl(@NonNull ArticleParagraphViewHolder holder, int position) {
         if (position >= 1 && position < getItemCount() - 1) {
             Paragraph paragraph = mDataList.get(position - 1);
             holder.paragraphTextView.setText(paragraph.paragraph, TextView.BufferType.SPANNABLE);
             holder.setCurrentParagraph(paragraph);
         }
+    }
+
+    @Override
+    public boolean isItemHeader(int position) {
+        return false;
     }
 }

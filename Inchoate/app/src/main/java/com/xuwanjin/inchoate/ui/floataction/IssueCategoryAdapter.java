@@ -35,6 +35,11 @@ public class IssueCategoryAdapter extends BaseAdapter<IssueCategoryViewHolder, S
     }
 
     @Override
+    public String getGroupName(int position) {
+        return null;
+    }
+
+    @Override
     public void onBindViewHolderImpl(@NonNull IssueCategoryViewHolder holder, final int position) {
         int viewType = getItemViewType(position);
         if (viewType == TYPE_NORMAL) {
@@ -52,5 +57,10 @@ public class IssueCategoryAdapter extends BaseAdapter<IssueCategoryViewHolder, S
                 }
             });
         }
+    }
+
+    @Override
+    public boolean isItemHeader(int position) {
+        return false;
     }
 }

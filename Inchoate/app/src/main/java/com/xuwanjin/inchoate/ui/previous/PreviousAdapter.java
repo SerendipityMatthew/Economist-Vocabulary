@@ -34,6 +34,11 @@ public class PreviousAdapter extends BaseAdapter<PreviousIssueViewHolder, Issue>
     }
 
     @Override
+    public String getGroupName(int position) {
+        return null;
+    }
+
+    @Override
     public void onBindViewHolderImpl(@NonNull PreviousIssueViewHolder holder, int position) {
         Issue issue = mDataList.get(position);
         Glide.with(mContext)
@@ -52,6 +57,11 @@ public class PreviousAdapter extends BaseAdapter<PreviousIssueViewHolder, Issue>
                 navigationToFragment(R.id.navigation_weekly);
             }
         });
+    }
+
+    @Override
+    public boolean isItemHeader(int position) {
+        return false;
     }
 
     private void navigationToFragment(int resId) {

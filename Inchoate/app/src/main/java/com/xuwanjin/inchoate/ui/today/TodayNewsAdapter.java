@@ -2,14 +2,8 @@ package com.xuwanjin.inchoate.ui.today;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -19,7 +13,6 @@ import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.ui.BaseAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> {
@@ -79,8 +72,8 @@ public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> 
         }
         // 因为我们有一个 HeaderView, 这个 Position 是
         // RecyclerView 里的是 List.size() +1 项, 为了数据对应. 这里的需要  position -2
-        String lastGroupName = mDataList.get(position - 1).headline;
-        String currentGroupName = mDataList.get(position).headline;
+        String lastGroupName = getGroupName(position - 1);
+        String currentGroupName = getGroupName(position);
         Log.d(TAG, "isItemHeader: lastGroupName = " + lastGroupName + ", currentGroupName " + currentGroupName);
         if (lastGroupName.equals(currentGroupName)) {
             return false;

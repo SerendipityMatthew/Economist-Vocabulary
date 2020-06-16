@@ -49,11 +49,17 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
 
     protected abstract T getViewHolder(View view, boolean isHeaderOrFooter);
 
+    public abstract String getGroupName(int position);
+
+    protected abstract void onBindViewHolderImpl(T holder, int position);
+
+    public abstract boolean isItemHeader(int position);
+
     @Override
     public void onBindViewHolder(@NonNull T holder, int position) {
         onBindViewHolderImpl(holder, position);
     }
-    protected abstract void onBindViewHolderImpl(T holder, int position);
+
 
     public void setHeaderView(View headerView) {
         this.mHeaderView = headerView;

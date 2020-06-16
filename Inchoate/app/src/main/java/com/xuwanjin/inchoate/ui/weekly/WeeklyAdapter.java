@@ -123,8 +123,8 @@ public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article>
 
         // 因为我们有一个 HeaderView, 这个 Position 是
         // RecyclerView 里的是 List.size() +1 项, 为了数据对应. 这里的需要  position -2
-        String lastGroupName = mDataList.get(position - 2).section;
-        String currentGroupName = mDataList.get(position - 1).section;
+        String lastGroupName = getGroupName(position - 2);
+        String currentGroupName = getGroupName(position - 1);
         if (lastGroupName.equals(currentGroupName)) {
             return false;
         }

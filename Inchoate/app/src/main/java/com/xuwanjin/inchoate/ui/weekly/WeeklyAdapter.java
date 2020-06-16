@@ -22,24 +22,18 @@ import com.xuwanjin.inchoate.model.Article;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder>
+public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyViewHolder>
         implements StickHeaderDecoration.StickHeaderInterface {
     private Context mContext;
-    public List<Article> mArticleList = new ArrayList<>();
-    private Fragment mFragment;
+    private List<Article> mArticleList = new ArrayList<>();
     private View mHeaderView;
     private View mFooterView;
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_FOOTER = 1;
     public static final int TYPE_NORMAL = 2;
 
-    public WeeklyAdapter(Context context, Fragment fragment) {
+    public WeeklyAdapter(Context context) {
         mContext = context;
-        mFragment = fragment;
-    }
-
-    public Fragment getFragment() {
-        return mFragment;
     }
 
     public boolean isFirstItem(int position) {
@@ -69,7 +63,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
 
     @NonNull
     @Override
-    public WeeklyAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public WeeklyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         switch (viewType) {
             case TYPE_HEADER:
@@ -83,8 +77,11 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
                 view = LayoutInflater.from(mContext).inflate(R.layout.weekly_content_list, parent, false);
                 break;
         }
+        if (view== mHeaderView || view==mFooterView){
+            return new WeeklyViewHolder(view, true);
+        }
 
-        return new WeeklyAdapter.ViewHolder(view);
+        return new WeeklyViewHolder(view, false);
     }
 
     public void updateData(List<Article> articleList) {
@@ -94,7 +91,7 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WeeklyAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull WeeklyViewHolder holder, final int position) {
         int viewType = getItemViewType(position);
         if (viewType == TYPE_NORMAL) {
             //  mArticleList.get(position) 会出现第一个 item 不显示的状况
@@ -217,28 +214,5 @@ public class WeeklyAdapter extends RecyclerView.Adapter<WeeklyAdapter.ViewHolder
             return false;
         }
         return true;
-    }
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-        TextView articleTitle;
-        TextView articleFlyTitle;
-        ImageView article_image;
-        TextView dateAndReadTime;
-        ImageView bookmark;
-        View titleAndMainImage;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            if (itemView == mHeaderView) {
-                return;
-            }
-            titleAndMainImage = itemView.findViewById(R.id.title_and_main_image);
-            articleTitle = itemView.findViewById(R.id.article_title);
-            articleFlyTitle = itemView.findViewById(R.id.article_fly_title);
-            article_image = itemView.findViewById(R.id.article_image);
-            dateAndReadTime = itemView.findViewById(R.id.date_and_read_time);
-            bookmark = itemView.findViewById(R.id.bookmark);
-        }
-
     }
 }

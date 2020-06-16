@@ -343,7 +343,7 @@ public class WeeklyFragment extends BaseFragment {
         mMagazineCover = mSectionHeaderView.findViewById(R.id.magazine_cover);
         mMagazineHeadline = mSectionHeaderView.findViewById(R.id.magazine_headline);
 
-        mWeeklyAdapter = new WeeklyAdapter(getContext(), this);
+        mWeeklyAdapter = new WeeklyAdapter(getContext());
         mIssueContentRecyclerView.setAdapter(mWeeklyAdapter);
         mWeeklyAdapter.setHeaderView(mSectionHeaderView);
         mWeeklyAdapter.setFooterView(mFooterView);

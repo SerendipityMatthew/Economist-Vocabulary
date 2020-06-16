@@ -19,8 +19,7 @@ import com.xuwanjin.inchoate.ui.BaseAdapter;
 import java.util.List;
 
 
-public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article>
-        implements StickHeaderDecoration.StickHeaderInterface {
+public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
     public static final String TAG = "BookmarkAdapter";
 
 
@@ -131,14 +130,6 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article>
 //                helper.close();
             }
         });
-    }
-
-    @Override
-    public boolean isStick(int position) {
-        if ((position % 8 == 0)) {
-            return true;
-        }
-        return false;
     }
 
 }

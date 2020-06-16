@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
-    public StickHeaderInterface mHeaderInterface;
     private RecyclerView mRecyclerView;
     private WeeklyAdapter mAdapter;
     private RecyclerView.LayoutManager mManager;
@@ -25,13 +24,9 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
     // 每一项的分割线
     private Paint mLinePaint;
 
-    public interface StickHeaderInterface {
-        boolean isItemHeader(int position);
-    }
 
     public StickHeaderDecoration(RecyclerView mRecyclerView, Context context) {
         this.mAdapter = (WeeklyAdapter) mRecyclerView.getAdapter();
-        this.mHeaderInterface = (StickHeaderInterface) mAdapter;
         this.mRecyclerView = mRecyclerView;
         this.mManager = mRecyclerView.getLayoutManager();
         this.mContext = context;
@@ -117,9 +112,11 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
                 return;
             }
             View view = parent.findViewHolderForAdapterPosition(position).itemView;
-            // 如果不是 mHeaderView 的话(也就是头部 View) ,
-            // 那么就在 RecycleView 里列表的第一个可以看见的 View 的顶部画一个固定栏
-            // 怎样找到第一个可见的 View, 以及在第一个可见的 View 的顶部x, y 坐标值
+            /*
+                如果不是 mHeaderView 的话(也就是头部 View) ,
+                那么就在 RecycleView 里列表的第一个可以看见的 View 的顶部画一个固定栏
+                怎样找到第一个可见的 View, 以及在第一个可见的 View 的顶部x, y 坐标值
+             */
 
             boolean isHeader = adapter.isItemHeader(position);
             // position 为零表示, 这个是 HeaderView, 不需要再 HeaderView 上面画一个 itemHeader
@@ -142,40 +139,6 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
                 canvas.drawRect(0, 0, parent.getWidth(), mItemHeaderHeight, mItemHeaderPaint);
                 canvas.drawText(groupName, 50, y, mTextPaint);
             }
-        }
-    }
-
-    private int getPinnedHeaderViewPosition(int adapterFirstVisible, RecyclerView.Adapter adapter) {
-        for (int index = adapterFirstVisible; index >= 0; index--) {
-            if (mHeaderInterface.isItemHeader(index)) {
-                return index;
-            }
-        }
-        return -1;
-    }
-
-    // 遵守了 measure --->  layout  --->  draw
-    private void ensurePinnedHeaderViewLayout(View pinView, RecyclerView recyclerView) {
-        if (pinView.isLayoutRequested()) {
-            /**
-             * 用的是RecyclerView的宽度测量，和RecyclerView的宽度一样
-             */
-            RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) pinView.getLayoutParams();
-            if (layoutParams == null) {
-                throw new NullPointerException("PinnedHeaderItemDecoration");
-            }
-            int widthSpec = View.MeasureSpec.makeMeasureSpec(
-                    recyclerView.getMeasuredWidth() - layoutParams.leftMargin - layoutParams.rightMargin,
-                    View.MeasureSpec.EXACTLY);
-
-            int heightSpec;
-            if (layoutParams.height > 0) {
-                heightSpec = View.MeasureSpec.makeMeasureSpec(layoutParams.height, View.MeasureSpec.EXACTLY);
-            } else {
-                heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-            }
-            pinView.measure(widthSpec, heightSpec);
-            pinView.layout(0, 0, pinView.getMeasuredWidth(), pinView.getMeasuredHeight());
         }
     }
 }

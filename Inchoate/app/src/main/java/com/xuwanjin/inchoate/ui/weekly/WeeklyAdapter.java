@@ -14,8 +14,7 @@ import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.ui.BaseAdapter;
 
-public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article>
-        implements StickHeaderDecoration.StickHeaderInterface {
+public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article>{
 
     public WeeklyAdapter(Context context) {
         super(context, null);

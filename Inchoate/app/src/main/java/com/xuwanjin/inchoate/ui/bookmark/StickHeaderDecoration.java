@@ -12,12 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
-    public StickHeaderInterface headerInterface;
     private RecyclerView mRecyclerView;
     private BookmarkAdapter mAdapter;
     private RecyclerView.LayoutManager mManager;
-    private Rect mPinnedHeaderRect = null;
-    private int mPinnedHeaderPosition = -1;
     private int mItemHeaderHeight = -1;
     private Context mContext;
     private Paint mItemHeaderPaint;
@@ -25,13 +22,8 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
     private Paint mLinePaint;
     private Rect mTextRect;
 
-    public interface StickHeaderInterface {
-        boolean isStick(int position);
-    }
-
     public StickHeaderDecoration(RecyclerView recyclerView, Context context) {
         this.mAdapter = (BookmarkAdapter) recyclerView.getAdapter();
-        this.headerInterface = (StickHeaderInterface) mAdapter;
         this.mRecyclerView = recyclerView;
         this.mManager = recyclerView.getLayoutManager();
         this.mContext = context;

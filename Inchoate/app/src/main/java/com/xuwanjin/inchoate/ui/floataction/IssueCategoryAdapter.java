@@ -16,7 +16,7 @@ import com.xuwanjin.inchoate.Utils;
 
 import java.util.List;
 
-public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdapter.ViewHolder> {
+public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryViewHolder> {
     private Context mContext;
     private List<String> mSectionList;
     private View mHeaderView;
@@ -37,7 +37,7 @@ public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdap
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public IssueCategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView;
         switch (viewType) {
             case TYPE_HEADER:
@@ -51,11 +51,11 @@ public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdap
                 itemView = LayoutInflater.from(mContext).inflate(R.layout.issue_category_item, parent, false);
                 break;
         }
-        return new ViewHolder(itemView);
+        return new IssueCategoryViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull IssueCategoryViewHolder holder, final int position) {
         int viewType = getItemViewType(position);
         if (viewType == TYPE_NORMAL) {
             int revisedPosition = position;
@@ -115,13 +115,4 @@ public class IssueCategoryAdapter extends RecyclerView.Adapter<IssueCategoryAdap
         return -1;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView categoryMenu;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            categoryMenu = itemView.findViewById(R.id.issue_category_menu);
-
-        }
-    }
 }

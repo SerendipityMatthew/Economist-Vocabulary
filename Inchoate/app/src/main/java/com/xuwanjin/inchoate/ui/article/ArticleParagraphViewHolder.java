@@ -24,6 +24,7 @@ import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Paragraph;
 import com.xuwanjin.inchoate.model.Vocabulary;
+import com.xuwanjin.inchoate.ui.BaseViewHolder;
 
 import java.text.BreakIterator;
 import java.text.SimpleDateFormat;
@@ -31,11 +32,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 
-public class ArticleParagraphViewHolder extends RecyclerView.ViewHolder {
+public class ArticleParagraphViewHolder extends BaseViewHolder {
     public static final String TAG = "ArticleParagraphViewHolder";
     public TextView paragraphTextView;
     public Paragraph mParagraph;
-    private Context mContext;
     private Article mArticle;
     private ActionMode.Callback mCallback = new ActionMode.Callback() {
         private Menu mMenu;
@@ -80,17 +80,9 @@ public class ArticleParagraphViewHolder extends RecyclerView.ViewHolder {
     };
 
     public ArticleParagraphViewHolder(@NonNull final View itemView, Context context, Article article, boolean isHeaderOrFooter) {
-        super(itemView);
+        super(itemView, isHeaderOrFooter);
         mContext = context;
         mArticle = article;
-        if (!isHeaderOrFooter){
-            paragraphTextView = itemView.findViewById(R.id.paragraph);
-            paragraphTextView.setTextIsSelectable(true);
-            Typeface typeface = ResourcesCompat.getFont(mContext, R.font.milote_textita);
-            paragraphTextView.setFocusableInTouchMode(true);
-            paragraphTextView.setTypeface(typeface);
-            paragraphTextView.setCustomSelectionActionModeCallback(mCallback);
-        }
     }
 
     private void splitAndCollectVocabulary() {
@@ -193,5 +185,13 @@ public class ArticleParagraphViewHolder extends RecyclerView.ViewHolder {
             }
         }
         return belongedSentence;
+    }
+
+    @Override
+    protected void initView() {
+        paragraphTextView = itemView.findViewById(R.id.paragraph);
+        paragraphTextView.setTextIsSelectable(true);
+        paragraphTextView.setFocusableInTouchMode(true);
+        paragraphTextView.setCustomSelectionActionModeCallback(mCallback);
     }
 }

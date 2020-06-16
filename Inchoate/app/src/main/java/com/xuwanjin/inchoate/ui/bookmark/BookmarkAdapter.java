@@ -6,11 +6,8 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,13 +17,11 @@ import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
-import com.xuwanjin.inchoate.model.Issue;
-
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHolder>
+public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkViewHolder>
         implements StickHeaderDecoration.StickHeaderInterface {
     public static final String TAG = "BookmarkAdapter";
     private Context mContext;
@@ -92,13 +87,13 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public  BookmarkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.bookmark_list, parent, false);
-        return new ViewHolder(view);
+        return new BookmarkViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull BookmarkViewHolder holder, final int position) {
 
         Article article = mArticleList.get(position);
         Glide.with(mContext)
@@ -159,21 +154,4 @@ public class BookmarkAdapter extends RecyclerView.Adapter<BookmarkAdapter.ViewHo
         return false;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
-        TextView article_title;
-        TextView articleFlyTitle;
-        ImageView article_image;
-        TextView dateAndReadTime;
-        ImageView bookmark;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            article_title = itemView.findViewById(R.id.article_title);
-            article_image = itemView.findViewById(R.id.article_image);
-            dateAndReadTime = itemView.findViewById(R.id.date_and_read_time);
-            articleFlyTitle = itemView.findViewById(R.id.article_fly_title);
-            bookmark = itemView.findViewById(R.id.bookmark);
-        }
-
-    }
 }

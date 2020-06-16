@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,7 +21,7 @@ import java.util.List;
 import static com.xuwanjin.inchoate.Constants.CURRENT_DISPLAY_ISSUE_URL_ID;
 import static com.xuwanjin.inchoate.Constants.INCHOATE_PREFERENCE_FILE_NAME;
 
-public class PreviousAdapter extends RecyclerView.Adapter<PreviousAdapter.ViewHolder> {
+public class PreviousAdapter extends RecyclerView.Adapter<PreviousIssueViewHolder> {
     private Context mContext;
     private List<Issue> mIssueList;
 
@@ -38,13 +36,13 @@ public class PreviousAdapter extends RecyclerView.Adapter<PreviousAdapter.ViewHo
 
     @NonNull
     @Override
-    public PreviousAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PreviousIssueViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.issue_list, parent, false);
-        return new ViewHolder(view);
+        return new PreviousIssueViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PreviousIssueViewHolder holder, int position) {
         Issue issue = mIssueList.get(position);
         Glide.with(mContext)
                 .load(issue.coverImageUrl)
@@ -75,16 +73,4 @@ public class PreviousAdapter extends RecyclerView.Adapter<PreviousAdapter.ViewHo
         return mIssueList == null ? 0 : mIssueList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView issueCover;
-        public TextView issueDate;
-        public ImageView issueDownload;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            issueCover = itemView.findViewById(R.id.issue_cover);
-            issueDate = itemView.findViewById(R.id.issue_date);
-            issueDownload = itemView.findViewById(R.id.issue_download);
-        }
-    }
 }

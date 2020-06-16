@@ -1,4 +1,4 @@
-package com.xuwanjin.inchoate.ui.weekly;
+package com.xuwanjin.inchoate.ui.bookmark;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -9,25 +9,22 @@ import androidx.annotation.NonNull;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.ui.BaseViewHolder;
 
-class WeeklyViewHolder extends BaseViewHolder {
-    TextView articleTitle;
+public class BookmarkViewHolder extends BaseViewHolder {
+    TextView article_title;
     TextView articleFlyTitle;
     ImageView article_image;
     TextView dateAndReadTime;
     ImageView bookmark;
-    View titleAndMainImage;
-
-    public WeeklyViewHolder(@NonNull View itemView, boolean isHeaderOrFooter) {
+    public BookmarkViewHolder(@NonNull View itemView) {
         super(itemView, false);
     }
 
     @Override
     protected void initView() {
-        titleAndMainImage = itemView.findViewById(R.id.title_and_main_image);
-        articleTitle = itemView.findViewById(R.id.article_title);
-        articleFlyTitle = itemView.findViewById(R.id.article_fly_title);
+        article_title = itemView.findViewById(R.id.article_title);
         article_image = itemView.findViewById(R.id.article_image);
         dateAndReadTime = itemView.findViewById(R.id.date_and_read_time);
+        articleFlyTitle = itemView.findViewById(R.id.article_fly_title);
         bookmark = itemView.findViewById(R.id.bookmark);
     }
 }

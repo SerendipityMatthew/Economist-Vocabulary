@@ -1,6 +1,7 @@
 package com.xuwanjin.inchoate.ui.article;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,6 +33,7 @@ public class ArticleContentAdapter extends BaseAdapter<ArticleParagraphViewHolde
 
     @Override
     protected ArticleParagraphViewHolder getViewHolder(View view, boolean isHeaderOrFooter) {
+        Log.d(TAG, "getViewHolder: isHeaderOrFooter = " + isHeaderOrFooter);
         return new ArticleParagraphViewHolder(view, mContext, mArticle, isHeaderOrFooter);
     }
 

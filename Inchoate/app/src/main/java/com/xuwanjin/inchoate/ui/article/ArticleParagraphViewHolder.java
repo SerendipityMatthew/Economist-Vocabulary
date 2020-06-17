@@ -2,7 +2,6 @@ package com.xuwanjin.inchoate.ui.article;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.util.Log;
@@ -15,8 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.xuwanjin.inchoate.R;
@@ -37,47 +34,6 @@ public class ArticleParagraphViewHolder extends BaseViewHolder {
     public TextView paragraphTextView;
     public Paragraph mParagraph;
     private Article mArticle;
-    private ActionMode.Callback mCallback = new ActionMode.Callback() {
-        private Menu mMenu;
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            menu.clear();
-            mMenu = menu;
-            MenuInflater inflater = mode.getMenuInflater();
-            if (inflater != null) {
-                inflater.inflate(R.menu.text_select_menu, menu);
-            }
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            int itemId = item.getItemId();
-
-            if (itemId == R.id.text_menu_collect) {
-                splitAndCollectVocabulary();
-            }
-
-            if (itemId == R.id.text_menu_corral) {
-            }
-            // Finish and close the ActionMode
-            mode.finish();
-            return true;
-        }
-
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            mode.getMenu().close();
-        }
-
-    };
 
     public ArticleParagraphViewHolder(@NonNull final View itemView, Context context, Article article, boolean isHeaderOrFooter) {
         super(itemView, isHeaderOrFooter);
@@ -85,7 +41,7 @@ public class ArticleParagraphViewHolder extends BaseViewHolder {
         mArticle = article;
     }
 
-    private void splitAndCollectVocabulary() {
+    private void splitAndCollectVocabulary(boolean isCollectParagraph) {
         int wordStart = 0;
         int wordEnd = paragraphTextView.getText().length();
         if (paragraphTextView.isFocused()) {
@@ -105,7 +61,7 @@ public class ArticleParagraphViewHolder extends BaseViewHolder {
             Runnable saveVocabulary = new Runnable() {
                 @Override
                 public void run() {
-                    collectTheVocabulary(mParagraph, selectedText.toString(), wordStartTemp, wordEndTemp);
+                    collectTheVocabulary(mParagraph, selectedText.toString(), wordStartTemp, wordEndTemp, isCollectParagraph);
                 }
             };
             Executors.newSingleThreadExecutor().submit(saveVocabulary);
@@ -137,7 +93,7 @@ public class ArticleParagraphViewHolder extends BaseViewHolder {
     }
 
     private void collectTheVocabulary(
-            Paragraph paragraph, String vocabularyString, int wordStart, int wordEnd) {
+            Paragraph paragraph, String vocabularyString, int wordStart, int wordEnd, boolean isCollectParagraph) {
         if (paragraph == null
                 || paragraph.paragraph.length() == 0
                 || "null".equalsIgnoreCase(vocabularyString)) {
@@ -146,7 +102,9 @@ public class ArticleParagraphViewHolder extends BaseViewHolder {
         InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(mContext);
         Vocabulary vocabulary = new Vocabulary();
         String paragraphText = paragraph.paragraph.toString();
-        vocabulary.belongedParagraph = paragraphText;
+        if (isCollectParagraph){
+            vocabulary.belongedParagraph = paragraphText;
+        }
         String belongedSentence = getSentence(paragraphText, vocabularyString, wordStart, wordEnd);
         vocabulary.belongedSentence = belongedSentence;
         vocabulary.belongedArticleTitle = paragraph.articleName;
@@ -192,6 +150,48 @@ public class ArticleParagraphViewHolder extends BaseViewHolder {
         paragraphTextView = itemView.findViewById(R.id.paragraph);
         paragraphTextView.setTextIsSelectable(true);
         paragraphTextView.setFocusableInTouchMode(true);
+        Log.d(TAG, "initView: ");
+        ActionMode.Callback mCallback = new ActionMode.Callback() {
+            private Menu mMenu;
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                menu.clear();
+                mMenu = menu;
+                Log.d(TAG, "onCreateActionMode: ");
+                MenuInflater inflater = mode.getMenuInflater();
+                if (inflater != null) {
+                    inflater.inflate(R.menu.text_select_menu, menu);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.text_menu_collect) {
+                    splitAndCollectVocabulary(false);
+                }
+
+                if (itemId == R.id.text_menu_corral) {
+                    splitAndCollectVocabulary(true);
+                }
+                // Finish and close the ActionMode
+                mode.finish();
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                mode.getMenu().close();
+            }
+        };
         paragraphTextView.setCustomSelectionActionModeCallback(mCallback);
     }
 }

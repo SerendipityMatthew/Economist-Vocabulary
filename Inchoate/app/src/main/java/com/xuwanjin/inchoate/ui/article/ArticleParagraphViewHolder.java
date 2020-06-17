@@ -99,6 +99,7 @@ public class ArticleParagraphViewHolder extends BaseViewHolder {
             Paragraph paragraph, String vocabularyString, int wordStart, int wordEnd, boolean isCollectParagraph) {
         if (paragraph == null
                 || paragraph.paragraph.length() == 0
+                || "".equals(vocabularyString.trim())
                 || "null".equalsIgnoreCase(vocabularyString)) {
             return;
         }

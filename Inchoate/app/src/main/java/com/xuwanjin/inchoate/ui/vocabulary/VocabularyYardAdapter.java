@@ -14,7 +14,6 @@ public class VocabularyYardAdapter extends BaseAdapter<VocabularyYardViewHolder,
     public static final String TAG = "VocabularyYardAdapter";
     protected VocabularyYardAdapter(Context context, List<Vocabulary> dataList) {
         super(context, dataList);
-        mDataList = dataList;
     }
 
     @Override
@@ -35,8 +34,9 @@ public class VocabularyYardAdapter extends BaseAdapter<VocabularyYardViewHolder,
     @Override
     protected void onBindViewHolderImpl(VocabularyYardViewHolder holder, int position) {
         Vocabulary vocabulary = mDataList.get(position);
-        holder.vocabulary.setText(vocabulary.vocabularyContent);
         Log.d(TAG, "onBindViewHolderImpl: vocabulary = " + vocabulary);
+
+        holder.vocabulary.setText(vocabulary.vocabularyContent);
         if (vocabulary.belongedSentence != null){
             holder.sentence.setText(vocabulary.belongedSentence);
         }

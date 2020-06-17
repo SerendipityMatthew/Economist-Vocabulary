@@ -12,6 +12,9 @@ import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class VocabularyYardFragment extends BaseFragment {
     private RecyclerView mVocabularyRecyclerView;
@@ -29,9 +32,16 @@ public class VocabularyYardFragment extends BaseFragment {
 
     @Override
     protected void loadData() {
-        mVocabularyList = fetchDataFromDBOrNetwork();
+        List<Vocabulary> vocabularyList = fetchDataFromDBOrNetwork();
         mVocabularyYardAdapter = new VocabularyYardAdapter(getContext(), mVocabularyList);
         mVocabularyRecyclerView.setAdapter(mVocabularyYardAdapter);
+        mVocabularyList = vocabularyList.stream().filter(new Predicate<Vocabulary>() {
+            @Override
+            public boolean test(Vocabulary vocabulary) {
+                String voca = vocabulary.vocabularyContent ;
+                return voca != null && !voca.trim().equals("");
+            }
+        }).collect(Collectors.toList());
         mVocabularyYardAdapter.updateData(mVocabularyList);
     }
 

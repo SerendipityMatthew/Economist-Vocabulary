@@ -15,4 +15,5 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder{
         }
     }
     protected abstract void initView();
+
 }

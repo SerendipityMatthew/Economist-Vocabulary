@@ -53,4 +53,10 @@
         android:label="@string/app_name"
         tools:layout="@layout/fragment_audio_play" >
     </fragment>
+    <fragment
+        android:id="@+id/navigation_vocabulary_yard"
+        android:name="com.xuwanjin.inchoate.ui.vocabulary.VocabularyYardFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_vocabulary_yard" >
+    </fragment>
 </navigation>

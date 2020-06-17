@@ -381,11 +381,27 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         return rowID;
     }
 
-    public List<Vocabulary> getVocabularyList(String vocabularyContent) {
+    public List<Vocabulary> getVocabulary(String vocabularyContent) {
         sDatabase = openInchoateDB();
         // Select * from vocabulary where vocabulary_content='';
         String queryByArticleID = "SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE "
                 + KEY_VOCABULARY_CONTENT + " =\'" + vocabularyContent + "\'";
+        Cursor cursor = sDatabase.rawQuery(queryByArticleID, null);
+        List<Vocabulary> vocabularyList = new ArrayList<>();
+        while (cursor != null && cursor.moveToNext()) {
+            Vocabulary vocabulary = getVocabularyFromCursor(cursor);
+            vocabularyList.add(vocabulary);
+        }
+        if (sDatabase != null) {
+            closeInchoateDB();
+        }
+        return vocabularyList;
+    }
+
+    public List<Vocabulary> getVocabularyAll() {
+        sDatabase = openInchoateDB();
+        // Select * from vocabulary where vocabulary_content='';
+        String queryByArticleID = "SELECT * FROM " + TABLE_NAME_VOCABULARY;
         Cursor cursor = sDatabase.rawQuery(queryByArticleID, null);
         List<Vocabulary> vocabularyList = new ArrayList<>();
         while (cursor != null && cursor.moveToNext()) {

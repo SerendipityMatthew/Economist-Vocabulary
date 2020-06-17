@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Paragraph;
@@ -28,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.Executors;
+
+import static com.xuwanjin.inchoate.InchoateApp.NAVIGATION_CONTROLLER;
 
 public class ArticleParagraphViewHolder extends BaseViewHolder {
     public static final String TAG = "ArticleParagraphViewHolder";
@@ -181,6 +184,9 @@ public class ArticleParagraphViewHolder extends BaseViewHolder {
 
                 if (itemId == R.id.text_menu_corral) {
                     splitAndCollectVocabulary(true);
+                }
+                if (itemId == R.id.text_menu_vocabulary_yard) {
+                    Utils.navigationController(NAVIGATION_CONTROLLER, R.id.navigation_vocabulary_yard);
                 }
                 // Finish and close the ActionMode
                 mode.finish();

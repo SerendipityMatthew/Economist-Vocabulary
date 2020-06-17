@@ -31,8 +31,12 @@
     <string name="log_out">Log Out</string>
     <string name="minutes_read"> min read</string>
     <string name="header_section">Sections</string>
+
+    <!-- menu -->
     <string name="collect">collect</string>
     <string name="corral">corral</string>
+    <string name="vocabulary_yard">yard</string>
+
     <string name="dark_mode_preference">dark_mode_preference</string>
     <string name="dark_mode_preference_title">Dark Mode</string>
     <string name="about">About</string>
@@ -51,4 +55,10 @@
     <string name="sorted_by_date">Sorted by Published Date</string>
     <string name="sorted_by_bookmark_date">Sorted by Bookmark Date</string>
     <string name="sorted_by_topic">Sorted by Topic</string>
+
+
+    <string name="vocabulary">hiatus</string>
+    <string name="sentence_demo">THE PREMIER LEAGUE, the top tier of English football, is set to resume play on June 17th after a three-month, coronavirus-induced hiatus.</string>
+    <string name="paragraph_demo">THE PREMIER LEAGUE, the top tier of English football, is set to resume play on June 17th after a three-month, coronavirus-induced hiatus. After considering several less desirable options—including awarding final league positions on a points-per-game basis and voiding the current season entirely—clubs eventually decided to play the remaining 92 matches behind closed doors over the next six weeks. The return to action, dubbed “Project Restart”, will give a boost to the country’s morale as well as to clubs’ bottom lines.</string>
+    <string name="article_info">The Premier League will suffer a big financial hit from the pandemic</string>
 </resources>

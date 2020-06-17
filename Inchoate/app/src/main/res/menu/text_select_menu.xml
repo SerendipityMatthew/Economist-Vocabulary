@@ -6,4 +6,7 @@
     <item
         android:id="@+id/text_menu_corral"
         android:title="@string/corral" />
+    <item
+        android:id="@+id/text_menu_vocabulary_yard"
+        android:title="@string/vocabulary_yard" />
 </menu>

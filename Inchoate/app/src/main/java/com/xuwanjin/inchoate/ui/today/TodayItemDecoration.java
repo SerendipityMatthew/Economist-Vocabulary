@@ -13,8 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
-public class TodayItemDecoration extends RecyclerView.ItemDecoration {
+/**
+ * @author Matthew Xu
+ */
+public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
     public static final String TAG = "TodayItemDecoration";
     public Context mContext;
     private int mItemHeaderHeight = 0;
@@ -81,24 +85,23 @@ public class TodayItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void onDrawOver(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        super.onDrawOver(canvas, parent, state);
+    public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
+                               @NonNull RecyclerView.State state, TodayNewsAdapter adapter, int position) {
+        int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
 
-        if (parent.getAdapter() instanceof TodayNewsAdapter) {
-            TodayNewsAdapter adapter = (TodayNewsAdapter) parent.getAdapter();
-            int position = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
-            int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
+        String itemHeaderTitle = adapter.getGroupName(position);
+        Paint greenPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        greenPaint.setColor(Color.GREEN);
+        Paint paintBlack = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintBlack.setColor(Color.BLACK);
+        canvas.drawRect(0, 0, parent.getWidth(), dip2px(mContext, 10), paintBlack);
+        canvas.drawRect(0, 20, parent.getWidth(), mItemHeaderHeight, greenPaint);
+        canvas.drawText(itemHeaderTitle, 50, y, mTextPaint);
+    }
 
-            String itemHeaderTitle = adapter.getGroupName(position);
-            // 如果把下面的注释掉, 会出现即使下一个分类小组没有滑动到顶部, 顶部的 stick header 会消失
-            Paint greenPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            greenPaint.setColor(Color.GREEN);
-            Paint paintBlack = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paintBlack.setColor(Color.BLACK);
-            canvas.drawRect(0, 0, parent.getWidth(), dip2px(mContext, 10), paintBlack);
-            canvas.drawRect(0, 20, parent.getWidth(), mItemHeaderHeight, greenPaint);
-            canvas.drawText(itemHeaderTitle, 50, y, mTextPaint);
-        }
+    @Override
+    public String getAdapterClassName() {
+        return TodayNewsAdapter.class.getName();
     }
 
     @Override

@@ -5,21 +5,21 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.text.TextPaint;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xuwanjin.inchoate.model.Paragraph;
-import com.xuwanjin.inchoate.ui.weekly.WeeklyAdapter;
+import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
-import java.util.HashMap;
 import java.util.List;
 
-public class ArticleItemDecoration extends RecyclerView.ItemDecoration {
+/**
+ * @author Matthew Xu
+ */
+public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdapter> {
 
     public RecyclerView mRecyclerView;
     public Context mContext;
@@ -38,8 +38,6 @@ public class ArticleItemDecoration extends RecyclerView.ItemDecoration {
         mItemHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         // got the color of textview background, by color picker
         mItemHeaderPaint.setColor(Color.parseColor("#FBFBFB"));
-//        mItemHeaderPaint.setAlpha(100);
-
         mTextRect = new Rect();
         mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setTextSize(46);
@@ -66,7 +64,26 @@ public class ArticleItemDecoration extends RecyclerView.ItemDecoration {
                 canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.getTop(), mLinePaint);
             }
         }
+    }
 
+    @Override
+    public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
+                               @NonNull RecyclerView.State state, ArticleContentAdapter adapter, int position) {
+        if (isSkipDraw(position)) {
+            return;
+        }
+        int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
+        String paragraph = adapter.getDataList().get(position - 1).paragraph.toString();
+        int paragraphWordCount = getArticleWordCount(adapter.getDataList());
+
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(Color.RED);
+
+        canvas.drawRect(0, 0, parent.getWidth(), mItemHeaderHeight, paint);
+        int wordCount = paragraph.split(" ").length;
+        String displayString = "段落单词数: " + wordCount +
+                "       文章总单词书: " + paragraphWordCount;
+        canvas.drawText(displayString, 50, y, mTextPaint);
     }
 
     public boolean isSkipDraw(int position) {
@@ -77,28 +94,8 @@ public class ArticleItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void onDrawOver(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        super.onDrawOver(canvas, parent, state);
-        if (parent.getAdapter() instanceof ArticleContentAdapter) {
-            ArticleContentAdapter adapter = (ArticleContentAdapter) parent.getAdapter();
-            int position = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
-            if (isSkipDraw(position)) {
-                return;
-            }
-            int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
-            String paragraph = adapter.getDataList().get(position - 1).paragraph.toString();
-            int paragraphWordCount = getArticleWordCount(adapter.getDataList());
-
-            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setColor(Color.RED);
-
-            canvas.drawRect(0, 0, parent.getWidth(), mItemHeaderHeight, paint);
-            int wordCount = paragraph.split(" ").length;
-            String displayString = "段落单词数: " + wordCount +
-                    "       文章总单词书: " + paragraphWordCount;
-            canvas.drawText(displayString, 50, y, mTextPaint);
-
-        }
+    public String getAdapterClassName() {
+        return ArticleContentAdapter.class.getName();
     }
 
     public int getArticleWordCount(List<Paragraph> paragraphList) {

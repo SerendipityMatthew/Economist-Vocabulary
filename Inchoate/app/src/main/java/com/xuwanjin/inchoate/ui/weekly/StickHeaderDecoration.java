@@ -11,8 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
-public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
+
+/**
+ * @author Matthew Xu
+ */
+public class StickHeaderDecoration extends BaseItemDecoration<WeeklyAdapter> {
     private RecyclerView mRecyclerView;
     private WeeklyAdapter mAdapter;
     private RecyclerView.LayoutManager mManager;
@@ -101,44 +106,45 @@ public class StickHeaderDecoration extends RecyclerView.ItemDecoration {
     // 绘制的东西会在显示的 item 的上面, 也就说绘制的东西遮住 item 的显示
     // 在这里我们绘制在手机界面上可见的 item 上面画一个 header. 因为 header 需要在 item 的上面显示
     @Override
-    public void onDrawOver(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        super.onDrawOver(canvas, parent, state);
-        if (parent.getAdapter() instanceof WeeklyAdapter) {
-            WeeklyAdapter adapter = (WeeklyAdapter) parent.getAdapter();
-            // 当 RecyclerView 含有 HeaderView 的时候, 第一个可见的 View, 不是里面的填充item, 而是 eaderView
-            // 因此绘制第一个 Group 的 headerView 时候, 需要在大的 HeaderView 的下方
-            int position = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
-            if (parent.findViewHolderForAdapterPosition(position) == null){
-                return;
-            }
-            View view = parent.findViewHolderForAdapterPosition(position).itemView;
-            /*
-                如果不是 mHeaderView 的话(也就是头部 View) ,
-                那么就在 RecycleView 里列表的第一个可以看见的 View 的顶部画一个固定栏
-                怎样找到第一个可见的 View, 以及在第一个可见的 View 的顶部x, y 坐标值
-             */
-
-            boolean isHeader = adapter.isItemHeader(position);
-            // position 为零表示, 这个是 HeaderView, 不需要再 HeaderView 上面画一个 itemHeader
-            if (position == 0) {
-                return;
-            }
-            if (position == adapter.getItemCount()-1) {
-                return;
-            }
-
-            String groupName = adapter.getGroupName(position - 1);
-            int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
-            if (isHeader) {
-                int bottom = Math.min(mItemHeaderHeight, view.getBottom());
-                canvas.drawRect(0, view.getTop() - mItemHeaderHeight, parent.getWidth(), bottom, mItemHeaderPaint);
-                canvas.drawText(groupName, 50,
-                        y - (mItemHeaderHeight - bottom), mTextPaint);
-            } else {
-                // 如果把下面的注释掉, 会出现即使下一个分类小组没有滑动到顶部, 顶部的 stick header 会消失
-                canvas.drawRect(0, 0, parent.getWidth(), mItemHeaderHeight, mItemHeaderPaint);
-                canvas.drawText(groupName, 50, y, mTextPaint);
-            }
+    public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
+                               @NonNull RecyclerView.State state, WeeklyAdapter adapter, int position) {
+        // 当 RecyclerView 含有 HeaderView 的时候, 第一个可见的 View, 不是里面的填充item, 而是 eaderView
+        // 因此绘制第一个 Group 的 headerView 时候, 需要在大的 HeaderView 的下方
+        if (parent.findViewHolderForAdapterPosition(position) == null){
+            return;
         }
+        boolean isHeader = adapter.isItemHeader(position);
+        // position 为零表示, 这个是 HeaderView, 不需要再 HeaderView 上面画一个 itemHeader
+        if (position == 0) {
+            return;
+        }
+        if (position == adapter.getItemCount()-1) {
+            return;
+        }
+
+        View view = parent.findViewHolderForAdapterPosition(position).itemView;
+        /*
+            如果不是 mHeaderView 的话(也就是头部 View) ,
+            那么就在 RecycleView 里列表的第一个可以看见的 View 的顶部画一个固定栏
+            怎样找到第一个可见的 View, 以及在第一个可见的 View 的顶部x, y 坐标值
+         */
+
+        String groupName = adapter.getGroupName(position - 1);
+        int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
+        if (isHeader) {
+            int bottom = Math.min(mItemHeaderHeight, view.getBottom());
+            canvas.drawRect(0, view.getTop() - mItemHeaderHeight, parent.getWidth(), bottom, mItemHeaderPaint);
+            canvas.drawText(groupName, 50,
+                    y - (mItemHeaderHeight - bottom), mTextPaint);
+        } else {
+            // 如果把下面的注释掉, 会出现即使下一个分类小组没有滑动到顶部, 顶部的 stick header 会消失
+            canvas.drawRect(0, 0, parent.getWidth(), mItemHeaderHeight, mItemHeaderPaint);
+            canvas.drawText(groupName, 50, y, mTextPaint);
+        }
+    }
+
+    @Override
+    public String getAdapterClassName() {
+        return WeeklyAdapter.class.getName();
     }
 }

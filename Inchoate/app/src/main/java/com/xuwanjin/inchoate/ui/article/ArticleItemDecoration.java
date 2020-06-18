@@ -20,9 +20,6 @@ import java.util.List;
  * @author Matthew Xu
  */
 public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdapter> {
-
-    public RecyclerView mRecyclerView;
-    public Context mContext;
     private int mItemHeaderHeight = 0;
     Paint mItemHeaderPaint;
     private Rect mTextRect;
@@ -30,9 +27,9 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
     private Paint mLinePaint;
     private int mArticleWordCount = -1;
 
-    public ArticleItemDecoration(RecyclerView recyclerView, Context context) {
-        this.mRecyclerView = recyclerView;
-        this.mContext = context;
+    public ArticleItemDecoration(Context context, RecyclerView recyclerView) {
+        super(context, recyclerView);
+
         this.mItemHeaderHeight = dip2px(mContext, 40);
 
         mItemHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -58,7 +55,7 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
         for (int i = 0; i < count; i++) {
             View childView = parent.getChildAt(i);
             int position = parent.getChildLayoutPosition(childView);
-            if (!isSkipDraw(position, null)) {
+            if (!isSkipDraw(position)) {
                 int y = childView.getTop() - mItemHeaderHeight;
                 canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), mItemHeaderPaint);
                 canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.getTop(), mLinePaint);
@@ -67,7 +64,7 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
     }
 
     @Override
-    protected boolean isSkipDraw(int position, BaseAdapter adapter) {
+    protected boolean isSkipDraw(int position) {
         return false;
     }
 
@@ -88,12 +85,6 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
         canvas.drawText(displayString, 50, y, mTextPaint);
     }
 
-
-    @Override
-    public String getAdapterClassName() {
-        return ArticleContentAdapter.class.getName();
-    }
-
     public int getArticleWordCount(List<Paragraph> paragraphList) {
         int paragraphWordCount = 0;
         for (Paragraph p : paragraphList) {
@@ -108,7 +99,7 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
         super.getItemOffsets(outRect, view, parent, state);
         if (parent.getAdapter() instanceof ArticleContentAdapter) {
             int position = parent.getChildLayoutPosition(view);
-            if (isSkipDraw(position, null)) {
+            if (isSkipDraw(position)) {
                 return;
             } else {
                 outRect.top = mItemHeaderHeight;

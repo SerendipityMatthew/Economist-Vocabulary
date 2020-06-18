@@ -36,8 +36,8 @@ public class FloatActionFragment extends BaseFragment {
                 getContext(), mSectionList);
         categoryAdapter.setHeaderView(mHeaderSectionView);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.addItemDecoration(new IssueCategoryStickHeaderDecoration(recyclerView, getContext()));
         recyclerView.setAdapter(categoryAdapter);
+        recyclerView.addItemDecoration(new IssueCategoryItemDecoration(getContext(), recyclerView));
     }
 
     @Override

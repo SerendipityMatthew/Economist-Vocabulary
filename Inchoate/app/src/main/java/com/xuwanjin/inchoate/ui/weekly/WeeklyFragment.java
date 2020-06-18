@@ -276,7 +276,7 @@ public class WeeklyFragment extends BaseFragment {
         return urlIdString;
     }
 
-    /*
+    /**
         先查看 load 哪一期, 然后是否从数据库, 还是 网络上 load.
         通过 issueDate 查看是否存在数据库当中,
         通过 urlId 从网络上加载
@@ -348,7 +348,7 @@ public class WeeklyFragment extends BaseFragment {
         mIssueContentRecyclerView.setAdapter(mWeeklyAdapter);
         mWeeklyAdapter.setHeaderView(mSectionHeaderView);
         mWeeklyAdapter.setFooterView(mFooterView);
-        mWeeklyItemDecoration = new WeeklyItemDecoration(mIssueContentRecyclerView, getContext());
+        mWeeklyItemDecoration = new WeeklyItemDecoration(getContext(), mIssueContentRecyclerView);
         mIssueContentRecyclerView.addItemDecoration(mWeeklyItemDecoration);
 
         int sectionToPosition = InchoateApp.getScrollToPosition();
@@ -458,7 +458,7 @@ public class WeeklyFragment extends BaseFragment {
     private Issue getIssueDataFromDB(String issueDate) {
         Issue issue = null;
         InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
-        List<Issue> issueList =helper.queryIssueByFormatIssueDate(issueDate);
+        List<Issue> issueList = helper.queryIssueByFormatIssueDate(issueDate);
         if (issueList != null && issueList.size() > 0) {
             issue = issueList.get(0);
         }

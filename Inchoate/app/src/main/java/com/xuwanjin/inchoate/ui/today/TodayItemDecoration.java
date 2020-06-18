@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -18,7 +19,6 @@ import com.xuwanjin.inchoate.ui.BaseItemDecoration;
  */
 public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
     public static final String TAG = "TodayItemDecoration";
-    public Context mContext;
     private int mItemHeaderHeight = 0;
     Paint mItemHeaderPaint;
     private Rect mTextRect;
@@ -26,8 +26,8 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
     private Paint mLinePaint;
 
 
-    public TodayItemDecoration(Context context) {
-        this.mContext = context;
+    public TodayItemDecoration(Context context, RecyclerView recyclerView) {
+        super(context, recyclerView);
         this.mItemHeaderHeight = dip2px(mContext, 40);
 
         mItemHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -76,7 +76,7 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
     }
 
     @Override
-    protected boolean isSkipDraw(int position, BaseAdapter adapter) {
+    protected boolean isSkipDraw(int position) {
         if (position == 0) {
             return true;
         }
@@ -96,11 +96,6 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
         canvas.drawRect(0, 0, parent.getWidth(), dip2px(mContext, 10), paintBlack);
         canvas.drawRect(0, 20, parent.getWidth(), mItemHeaderHeight, greenPaint);
         canvas.drawText(itemHeaderTitle, 50, y, mTextPaint);
-    }
-
-    @Override
-    public String getAdapterClassName() {
-        return TodayNewsAdapter.class.getName();
     }
 
     @Override

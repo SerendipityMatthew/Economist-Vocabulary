@@ -154,12 +154,12 @@ public class ArticleFragment extends BaseFragment {
 
     private void setArticleAdapter() {
         mArticleContentAdapter = new ArticleContentAdapter(getContext(), mParagraphList);
-        ArticleItemDecoration articleItemDecoration = new ArticleItemDecoration(mArticleContentRV, getContext());
-        mArticleContentRV.addItemDecoration(articleItemDecoration);
         mArticleContentRV.setAdapter(mArticleContentAdapter);
         mArticleContentAdapter.setHeaderView(mArticleContentHeaderView);
         mArticleContentAdapter.setFooterView(mArticleContentFooterView);
         mArticleContentAdapter.setArticle(mArticle);
+        ArticleItemDecoration articleItemDecoration = new ArticleItemDecoration(getContext(), mArticleContentRV);
+        mArticleContentRV.addItemDecoration(articleItemDecoration);
     }
 
     @Override
@@ -181,7 +181,7 @@ public class ArticleFragment extends BaseFragment {
         mCollectedVocabularyList.addAll(InchoateApp.sCollectedVocabularyList);
     }
 
-    /*
+    /**
       paragraphList                   VocabularyList
       paragraph 01                    incendiary
       paragraph 02                    hoodlum

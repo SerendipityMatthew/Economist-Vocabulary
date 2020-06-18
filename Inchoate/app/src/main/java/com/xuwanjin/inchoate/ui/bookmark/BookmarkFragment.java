@@ -114,7 +114,7 @@ public class BookmarkFragment extends BaseFragment {
 
     private void updateFragmentContent(List<Article> articleList) {
         Log.d(TAG, "updateFragmentContent: articleList = " + articleList.size());
-        mBookmarkRecycleView.addItemDecoration(new BookmarkItemDecoration(mBookmarkRecycleView, getContext()));
+        mBookmarkRecycleView.addItemDecoration(new BookmarkItemDecoration(getContext(), mBookmarkRecycleView));
         mBookmarkAdapter.updateData(articleList);
     }
 

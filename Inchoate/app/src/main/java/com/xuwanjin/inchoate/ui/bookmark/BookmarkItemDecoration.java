@@ -10,28 +10,22 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.xuwanjin.inchoate.ui.BaseAdapter;
 import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
 /**
  * @author Matthew Xu
  */
 public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> {
-    private RecyclerView mRecyclerView;
-    private BookmarkAdapter mAdapter;
     private RecyclerView.LayoutManager mManager;
     private int mItemHeaderHeight = -1;
-    private Context mContext;
     private Paint mItemHeaderPaint;
     private Paint mTextPaint;
     private Paint mLinePaint;
     private Rect mTextRect;
 
-    public BookmarkItemDecoration(RecyclerView recyclerView, Context context) {
-        this.mAdapter = (BookmarkAdapter) recyclerView.getAdapter();
-        this.mRecyclerView = recyclerView;
+    public BookmarkItemDecoration( Context context, RecyclerView recyclerView) {
+        super(context, recyclerView);
         this.mManager = recyclerView.getLayoutManager();
-        this.mContext = context;
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mLinePaint.setColor(Color.GRAY);
 
@@ -101,11 +95,6 @@ public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> 
     }
 
     @Override
-    public String getAdapterClassName() {
-        return BookmarkAdapter.class.getName();
-    }
-
-    @Override
     public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.onDraw(canvas, parent, state);
         int count = parent.getChildCount();
@@ -130,8 +119,8 @@ public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> 
     }
 
     @Override
-    protected boolean isSkipDraw(int position, BaseAdapter adapter) {
-        if (position == adapter.getItemCount() - 1) {
+    protected boolean isSkipDraw(int position) {
+        if (position == mAdapter.getItemCount() - 1) {
             return true;
         }
         return false;

@@ -53,8 +53,8 @@ public class TodayFragment extends BaseFragment {
         manager.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerViewTodayNews.setLayoutManager(manager);
         mTodayNewsAdapter = new TodayNewsAdapter(getContext());
-        TodayItemDecoration todayItemDecoration = new TodayItemDecoration(getContext());
         mRecyclerViewTodayNews.setAdapter(mTodayNewsAdapter);
+        TodayItemDecoration todayItemDecoration = new TodayItemDecoration(getContext(), mRecyclerViewTodayNews);
         mRecyclerViewTodayNews.addItemDecoration(todayItemDecoration);
     }
 

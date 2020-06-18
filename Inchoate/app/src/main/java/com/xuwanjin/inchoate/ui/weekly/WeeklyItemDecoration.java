@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -18,23 +19,19 @@ import com.xuwanjin.inchoate.ui.BaseItemDecoration;
  * @author Matthew Xu
  */
 public class WeeklyItemDecoration extends BaseItemDecoration<WeeklyAdapter> {
-    private RecyclerView mRecyclerView;
-    private WeeklyAdapter mAdapter;
+    public static final String TAG = "WeeklyItemDecoration";
     private RecyclerView.LayoutManager mManager;
     private Paint mItemHeaderPaint;
     private Paint mTextPaint;
     private int mItemHeaderHeight;
-    private Context mContext;
     private Rect mTextRect;
     // 每一项的分割线
     private Paint mLinePaint;
 
 
-    public WeeklyItemDecoration(RecyclerView mRecyclerView, Context context) {
-        this.mAdapter = (WeeklyAdapter) mRecyclerView.getAdapter();
-        this.mRecyclerView = mRecyclerView;
+    public WeeklyItemDecoration(Context context, RecyclerView recyclerView) {
+        super(context, recyclerView);
         this.mManager = mRecyclerView.getLayoutManager();
-        this.mContext = context;
 
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mLinePaint.setColor(Color.GRAY);
@@ -104,18 +101,20 @@ public class WeeklyItemDecoration extends BaseItemDecoration<WeeklyAdapter> {
     }
 
     @Override
-    protected boolean isSkipDraw(int position, BaseAdapter adapter) {
+    protected boolean isSkipDraw(int position) {
         if (position == 0) {
             return true;
         }
-        if (position == adapter.getItemCount() - 1) {
+        if (position == mAdapter.getItemCount() - 1) {
             return true;
         }
         return false;
     }
 
-    // 绘制的东西会在显示的 item 的上面, 也就说绘制的东西遮住 item 的显示
-    // 在这里我们绘制在手机界面上可见的 item 上面画一个 header. 因为 header 需要在 item 的上面显示
+    /**
+     *   绘制的东西会在显示的 item 的上面, 也就说绘制的东西遮住 item 的显示
+     *   在这里我们绘制在手机界面上可见的 item 上面画一个 header. 因为 header 需要在 item 的上面显示
+     */
     @Override
     public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
                                @NonNull RecyclerView.State state, WeeklyAdapter adapter, int position) {
@@ -149,8 +148,4 @@ public class WeeklyItemDecoration extends BaseItemDecoration<WeeklyAdapter> {
         }
     }
 
-    @Override
-    public String getAdapterClassName() {
-        return WeeklyAdapter.class.getName();
-    }
 }

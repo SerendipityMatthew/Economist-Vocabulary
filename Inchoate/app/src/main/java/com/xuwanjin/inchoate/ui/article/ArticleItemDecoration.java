@@ -65,15 +65,6 @@ public class ArticleItemDecoration extends RecyclerView.ItemDecoration {
                 canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), mItemHeaderPaint);
                 canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.getTop(), mLinePaint);
             }
-
-//            if (isSkipDraw(position)) {
-//                return;
-//            }
-//            int y = childView.getTop() - dip2px(mContext, 40);
-//            Paint spacePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//            spacePaint.setColor(Color.RED);
-//            canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), spacePaint);
-//            canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.getTop(), mLinePaint);
         }
 
     }
@@ -88,19 +79,16 @@ public class ArticleItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void onDrawOver(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.onDrawOver(canvas, parent, state);
-
         if (parent.getAdapter() instanceof ArticleContentAdapter) {
             ArticleContentAdapter adapter = (ArticleContentAdapter) parent.getAdapter();
             int position = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
             if (isSkipDraw(position)) {
                 return;
             }
-            View childView = parent.findViewHolderForAdapterPosition(position).itemView;
             int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
             String paragraph = adapter.getDataList().get(position - 1).paragraph.toString();
             int paragraphWordCount = getArticleWordCount(adapter.getDataList());
 
-            // 如果把下面的注释掉, 会出现即使下一个分类小组没有滑动到顶部, 顶部的 stick header 会消失
             Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
             paint.setColor(Color.RED);
 

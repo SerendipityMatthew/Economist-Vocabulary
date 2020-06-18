@@ -52,7 +52,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
     protected abstract int getLayoutItemResId();
 
     /**
-     *
+     *  抽象每一个 Adapter 的 ViewHolder, 让子类提供 ViewHolder
      * @param view Adapter 的布局文件生成的 view
      * @param isHeaderOrFooter 是否是 HeaderView 还是 FooterView
      * @return 返回相应 Adapter 需要的 ViewHolder

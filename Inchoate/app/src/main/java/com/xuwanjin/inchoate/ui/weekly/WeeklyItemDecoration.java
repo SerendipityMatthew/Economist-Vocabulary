@@ -17,7 +17,7 @@ import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 /**
  * @author Matthew Xu
  */
-public class StickHeaderDecoration extends BaseItemDecoration<WeeklyAdapter> {
+public class WeeklyItemDecoration extends BaseItemDecoration<WeeklyAdapter> {
     private RecyclerView mRecyclerView;
     private WeeklyAdapter mAdapter;
     private RecyclerView.LayoutManager mManager;
@@ -30,7 +30,7 @@ public class StickHeaderDecoration extends BaseItemDecoration<WeeklyAdapter> {
     private Paint mLinePaint;
 
 
-    public StickHeaderDecoration(RecyclerView mRecyclerView, Context context) {
+    public WeeklyItemDecoration(RecyclerView mRecyclerView, Context context) {
         this.mAdapter = (WeeklyAdapter) mRecyclerView.getAdapter();
         this.mRecyclerView = mRecyclerView;
         this.mManager = mRecyclerView.getLayoutManager();

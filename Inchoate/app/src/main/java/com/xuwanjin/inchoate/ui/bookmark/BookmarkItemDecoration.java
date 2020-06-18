@@ -16,7 +16,7 @@ import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 /**
  * @author Matthew Xu
  */
-public class StickHeaderDecoration extends BaseItemDecoration<BookmarkAdapter> {
+public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> {
     private RecyclerView mRecyclerView;
     private BookmarkAdapter mAdapter;
     private RecyclerView.LayoutManager mManager;
@@ -27,7 +27,7 @@ public class StickHeaderDecoration extends BaseItemDecoration<BookmarkAdapter> {
     private Paint mLinePaint;
     private Rect mTextRect;
 
-    public StickHeaderDecoration(RecyclerView recyclerView, Context context) {
+    public BookmarkItemDecoration(RecyclerView recyclerView, Context context) {
         this.mAdapter = (BookmarkAdapter) recyclerView.getAdapter();
         this.mRecyclerView = recyclerView;
         this.mManager = recyclerView.getLayoutManager();

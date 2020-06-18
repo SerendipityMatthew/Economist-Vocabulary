@@ -84,7 +84,7 @@ public class WeeklyFragment extends BaseFragment {
     private TextView mMagazineHeadline;
     private ImageView mMagazineCover;
     private WeeklyAdapter mWeeklyAdapter;
-    private StickHeaderDecoration mStickHeaderDecoration;
+    private WeeklyItemDecoration mWeeklyItemDecoration;
 
     public DownloadService mDownloadService;
     private static Issue sIssueCache = new Issue();
@@ -348,8 +348,8 @@ public class WeeklyFragment extends BaseFragment {
         mIssueContentRecyclerView.setAdapter(mWeeklyAdapter);
         mWeeklyAdapter.setHeaderView(mSectionHeaderView);
         mWeeklyAdapter.setFooterView(mFooterView);
-        mStickHeaderDecoration = new StickHeaderDecoration(mIssueContentRecyclerView, getContext());
-        mIssueContentRecyclerView.addItemDecoration(mStickHeaderDecoration);
+        mWeeklyItemDecoration = new WeeklyItemDecoration(mIssueContentRecyclerView, getContext());
+        mIssueContentRecyclerView.addItemDecoration(mWeeklyItemDecoration);
 
         int sectionToPosition = InchoateApp.getScrollToPosition();
         Log.d(TAG, "onCreateView: sectionToPosition = " + sectionToPosition);

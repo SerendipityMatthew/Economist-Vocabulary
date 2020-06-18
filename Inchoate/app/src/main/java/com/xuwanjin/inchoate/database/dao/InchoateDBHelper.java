@@ -274,7 +274,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
 
 
     public Cursor queryArticleByIssueDateResultCursor(String issueDate) {
-        // //        "May 9th 2020"
+        //    "May 9th 2020"
         sDatabase = openInchoateDB();
         // Select * from article where issue_date='' and section='' and title = '' ;
         String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE "
@@ -304,9 +304,11 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    // Editor’s note: The Economist is making some of its most important coverage of the covid-19 pandemic freely
-    // available to readers of The Economist Today
-    //对于像这样的段落, 机会每一篇文章都有. 需要 articleRowID 和 Paragraph 内容同时确定
+    /*
+        Editor’s note: The Economist is making some of its most important coverage of the covid-19 pandemic freely
+        available to readers of The Economist Today
+        对于像这样的段落, 几乎每一篇文章都有. 需要 articleRowID 和 Paragraph 内容同时确定
+     */
     private List<Paragraph> queryParagraphByContentAndArticleID(String content, long articleRowID) {
         // 如果 Paragraph 的表里查不出一个含有 articleRowID 的数据,
         // 表示这个 article 的 paragraph 没有被存入过
@@ -381,7 +383,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         return rowID;
     }
 
-    public List<Vocabulary> getVocabulary(String vocabularyContent) {
+    public List<Vocabulary> queryVocabulary(String vocabularyContent) {
         sDatabase = openInchoateDB();
         // Select * from vocabulary where vocabulary_content='';
         String queryByArticleID = "SELECT * FROM " + TABLE_NAME_VOCABULARY + " WHERE "
@@ -414,6 +416,13 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         return vocabularyList;
     }
 
+    /*
+        1. 查询单词是否存在
+        2. 单词存在, 是否单词所在的句子是否存在 (文章的链接, 文章的期刊所在的时期, 文章所在的 section)
+        2. 单词存在, 是否单词所在的句子是否存在 (文章的链接, 文章的期刊所在的时期, 文章所在的 section)
+        3. 单词存在, 是否单词所在的段落是否存在
+        TODO
+     */
     public boolean isVocabularyExistedInDB(String vocabularyContent, int limit) {
         sDatabase = openInchoateDB();
         // Select * from vocabulary where vocabulary_content='';

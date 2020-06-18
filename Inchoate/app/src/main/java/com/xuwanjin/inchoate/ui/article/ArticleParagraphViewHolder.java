@@ -33,6 +33,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.xuwanjin.inchoate.InchoateApp.NAVIGATION_CONTROLLER;
 
+/**
+ * @author Matthew Xu
+ */
 public class ArticleParagraphViewHolder extends BaseViewHolder {
     public static final String TAG = "ArticleParagraphViewHolder";
     public TextView paragraphTextView;
@@ -59,6 +62,7 @@ public class ArticleParagraphViewHolder extends BaseViewHolder {
         int wordEndTemp = wordEnd;
         // Perform your definition lookup with the selected text
         final CharSequence selectedText = paragraphTextView.getText().subSequence(wordStart, wordEnd);
+        // 说明选择的不是一个单词,
         if (selectedText.toString().contains(" ")) {
             Snackbar.make(paragraphTextView, "please select a word", Snackbar.LENGTH_SHORT).show();
         } else {

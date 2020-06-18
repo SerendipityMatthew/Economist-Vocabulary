@@ -14,7 +14,7 @@ import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.ui.BaseAdapter;
 
-public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article>{
+public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article> {
 
     public WeeklyAdapter(Context context) {
         super(context, null);
@@ -41,63 +41,61 @@ public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article>{
 
     @Override
     public void onBindViewHolderImpl(@NonNull WeeklyViewHolder holder, final int position) {
-        int viewType = getItemViewType(position);
-        if (viewType == TYPE_NORMAL) {
-            //  mArticleList.get(position) 会出现第一个 item 不显示的状况
-            Article article = mDataList.get(position - 1);
-            Glide.with(mContext)
-                    .load(article.mainArticleImage)
-                    .error(R.mipmap.the_economist)
-                    .placeholder(R.mipmap.the_economist)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(holder.article_image);
-            holder.articleTitle.setText(article.title);
-            holder.articleFlyTitle.setText(article.flyTitle);
-            holder.dateAndReadTime.setText(position - 1 + " min read");
-            View.OnClickListener viewArticleOnClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (article == null
-                            || article.title == null
-                            || article.title.equals("")
-                            || article.paragraphList == null) {
-                        return;
-                    }
-                    InchoateApp.setDisplayArticleCache(article);
-                    Utils.navigationController(
-                            InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
+        //  mArticleList.get(position) 会出现第一个 item 不显示的状况
+        Article article = mDataList.get(position - 1);
+        Glide.with(mContext)
+                .load(article.mainArticleImage)
+                .error(R.mipmap.the_economist)
+                .placeholder(R.mipmap.the_economist)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.article_image);
+        holder.articleTitle.setText(article.title);
+        holder.articleFlyTitle.setText(article.flyTitle);
+        holder.dateAndReadTime.setText(position - 1 + " min read");
+        View.OnClickListener viewArticleOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (article == null
+                        || article.title == null
+                        || article.title.equals("")
+                        || article.paragraphList == null) {
+                    return;
                 }
+                InchoateApp.setDisplayArticleCache(article);
+                Utils.navigationController(
+                        InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
+            }
 
-            };
-            holder.titleAndMainImage.setOnClickListener(viewArticleOnClickListener);
+        };
+        holder.titleAndMainImage.setOnClickListener(viewArticleOnClickListener);
 
-            Glide.with(mContext)
-                    .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.mipmap.bookmark_white)
-                    .into(holder.bookmark);
+        Glide.with(mContext)
+                .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.mipmap.bookmark_white)
+                .into(holder.bookmark);
 
-            holder.bookmark.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (article.isBookmark) {
-                        article.isBookmark = false;
-                    } else {
-                        article.isBookmark = true;
-                    }
-                    Glide.with(mContext)
-                            .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .placeholder(R.mipmap.bookmark_white)
-                            .into(holder.bookmark);
+        holder.bookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (article.isBookmark) {
+                    article.isBookmark = false;
+                } else {
+                    article.isBookmark = true;
+                }
+                Glide.with(mContext)
+                        .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.mipmap.bookmark_white)
+                        .into(holder.bookmark);
 
-                    InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(mContext);
-                    dbHelper.setBookmarkStatus(article, article.isBookmark);
+                InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(mContext);
+                dbHelper.setBookmarkStatus(article, article.isBookmark);
 //                    dbHelper.close();
-                }
-            });
-        }
+            }
+        });
     }
+
 
     @Override
     public String getGroupName(int position) {
@@ -129,5 +127,14 @@ public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article>{
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected boolean isBindViewItem(int position) {
+        int viewType = getItemViewType(position);
+        if (viewType == TYPE_NORMAL) {
+            return true;
+        }
+        return false;
     }
 }

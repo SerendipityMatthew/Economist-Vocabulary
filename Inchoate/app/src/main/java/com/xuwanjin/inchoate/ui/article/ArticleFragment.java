@@ -59,6 +59,9 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.xuwanjin.inchoate.Utils.getDurationFormat;
 
+/**
+ * @author Matthew Xu
+ */
 public class ArticleFragment extends BaseFragment {
     public static final String TAG = "ArticleFragment";
     public static final String DIGITAL_PATTERN = "\".*\\\\\\\\d+.*\"";

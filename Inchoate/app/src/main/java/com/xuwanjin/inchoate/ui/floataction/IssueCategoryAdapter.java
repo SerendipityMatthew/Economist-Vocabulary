@@ -41,22 +41,28 @@ public class IssueCategoryAdapter extends BaseAdapter<IssueCategoryViewHolder, S
 
     @Override
     public void onBindViewHolderImpl(@NonNull IssueCategoryViewHolder holder, final int position) {
+        int revisedPosition = position;
+        if (mHeaderView != null) {
+            revisedPosition = position - 1;
+        }
+        holder.categoryMenu.setText(mDataList.get(revisedPosition));
+        holder.categoryMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InchoateApp.setScrollToPosition(position);
+                Log.d(TAG, "onClick:  position = " + position);
+                Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_weekly);
+            }
+        });
+    }
+
+    @Override
+    protected boolean isBindViewItem(int position) {
         int viewType = getItemViewType(position);
         if (viewType == TYPE_NORMAL) {
-            int revisedPosition = position;
-            if (mHeaderView != null) {
-                revisedPosition = position - 1;
-            }
-            holder.categoryMenu.setText(mDataList.get(revisedPosition));
-            holder.categoryMenu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    InchoateApp.setScrollToPosition(position);
-                    Log.d(TAG, "onClick:  position = " + position);
-                    Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_weekly);
-                }
-            });
+            return true;
         }
+        return false;
     }
 
     @Override

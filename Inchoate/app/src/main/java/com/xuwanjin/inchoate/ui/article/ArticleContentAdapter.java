@@ -14,6 +14,9 @@ import com.xuwanjin.inchoate.ui.BaseAdapter;
 
 import java.util.List;
 
+/**
+ * @author Matthew Xu
+ */
 public class ArticleContentAdapter extends BaseAdapter<ArticleParagraphViewHolder, Paragraph> {
     public static final String TAG = "ArticleContentAdapter";
     private Article mArticle;
@@ -22,7 +25,7 @@ public class ArticleContentAdapter extends BaseAdapter<ArticleParagraphViewHolde
         super(context, paragraphList);
     }
 
-    public void setArticle(Article article){
+    public void setArticle(Article article) {
         this.mArticle = article;
     }
 
@@ -44,15 +47,21 @@ public class ArticleContentAdapter extends BaseAdapter<ArticleParagraphViewHolde
 
     @Override
     public void onBindViewHolderImpl(@NonNull ArticleParagraphViewHolder holder, int position) {
-        if (position >= 1 && position < getItemCount() - 1) {
-            Paragraph paragraph = mDataList.get(position - 1);
-            holder.paragraphTextView.setText(paragraph.paragraph, TextView.BufferType.SPANNABLE);
-            holder.setCurrentParagraph(paragraph);
-        }
+        Paragraph paragraph = mDataList.get(position - 1);
+        holder.paragraphTextView.setText(paragraph.paragraph, TextView.BufferType.SPANNABLE);
+        holder.setCurrentParagraph(paragraph);
     }
 
     @Override
     public boolean isItemHeader(int position) {
+        return false;
+    }
+
+    @Override
+    protected boolean isBindViewItem(int position) {
+        if (position >= 1 && position < getItemCount() - 1) {
+            return true;
+        }
         return false;
     }
 }

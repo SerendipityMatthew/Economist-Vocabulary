@@ -82,7 +82,18 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
 
     @Override
     public void onBindViewHolder(@NonNull T holder, int position) {
-        onBindViewHolderImpl(holder, position);
+        if (isBindViewItem(position)){
+            onBindViewHolderImpl(holder, position);
+        }
+    }
+
+    /**
+     * 绘制 item 的条件
+     * @param position
+     * @return
+     */
+    protected boolean isBindViewItem(int position){
+        return true;
     }
 
 

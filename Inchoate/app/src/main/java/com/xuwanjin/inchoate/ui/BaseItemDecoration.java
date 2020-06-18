@@ -21,9 +21,14 @@ public abstract class BaseItemDecoration<T extends BaseAdapter> extends Recycler
         super.onDrawOver(canvas, parent, state);
         if (isAttachedAdapter(parent)) {
             int position = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
-            onDrawOverImpl(canvas, parent, state, (T) getAdapter(parent), position);
+            T adapter = (T) getAdapter(parent);
+            if (!isSkipDraw(position, adapter)) {
+                onDrawOverImpl(canvas, parent, state, adapter, position);
+            }
         }
     }
+
+    protected abstract boolean isSkipDraw(int position, BaseAdapter adapter);
 
     /**
      * onDrawOver 的具体实现

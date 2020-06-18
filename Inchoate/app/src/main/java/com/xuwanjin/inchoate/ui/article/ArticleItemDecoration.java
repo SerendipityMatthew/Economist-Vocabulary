@@ -8,10 +8,10 @@ import android.graphics.Rect;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xuwanjin.inchoate.model.Paragraph;
+import com.xuwanjin.inchoate.ui.BaseAdapter;
 import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
         for (int i = 0; i < count; i++) {
             View childView = parent.getChildAt(i);
             int position = parent.getChildLayoutPosition(childView);
-            if (!isSkipDraw(position)) {
+            if (!isSkipDraw(position, null)) {
                 int y = childView.getTop() - mItemHeaderHeight;
                 canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), mItemHeaderPaint);
                 canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.getTop(), mLinePaint);
@@ -67,11 +67,13 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
     }
 
     @Override
+    protected boolean isSkipDraw(int position, BaseAdapter adapter) {
+        return false;
+    }
+
+    @Override
     public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
                                @NonNull RecyclerView.State state, ArticleContentAdapter adapter, int position) {
-        if (isSkipDraw(position)) {
-            return;
-        }
         int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
         String paragraph = adapter.getDataList().get(position - 1).paragraph.toString();
         int paragraphWordCount = getArticleWordCount(adapter.getDataList());
@@ -86,12 +88,6 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
         canvas.drawText(displayString, 50, y, mTextPaint);
     }
 
-    public boolean isSkipDraw(int position) {
-        if (position == 0) {
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public String getAdapterClassName() {
@@ -112,7 +108,7 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
         super.getItemOffsets(outRect, view, parent, state);
         if (parent.getAdapter() instanceof ArticleContentAdapter) {
             int position = parent.getChildLayoutPosition(view);
-            if (isSkipDraw(position)) {
+            if (isSkipDraw(position, null)) {
                 return;
             } else {
                 outRect.top = mItemHeaderHeight;

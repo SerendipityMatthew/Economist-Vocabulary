@@ -8,9 +8,9 @@ import android.graphics.Rect;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.xuwanjin.inchoate.ui.BaseAdapter;
 import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
 
@@ -103,6 +103,17 @@ public class StickHeaderDecoration extends BaseItemDecoration<WeeklyAdapter> {
         }
     }
 
+    @Override
+    protected boolean isSkipDraw(int position, BaseAdapter adapter) {
+        if (position == 0) {
+            return true;
+        }
+        if (position == adapter.getItemCount() - 1) {
+            return true;
+        }
+        return false;
+    }
+
     // 绘制的东西会在显示的 item 的上面, 也就说绘制的东西遮住 item 的显示
     // 在这里我们绘制在手机界面上可见的 item 上面画一个 header. 因为 header 需要在 item 的上面显示
     @Override
@@ -110,17 +121,12 @@ public class StickHeaderDecoration extends BaseItemDecoration<WeeklyAdapter> {
                                @NonNull RecyclerView.State state, WeeklyAdapter adapter, int position) {
         // 当 RecyclerView 含有 HeaderView 的时候, 第一个可见的 View, 不是里面的填充item, 而是 eaderView
         // 因此绘制第一个 Group 的 headerView 时候, 需要在大的 HeaderView 的下方
-        if (parent.findViewHolderForAdapterPosition(position) == null){
+        if (parent.findViewHolderForAdapterPosition(position) == null) {
             return;
         }
         boolean isHeader = adapter.isItemHeader(position);
         // position 为零表示, 这个是 HeaderView, 不需要再 HeaderView 上面画一个 itemHeader
-        if (position == 0) {
-            return;
-        }
-        if (position == adapter.getItemCount()-1) {
-            return;
-        }
+
 
         View view = parent.findViewHolderForAdapterPosition(position).itemView;
         /*

@@ -5,14 +5,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.ui.BaseAdapter;
 import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
 /**
@@ -77,7 +75,8 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
         }
     }
 
-    public boolean isSkipDraw(int position) {
+    @Override
+    protected boolean isSkipDraw(int position, BaseAdapter adapter) {
         if (position == 0) {
             return true;
         }

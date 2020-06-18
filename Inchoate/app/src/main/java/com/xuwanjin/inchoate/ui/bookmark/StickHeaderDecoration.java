@@ -8,9 +8,9 @@ import android.graphics.Rect;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.xuwanjin.inchoate.ui.BaseAdapter;
 import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
 /**
@@ -85,9 +85,6 @@ public class StickHeaderDecoration extends BaseItemDecoration<BookmarkAdapter> {
 
         boolean isHeader = adapter.isItemHeader(position);
         // position 为零表示, 这个是 HeaderView, 不需要再 HeaderView 上面画一个 itemHeader
-        if (position == adapter.getItemCount() - 1) {
-            return;
-        }
 
         String groupName = adapter.getGroupName(position);
         int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
@@ -130,5 +127,13 @@ public class StickHeaderDecoration extends BaseItemDecoration<BookmarkAdapter> {
                 canvas.drawRect(50, view.getTop() - 1, parent.getWidth(), view.getTop(), mLinePaint);
             }
         }
+    }
+
+    @Override
+    protected boolean isSkipDraw(int position, BaseAdapter adapter) {
+        if (position == adapter.getItemCount() - 1) {
+            return true;
+        }
+        return false;
     }
 }

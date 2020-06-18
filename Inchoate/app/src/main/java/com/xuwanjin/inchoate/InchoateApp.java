@@ -17,7 +17,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class InchoateApp extends Application {
     private static final String TAG = "InchoateApp";
@@ -30,41 +33,43 @@ public class InchoateApp extends Application {
     public static List<Article> sAudioPlayingArticleListCache;
     public static List<String> sCollectedVocabularyList;
     public static int SCROLL_TO_POSITION = -1;
+    private ScheduledExecutorService mExecutorService = Executors.newScheduledThreadPool(2);
+    Runnable mOpenDatabaseRunnable = new Runnable() {
+        @Override
+        public void run() {
+            InchoateDBHelper helper = InchoateDBHelper.getInstance(getApplicationContext());
+            helper.getReadableDatabase();
+//                helper.close();
+        }
+    };
+
+    Runnable mOpenVocabularyRunnable = new Runnable() {
+        @Override
+        public void run() {
+            InputStream inputStream = getApplicationContext().getResources().openRawResource(R.raw.oalecd_history_20200530);
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            String str = null;
+            HashSet<String> collectedVocabulary = new HashSet<>();
+
+            try {
+                while ((str = bufferedReader.readLine()) != null) {
+                    collectedVocabulary.add(str);
+                }
+            } catch (IOException e) {
+
+            }
+            sCollectedVocabularyList = new ArrayList<>(collectedVocabulary);
+        }
+    };
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Runnable openDatabaseRunnable = new Runnable() {
-            @Override
-            public void run() {
-                InchoateDBHelper helper = InchoateDBHelper.getInstance(getApplicationContext());
-                helper.getReadableDatabase();
-//                helper.close();
-            }
-        };
-
-        Executors.newSingleThreadExecutor().submit(openDatabaseRunnable);
         mInchoateApp = this;
-        Runnable openVocabularyRunnable = new Runnable() {
-            @Override
-            public void run() {
-                InputStream inputStream = getApplicationContext().getResources().openRawResource(R.raw.oalecd_history_20200530);
-                InputStreamReader reader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(reader);
-                String str = null;
-                HashSet<String> collectedVocabulary = new HashSet<>();
 
-                try {
-                    while ((str = bufferedReader.readLine()) != null) {
-                        collectedVocabulary.add(str);
-                    }
-                } catch (IOException e) {
-
-                }
-                sCollectedVocabularyList = new ArrayList<>(collectedVocabulary);
-            }
-        };
-        Executors.newSingleThreadExecutor().submit(openVocabularyRunnable);
+        mExecutorService.schedule(mOpenDatabaseRunnable, 3, TimeUnit.SECONDS);
+        mExecutorService.schedule(mOpenVocabularyRunnable, 3, TimeUnit.SECONDS);
 //        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy
 //                .Builder()
 //                .detectNetwork()

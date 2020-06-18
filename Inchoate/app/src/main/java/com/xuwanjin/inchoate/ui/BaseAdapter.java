@@ -45,14 +45,39 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
         return getViewHolder(view, false);
     }
 
+    /**
+     * 提供给 Adapter 的布局 id,
+     * @return 返回 资源的 id
+     */
     protected abstract int getLayoutItemResId();
 
+    /**
+     *
+     * @param view Adapter 的布局文件生成的 view
+     * @param isHeaderOrFooter 是否是 HeaderView 还是 FooterView
+     * @return 返回相应 Adapter 需要的 ViewHolder
+     */
     protected abstract T getViewHolder(View view, boolean isHeaderOrFooter);
 
+    /**
+     *
+     * @param position
+     * @return
+     */
     public abstract String getGroupName(int position);
 
+    /**
+     *
+     * @param holder
+     * @param position
+     */
     protected abstract void onBindViewHolderImpl(T holder, int position);
 
+    /**
+     *
+     * @param position
+     * @return
+     */
     public abstract boolean isItemHeader(int position);
 
     @Override
@@ -84,6 +109,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
         return mDataList == null ? 0 : mDataList.size();
     }
 
+    @Override
     public int getItemViewType(int position) {
         if (mHeaderView == null && mFooterView == null) {
             return TYPE_NORMAL;

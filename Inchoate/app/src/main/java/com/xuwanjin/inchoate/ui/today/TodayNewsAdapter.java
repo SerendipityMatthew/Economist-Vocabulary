@@ -62,10 +62,12 @@ public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> 
         return mDataList;
     }
 
+    @Override
     public String getGroupName(int position) {
         return mDataList.get(position).headline;
     }
 
+    @Override
     public boolean isItemHeader(int position) {
         if (position == 0) {
             return true;

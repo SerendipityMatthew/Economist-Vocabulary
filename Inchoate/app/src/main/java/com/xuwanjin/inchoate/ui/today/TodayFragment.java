@@ -140,6 +140,7 @@ public class TodayFragment extends BaseFragment {
 
     }
 
+    @Override
     protected List<Article> fetchDataFromDBOrNetwork() {
         String jsonResult = fetchJsonFromServer(Constants.TODAY_SECTION_QUERY_URL);
         Gson gson = getGsonInstance();

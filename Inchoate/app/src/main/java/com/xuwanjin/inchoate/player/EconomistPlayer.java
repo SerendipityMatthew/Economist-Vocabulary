@@ -16,7 +16,7 @@ import java.util.WeakHashMap;
 
 public class EconomistPlayer implements IPlayer, MediaPlayer.OnCompletionListener {
     public static final String TAG = "EconomistPlayer";
-    private static final WeakHashMap<Context, ServiceBinder> serviceWeakHashMap = new WeakHashMap<>();
+    private static final WeakHashMap<Context, ServiceBinder> SERVICE_WEAK_HASHMAP = new WeakHashMap<>();
     private static volatile EconomistPlayer sInstance;
     MediaPlayer mMediaPlayer;
     private List<Callback> mCallbacks = new ArrayList<>(2);

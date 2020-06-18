@@ -51,14 +51,33 @@ public abstract class BaseFragment extends Fragment {
         return mRootView;
     }
 
+    /**
+     * 初始化 Fragment 的 View,
+     * @param view Fragment 布局的根 view
+     */
     protected abstract void initView(View view);
 
+    /**
+     * 加载数据
+     */
     protected abstract void loadData();
 
+    /**
+     * 提供一个 布局的 id 给 Fragment 的 onCreateView 方法
+     * @return 布局的 id
+     */
     protected abstract int getLayoutResId();
 
+    /**
+     * 从服务器或者网络上获取数据的方法
+     * @param <T> 返回数据的泛型, 有时候是 List<Issue> 有时候是 List<Article>
+     * @return 返回界面需要的数据
+     */
     protected abstract <T> T fetchDataFromDBOrNetwork();
 
+    /**
+     * 刚开始的时候, 可以填充一下假数据
+     */
     protected abstract <T> T initFakeData();
 
     protected Gson getGsonInstance() {

@@ -346,6 +346,7 @@ public class EconomistServiceTimberStyle extends Service {
             return mService.get().getDuration();
         }
 
+        @Override
         public void releasePlayer() throws RemoteException {
             mService.get().releasePlayer();
         }

@@ -14,6 +14,10 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder{
             initView();
         }
     }
+
+    /**
+     * find ViewHolder 的所有的 item1
+     */
     protected abstract void initView();
 
 }

@@ -250,6 +250,7 @@ public class WeeklyFragment extends BaseFragment {
         // 延迟插入数据, 防止线程竞争打开数据库的问题.
     }
 
+    @Override
     public Issue fetchDataFromDBOrNetwork() {
         Issue issue;
         getCurrentIssueDateFromPreference();

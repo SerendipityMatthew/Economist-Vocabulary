@@ -30,7 +30,8 @@ public class SelectableTextView extends AppCompatTextView {
     private int mSelectTextFrontColor = Color.WHITE;
     private int mSelectTextBackColor = Color.BLACK;
     private BufferType mBufferType;
-    private OnWordClickListener mOnWordClickListener;
+    private AbstractOnWordClickListener mOnWordClickListener;
+    private static final String SPLIT_VOCABULARY = "[a-zA-Z-']+";
     public SelectableTextView(Context context) {
         super(context);
     }
@@ -50,7 +51,7 @@ public class SelectableTextView extends AppCompatTextView {
     public void setSelectTextFrontColorRes(int selectTextFrontColorRes){
         mSelectTextFrontColor = getContext().getResources().getColor(selectTextFrontColorRes, getContext().getTheme());
     }
-    public void setOnWordClickListener(OnWordClickListener onWordClickListener){
+    public void setOnWordClickListener(AbstractOnWordClickListener onWordClickListener){
         mOnWordClickListener = onWordClickListener;
     }
     @Override
@@ -99,7 +100,7 @@ public class SelectableTextView extends AppCompatTextView {
             return new ArrayList<>();
         }
         List<String> results = new ArrayList<>();
-        Pattern pattern = Pattern.compile("[a-zA-Z-']+");
+        Pattern pattern = Pattern.compile(SPLIT_VOCABULARY);
         Matcher matcher = pattern.matcher(mText);
         while (matcher.find()){
             results.add(matcher.group(0));

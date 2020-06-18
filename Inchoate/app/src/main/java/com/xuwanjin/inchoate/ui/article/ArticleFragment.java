@@ -61,6 +61,7 @@ import static com.xuwanjin.inchoate.Utils.getDurationFormat;
 
 public class ArticleFragment extends BaseFragment {
     public static final String TAG = "ArticleFragment";
+    public static final String DIGITAL_PATTERN = "\".*\\\\\\\\d+.*\"";
     RecyclerView mArticleContentRV;
     public ArticleContentAdapter mArticleContentAdapter;
     public List<Paragraph> mParagraphList;
@@ -328,7 +329,7 @@ public class ArticleFragment extends BaseFragment {
             return true;
         }
         //数字类的去掉
-        Pattern pattern = Pattern.compile(".*\\\\d+.*");
+        Pattern pattern = Pattern.compile(DIGITAL_PATTERN);
         Matcher matcher = pattern.matcher(vocabulary);
         if (matcher.matches()) {
             return true;

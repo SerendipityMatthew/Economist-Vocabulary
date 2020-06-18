@@ -28,6 +28,7 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
     }
 
     //Item header 按照 section, issueDate, bookmarkDate, Topic,
+    @Override
     public String getGroupName(int position) {
         Article article = mDataList.get(position);
         String groupName;
@@ -53,6 +54,7 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
     }
 
 
+    @Override
     public boolean isItemHeader(int position) {
 
         // position == 0 ,是inflater 进去的 HeaderView,

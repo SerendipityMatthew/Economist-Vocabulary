@@ -96,11 +96,12 @@ public class EconomistService extends MediaBrowserServiceCompat implements
         return false;
     }
 
+    @Override
     public boolean pause() {
         return mPlayer.pause();
     }
 
-
+    @Override
     public boolean isPlaying() {
         if (mPlayer != null) {
             return mPlayer.isPlaying();

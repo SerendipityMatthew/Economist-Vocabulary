@@ -99,6 +99,7 @@ public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article>{
         }
     }
 
+    @Override
     public String getGroupName(int position) {
         return mDataList.get(position).section;
     }

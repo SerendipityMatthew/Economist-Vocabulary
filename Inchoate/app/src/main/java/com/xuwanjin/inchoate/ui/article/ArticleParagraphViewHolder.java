@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.xuwanjin.inchoate.InchoateApp.NAVIGATION_CONTROLLER;
 
@@ -88,6 +89,7 @@ public class ArticleParagraphViewHolder extends BaseViewHolder {
                         .show();
             }
 
+            @Override
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
             }

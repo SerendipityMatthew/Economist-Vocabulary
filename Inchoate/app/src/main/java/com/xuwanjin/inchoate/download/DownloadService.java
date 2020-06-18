@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 /*
     输入 issue 下载整个期刊
     输入 Article 下载一篇文章
@@ -79,7 +81,6 @@ public class DownloadService extends Service {
             DownloadTask.enqueue(downloadTasks, downloadListener);
         }
     };
-
     private static final ExecutorService mExecutorService = Executors.newFixedThreadPool(1);
 
     public class LocalBinder extends Binder {

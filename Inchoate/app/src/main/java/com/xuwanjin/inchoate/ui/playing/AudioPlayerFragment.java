@@ -33,6 +33,7 @@ import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
 import com.xuwanjin.inchoate.ui.BaseAdapter;
 import com.xuwanjin.inchoate.ui.BaseFragment;
+import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,7 +46,10 @@ import static com.xuwanjin.inchoate.Constants.INCHOATE_PREFERENCE_FILE_NAME;
 import static com.xuwanjin.inchoate.Constants.REWIND_BY_SECONDS_PREFERENCE;
 import static com.xuwanjin.inchoate.Constants.REWIND_OR_FORWARD_PREFERENCE;
 
-public class AudioPlayerFragment extends BaseFragment<BaseAdapter> implements IPlayer.Callback {
+/**
+ * @author Matthew Xu
+ */
+public class AudioPlayerFragment extends BaseFragment<BaseAdapter, BaseItemDecoration> implements IPlayer.Callback {
     public static final String TAG = "AudioPlayerFragment";
     private IPlayer mPlayService;
     private IEconomistService mEconomistService;

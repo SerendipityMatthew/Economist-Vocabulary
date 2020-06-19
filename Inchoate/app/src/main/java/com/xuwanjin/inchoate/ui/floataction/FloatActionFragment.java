@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Matthew Xu
  */
-public class FloatActionFragment extends BaseFragment<IssueCategoryAdapter> {
+public class FloatActionFragment extends BaseFragment<IssueCategoryAdapter, IssueCategoryItemDecoration> {
     public static final String TAG = "FloatActionFragment";
 
     private List<String> mSectionList = new ArrayList<>();

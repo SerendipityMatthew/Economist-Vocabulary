@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.ui.today.TodayItemDecoration;
 import com.xuwanjin.inchoate.ui.today.TodayNewsAdapter;
 
 import java.io.IOException;
@@ -42,9 +43,10 @@ import okhttp3.Response;
 /**
  * @author Matthew Xu
  */
-public abstract class BaseFragment<T extends BaseAdapter> extends Fragment {
+public abstract class BaseFragment<T extends BaseAdapter, Decoration extends BaseItemDecoration> extends Fragment {
     protected RecyclerView mRecyclerView;
     protected T mBaseAdapter;
+    protected Decoration mBaseItemDecoration;
     private static final int CALL_TIMEOUT = 10;
     private static final int CONNECT_TIMEOUT = 10;
     private static final int READ_TIMEOUT = 10;

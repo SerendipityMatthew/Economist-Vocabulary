@@ -17,6 +17,7 @@ import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.archive.Archive;
 import com.xuwanjin.inchoate.ui.BaseFragment;
+import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * @author Matthew Xu
  */
-public class PreviousFragment extends BaseFragment<PreviousAdapter> {
+public class PreviousFragment extends BaseFragment<PreviousAdapter, BaseItemDecoration> {
     public static final String TAG = "PreviousFragment";
 
     GridLayoutManager mGridLayoutManager;

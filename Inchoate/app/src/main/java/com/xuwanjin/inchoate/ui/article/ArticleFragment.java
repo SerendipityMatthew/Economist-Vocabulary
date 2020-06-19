@@ -62,7 +62,7 @@ import static com.xuwanjin.inchoate.Utils.getDurationFormat;
 /**
  * @author Matthew Xu
  */
-public class ArticleFragment extends BaseFragment<ArticleContentAdapter> {
+public class ArticleFragment extends BaseFragment<ArticleContentAdapter, ArticleItemDecoration> {
     public static final String TAG = "ArticleFragment";
     public static final String DIGITAL_PATTERN = "\".*\\\\\\\\d+.*\"";
     public List<Paragraph> mParagraphList;
@@ -156,8 +156,8 @@ public class ArticleFragment extends BaseFragment<ArticleContentAdapter> {
         mBaseAdapter.setHeaderView(mArticleContentHeaderView);
         mBaseAdapter.setFooterView(mArticleContentFooterView);
         mBaseAdapter.setArticle(mArticle);
-        ArticleItemDecoration articleItemDecoration = new ArticleItemDecoration(getContext(), mRecyclerView);
-        mRecyclerView.addItemDecoration(articleItemDecoration);
+        mBaseItemDecoration = new ArticleItemDecoration(getContext(), mRecyclerView);
+        mRecyclerView.addItemDecoration(mBaseItemDecoration);
     }
 
     @Override

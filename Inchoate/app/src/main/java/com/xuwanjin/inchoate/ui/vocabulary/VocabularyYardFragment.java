@@ -9,6 +9,7 @@ import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Vocabulary;
 import com.xuwanjin.inchoate.ui.BaseFragment;
+import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.stream.Stream;
 /**
  * @author Matthew Xu
  */
-public class VocabularyYardFragment extends BaseFragment<VocabularyYardAdapter> {
+public class VocabularyYardFragment extends BaseFragment<VocabularyYardAdapter, BaseItemDecoration> {
     private static List<Vocabulary> mVocabularyList;
 
     @Override

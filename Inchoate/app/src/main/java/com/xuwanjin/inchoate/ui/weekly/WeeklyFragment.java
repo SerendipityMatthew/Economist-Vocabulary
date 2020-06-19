@@ -73,7 +73,7 @@ import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setE
 /**
  * @author Matthew Xu
  */
-public class WeeklyFragment extends BaseFragment<WeeklyAdapter> {
+public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecoration> {
     public static final String TAG = "WeeklyFragment";
     private View mSectionHeaderView;
     private TextView mPreviousEdition;
@@ -83,7 +83,6 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter> {
     private TextView mIssueDate;
     private TextView mMagazineHeadline;
     private ImageView mMagazineCover;
-    private WeeklyItemDecoration mWeeklyItemDecoration;
 
     public DownloadService mDownloadService;
     private static Issue sIssueCache = new Issue();
@@ -347,8 +346,8 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter> {
         mRecyclerView.setAdapter(mBaseAdapter);
         mBaseAdapter.setHeaderView(mSectionHeaderView);
         mBaseAdapter.setFooterView(mFooterView);
-        mWeeklyItemDecoration = new WeeklyItemDecoration(getContext(), mRecyclerView);
-        mRecyclerView.addItemDecoration(mWeeklyItemDecoration);
+        mBaseItemDecoration = new WeeklyItemDecoration(getContext(), mRecyclerView);
+        mRecyclerView.addItemDecoration(mBaseItemDecoration);
 
         int sectionToPosition = InchoateApp.getScrollToPosition();
         Log.d(TAG, "onCreateView: sectionToPosition = " + sectionToPosition);

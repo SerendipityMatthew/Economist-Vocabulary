@@ -30,7 +30,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * @author Matthew Xu
  */
-public class BookmarkFragment extends BaseFragment<BookmarkAdapter> {
+public class BookmarkFragment extends BaseFragment<BookmarkAdapter, BookmarkItemDecoration> {
     private static final String TAG = "BookmarkFragment";
     private TextView mTextView;
     private Disposable mDisposable;

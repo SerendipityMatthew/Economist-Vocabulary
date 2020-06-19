@@ -34,7 +34,7 @@ import static com.xuwanjin.inchoate.Utils.getTodayArticleList;
 /**
  * @author Matthew Xu
  */
-public class TodayFragment extends BaseFragment<TodayNewsAdapter> {
+public class TodayFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecoration> {
     public static final String TAG = "TodayFragment";
     private static List<Article> sTodayArticleList = new ArrayList<>();
     private Disposable mDisposable;
@@ -53,8 +53,8 @@ public class TodayFragment extends BaseFragment<TodayNewsAdapter> {
         mRecyclerView.setLayoutManager(manager);
         mBaseAdapter = new TodayNewsAdapter(getContext());
         mRecyclerView.setAdapter(mBaseAdapter);
-        TodayItemDecoration todayItemDecoration = new TodayItemDecoration(getContext(), mRecyclerView);
-        mRecyclerView.addItemDecoration(todayItemDecoration);
+        mBaseItemDecoration = new TodayItemDecoration(getContext(), mRecyclerView);
+        mRecyclerView.addItemDecoration(mBaseItemDecoration);
     }
 
     @Override

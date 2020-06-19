@@ -48,17 +48,14 @@ public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> 
                                @NonNull RecyclerView parent,
                                @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
-        if (parent.getAdapter() instanceof BookmarkAdapter) {
-            BookmarkAdapter adapter = (BookmarkAdapter) parent.getAdapter();
-            int position = parent.getChildLayoutPosition(view);
-            boolean isHeader = adapter.isItemHeader(position);
-            // 第一个 item 的上面需要绘制一个 GroupHeader, 也就是 itemHeader
-            if (isHeader) {
-                // 这里是分组的 item, 这里要绘制 itemHeader
-                outRect.top = mItemHeaderHeight;
-            } else {
-                outRect.bottom = 1;
-            }
+        int position = parent.getChildLayoutPosition(view);
+        boolean isHeader = mAdapter.isItemHeader(position);
+        // 第一个 item 的上面需要绘制一个 GroupHeader, 也就是 itemHeader
+        if (isHeader) {
+            // 这里是分组的 item, 这里要绘制 itemHeader
+            outRect.top = mItemHeaderHeight;
+        } else {
+            outRect.bottom = 1;
         }
     }
 
@@ -107,7 +104,7 @@ public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> 
     }
 
     @Override
-    protected boolean isSkipDraw(int position, boolean isOver){
+    protected boolean isSkipDraw(int position, boolean isOver) {
         if (position == mAdapter.getItemCount() - 1) {
             return true;
         }

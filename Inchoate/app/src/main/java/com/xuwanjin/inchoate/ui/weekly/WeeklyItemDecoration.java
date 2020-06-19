@@ -36,7 +36,6 @@ public class WeeklyItemDecoration extends BaseItemDecoration<WeeklyAdapter> {
 
         mItemHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mItemHeaderPaint.setColor(Color.RED);
-//        mItemHeaderPaint.setAlpha(100);
         mItemHeaderHeight = dip2px(mContext, 40);
 
         mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -46,26 +45,20 @@ public class WeeklyItemDecoration extends BaseItemDecoration<WeeklyAdapter> {
         mTextRect = new Rect();
     }
 
-
-
     // 给item 设置间距的,
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view,
                                @NonNull RecyclerView parent,
                                @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
-        if (parent.getAdapter() instanceof WeeklyAdapter) {
-            WeeklyAdapter adapter = (WeeklyAdapter) parent.getAdapter();
-            int position = parent.getChildLayoutPosition(view);
-            boolean isHeader = adapter.isItemHeader(position);
-            boolean isFirst = adapter.isFirstItem(position);
-            // 第一个 item 的上面需要绘制一个 GroupHeader, 也就是 itemHeader
-            if (isHeader) {
-                // 这里是分组的 item, 这里要绘制 itemHeader
-                outRect.top = mItemHeaderHeight;
-            } else {
-                outRect.bottom = 1;
-            }
+        int position = parent.getChildLayoutPosition(view);
+        boolean isHeader = mAdapter.isItemHeader(position);
+        // 第一个 item 的上面需要绘制一个 GroupHeader, 也就是 itemHeader
+        if (isHeader) {
+            // 这里是分组的 item, 这里要绘制 itemHeader
+            outRect.top = mItemHeaderHeight;
+        } else {
+            outRect.bottom = 1;
         }
     }
 

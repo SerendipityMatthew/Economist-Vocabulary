@@ -89,13 +89,11 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
-        if (parent.getAdapter() instanceof ArticleContentAdapter) {
-            int position = parent.getChildLayoutPosition(view);
-            if (isSkipDraw(position, false)) {
-                return;
-            } else {
-                outRect.top = mItemHeaderHeight;
-            }
+        int position = parent.getChildLayoutPosition(view);
+        if (isSkipDraw(position, false)) {
+            return;
+        } else {
+            outRect.top = mItemHeaderHeight;
         }
     }
 }

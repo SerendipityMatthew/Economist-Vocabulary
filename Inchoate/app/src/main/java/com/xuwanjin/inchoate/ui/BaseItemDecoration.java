@@ -64,7 +64,7 @@ public abstract class BaseItemDecoration<T extends BaseAdapter> extends Recycler
      *
      * @param canvas
      * @param parent
-     * @param position 
+     * @param position
      */
     public abstract void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, int position);
 

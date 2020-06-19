@@ -54,11 +54,10 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
 
     @Override
     public void onDrawImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, View childView, int position) {
-        TodayNewsAdapter adapter = (TodayNewsAdapter) parent.getAdapter();
         int y = childView.getTop() - mItemHeaderHeight;
-        boolean isHeader = adapter.isItemHeader(position);
+        boolean isHeader = mAdapter.isItemHeader(position);
         if (isHeader) {
-            String itemHeaderTitle = adapter.getGroupName(position);
+            String itemHeaderTitle = mAdapter.getGroupName(position);
             canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), mPaintRed);
             canvas.drawText(itemHeaderTitle, 50, y + mItemHeaderHeight / 2, mTextPaint);
         }
@@ -87,8 +86,6 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
     @Override
     public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
-        if (parent.getAdapter() instanceof TodayNewsAdapter) {
-            outRect.top = mItemHeaderHeight;
-        }
+        outRect.top = mItemHeaderHeight;
     }
 }

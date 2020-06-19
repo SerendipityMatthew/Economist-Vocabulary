@@ -41,9 +41,6 @@ public class IssueCategoryItemDecoration extends BaseItemDecoration<IssueCategor
                                @NonNull RecyclerView parent,
                                @NonNull RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
-        if (parent.getAdapter() instanceof IssueCategoryAdapter) {
-
-        }
     }
 
     /**

@@ -370,6 +370,9 @@ public class Utils {
     }
 
     public static List<Issue> getIssueList(Archive archiveData) {
+        if (archiveData == null){
+            return null;
+        }
         Part[] partArray = archiveData.data.section.hasPart.parts;
         List<Issue> issueList = new ArrayList<>();
         Log.d(TAG, "getIssueList: ");

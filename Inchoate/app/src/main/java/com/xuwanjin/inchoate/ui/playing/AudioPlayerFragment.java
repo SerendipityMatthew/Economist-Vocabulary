@@ -49,7 +49,7 @@ import static com.xuwanjin.inchoate.Constants.REWIND_OR_FORWARD_PREFERENCE;
 /**
  * @author Matthew Xu
  */
-public class AudioPlayerFragment extends BaseFragment<BaseAdapter, BaseItemDecoration> implements IPlayer.Callback {
+public class AudioPlayerFragment extends BaseFragment<BaseAdapter, BaseItemDecoration, Object> implements IPlayer.Callback {
     public static final String TAG = "AudioPlayerFragment";
     private IPlayer mPlayService;
     private IEconomistService mEconomistService;
@@ -178,12 +178,12 @@ public class AudioPlayerFragment extends BaseFragment<BaseAdapter, BaseItemDecor
     }
 
     @Override
-    protected <T> T fetchDataFromDBOrNetwork() {
+    protected Object fetchDataFromDBOrNetwork() {
         return null;
     }
 
     @Override
-    protected <T> T initFakeData() {
+    protected Object initFakeData() {
         return null;
     }
 

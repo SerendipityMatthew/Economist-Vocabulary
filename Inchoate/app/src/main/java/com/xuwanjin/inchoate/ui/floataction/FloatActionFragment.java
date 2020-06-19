@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Matthew Xu
  */
-public class FloatActionFragment extends BaseFragment<IssueCategoryAdapter, IssueCategoryItemDecoration> {
+public class FloatActionFragment extends BaseFragment<IssueCategoryAdapter, IssueCategoryItemDecoration, List<String>> {
     public static final String TAG = "FloatActionFragment";
 
     private List<String> mSectionList = new ArrayList<>();
@@ -62,12 +62,12 @@ public class FloatActionFragment extends BaseFragment<IssueCategoryAdapter, Issu
     }
 
     @Override
-    protected <T> T fetchDataFromDBOrNetwork() {
+    protected List<String> fetchDataFromDBOrNetwork() {
         return null;
     }
 
     @Override
-    protected <T> T initFakeData() {
+    protected List<String> initFakeData() {
         return null;
     }
 

@@ -62,7 +62,7 @@ import static com.xuwanjin.inchoate.Utils.getDurationFormat;
 /**
  * @author Matthew Xu
  */
-public class ArticleFragment extends BaseFragment<ArticleContentAdapter, ArticleItemDecoration> {
+public class ArticleFragment extends BaseFragment<ArticleContentAdapter, ArticleItemDecoration, Object> {
     public static final String TAG = "ArticleFragment";
     public static final String DIGITAL_PATTERN = "\".*\\\\\\\\d+.*\"";
     public List<Paragraph> mParagraphList;
@@ -166,12 +166,12 @@ public class ArticleFragment extends BaseFragment<ArticleContentAdapter, Article
     }
 
     @Override
-    protected <T> T fetchDataFromDBOrNetwork() {
+    protected Object fetchDataFromDBOrNetwork() {
         return null;
     }
 
     @Override
-    protected <T> T initFakeData() {
+    protected Object initFakeData() {
         return null;
     }
 

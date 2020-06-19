@@ -73,7 +73,7 @@ import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setE
 /**
  * @author Matthew Xu
  */
-public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecoration> {
+public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecoration, Issue> {
     public static final String TAG = "WeeklyFragment";
     private View mSectionHeaderView;
     private TextView mPreviousEdition;

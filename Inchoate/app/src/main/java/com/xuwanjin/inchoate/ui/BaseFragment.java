@@ -1,7 +1,6 @@
 package com.xuwanjin.inchoate.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +14,13 @@ import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.Utils;
-import com.xuwanjin.inchoate.model.Article;
-import com.xuwanjin.inchoate.ui.today.TodayItemDecoration;
-import com.xuwanjin.inchoate.ui.today.TodayNewsAdapter;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
@@ -43,7 +37,7 @@ import okhttp3.Response;
 /**
  * @author Matthew Xu
  */
-public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration extends BaseItemDecoration> extends Fragment {
+public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration extends BaseItemDecoration, Data> extends Fragment {
     protected RecyclerView mRecyclerView;
     protected Adapter mBaseAdapter;
     protected Decoration mBaseItemDecoration;
@@ -81,15 +75,15 @@ public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration exten
 
     /**
      * 从服务器或者网络上获取数据的方法
-     * @param <T> 返回数据的泛型, 有时候是 List<Issue> 有时候是 List<Article>
+     * @param Data 返回数据的泛型, 有时候是 List<Issue> 有时候是 List<Article>
      * @return 返回界面需要的数据
      */
-    protected abstract <T> T fetchDataFromDBOrNetwork();
+    protected abstract Data fetchDataFromDBOrNetwork();
 
     /**
      * 刚开始的时候, 可以填充一下假数据
      */
-    protected abstract <T> T initFakeData();
+    protected abstract Data initFakeData();
 
     protected Gson getGsonInstance() {
         Gson gson = new Gson()

@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 /**
  * @author Matthew Xu
  */
-public class VocabularyYardFragment extends BaseFragment<VocabularyYardAdapter, BaseItemDecoration> {
+public class VocabularyYardFragment extends BaseFragment<VocabularyYardAdapter, BaseItemDecoration, List<Vocabulary>> {
     private static List<Vocabulary> mVocabularyList;
 
     @Override
@@ -64,7 +64,7 @@ public class VocabularyYardFragment extends BaseFragment<VocabularyYardAdapter, 
     }
 
     @Override
-    protected <T> T initFakeData() {
+    protected List<Vocabulary> initFakeData() {
         return null;
     }
 }

@@ -33,7 +33,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * @author Matthew Xu
  */
-public class PreviousFragment extends BaseFragment<PreviousAdapter, BaseItemDecoration> {
+public class PreviousFragment extends BaseFragment<PreviousAdapter, BaseItemDecoration, List<Issue> > {
     public static final String TAG = "PreviousFragment";
 
     GridLayoutManager mGridLayoutManager;

@@ -34,7 +34,7 @@ import static com.xuwanjin.inchoate.Utils.getTodayArticleList;
 /**
  * @author Matthew Xu
  */
-public class TodayFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecoration> {
+public class TodayFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecoration, List<Article>> {
     public static final String TAG = "TodayFragment";
     private static List<Article> sTodayArticleList = new ArrayList<>();
     private Disposable mDisposable;

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,7 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
     private Paint mTextPaint;
     private Paint mLinePaint;
     private int mArticleWordCount = -1;
+    private Paint mPaint;
 
     public ArticleItemDecoration(Context context, RecyclerView recyclerView) {
         super(context, recyclerView);
@@ -40,6 +42,10 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
         mTextPaint.setColor(Color.BLACK);
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaint.setColor(Color.RED);
+
+        mArticleWordCount = getArticleWordCount(mAdapter.getDataList());
     }
 
     public static int dip2px(Context context, float dpValue) {
@@ -55,7 +61,7 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
     }
 
     @Override
-    protected boolean isSkipDraw(int position, boolean isOver){
+    protected boolean isSkipDraw(int position, boolean isOver) {
         if (position == 0) {
             return true;
         }
@@ -70,15 +76,12 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
                                @NonNull RecyclerView.State state, ArticleContentAdapter adapter, int position) {
         int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
         String paragraph = adapter.getDataList().get(position).paragraph.toString();
-        int paragraphWordCount = getArticleWordCount(adapter.getDataList());
 
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.RED);
 
-        canvas.drawRect(0, 0, parent.getWidth(), mItemHeaderHeight, paint);
+        canvas.drawRect(0, 0, parent.getWidth(), mItemHeaderHeight, mPaint);
         int wordCount = paragraph.split(" ").length;
         String displayString = "段落单词数: " + wordCount +
-                "       文章总单词书: " + paragraphWordCount;
+                "       文章总单词书: " + mArticleWordCount;
         canvas.drawText(displayString, 50, y, mTextPaint);
     }
 
@@ -88,7 +91,7 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
             paragraphWordCount += p.paragraph.toString().split(" ").length;
         }
         mArticleWordCount = paragraphWordCount;
-        return paragraphWordCount;
+        return mArticleWordCount;
     }
 
     @Override

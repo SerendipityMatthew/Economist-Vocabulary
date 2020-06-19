@@ -43,9 +43,9 @@ import okhttp3.Response;
 /**
  * @author Matthew Xu
  */
-public abstract class BaseFragment<T extends BaseAdapter, Decoration extends BaseItemDecoration> extends Fragment {
+public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration extends BaseItemDecoration> extends Fragment {
     protected RecyclerView mRecyclerView;
-    protected T mBaseAdapter;
+    protected Adapter mBaseAdapter;
     protected Decoration mBaseItemDecoration;
     private static final int CALL_TIMEOUT = 10;
     private static final int CONNECT_TIMEOUT = 10;

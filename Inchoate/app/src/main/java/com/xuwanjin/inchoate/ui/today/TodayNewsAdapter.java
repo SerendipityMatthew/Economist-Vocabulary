@@ -15,6 +15,9 @@ import com.xuwanjin.inchoate.ui.BaseAdapter;
 
 import java.util.List;
 
+/**
+ * @author Matthew Xu
+ */
 public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> {
     public static final String TAG = "TodayNewsAdapter";
 

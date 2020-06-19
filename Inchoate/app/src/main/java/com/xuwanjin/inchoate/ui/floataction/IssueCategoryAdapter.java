@@ -17,6 +17,9 @@ import com.xuwanjin.inchoate.ui.BaseAdapter;
 
 import java.util.List;
 
+/**
+ * @author Matthew Xu
+ */
 public class IssueCategoryAdapter extends BaseAdapter<IssueCategoryViewHolder, String> {
     public static final String TAG = "IssueCategoryAdapter";
 

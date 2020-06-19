@@ -9,6 +9,9 @@ import androidx.annotation.NonNull;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.ui.BaseViewHolder;
 
+/**
+ * @author Matthew Xu
+ */
 public class TodayNewsViewHolder extends BaseViewHolder {
     ImageView articleImage;
     TextView sectionText;

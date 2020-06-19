@@ -8,6 +8,9 @@ import androidx.annotation.NonNull;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.ui.BaseViewHolder;
 
+/**
+ * @author Matthew Xu
+ */
 public class IssueCategoryViewHolder extends BaseViewHolder {
     public TextView categoryMenu;
     public IssueCategoryViewHolder(@NonNull View itemView) {

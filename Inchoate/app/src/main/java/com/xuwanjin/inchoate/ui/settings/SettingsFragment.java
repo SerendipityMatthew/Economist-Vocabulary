@@ -7,6 +7,9 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.xuwanjin.inchoate.R;
 
+/**
+ * @author Matthew Xu
+ */
 public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String KEY_LOG_IN = "log_in_key";
     public static final String KEY_DARK_MODE_PREFERENCE = "dark_mode_preference_key";

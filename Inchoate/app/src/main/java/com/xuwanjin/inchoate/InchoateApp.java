@@ -1,7 +1,7 @@
 package com.xuwanjin.inchoate;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
-import android.content.Context;
 
 import androidx.navigation.NavController;
 
@@ -17,14 +17,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author Matthew Xu
+ */
 public class InchoateApp extends Application {
     private static final String TAG = "InchoateApp";
     public static InchoateApp mInchoateApp;
+    @SuppressLint("StaticFieldLeak")
     public static NavController NAVIGATION_CONTROLLER;
     public final static String ECONOMIST_URL = "";
     public static List<Issue> sCacheNewestIssue = new ArrayList<>(1);

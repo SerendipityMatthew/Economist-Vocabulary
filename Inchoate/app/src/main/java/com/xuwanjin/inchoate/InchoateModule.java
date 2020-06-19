@@ -14,6 +14,9 @@ import com.bumptech.glide.load.engine.cache.MemorySizeCalculator;
 import com.bumptech.glide.module.AppGlideModule;
 import com.bumptech.glide.request.RequestOptions;
 
+/**
+ * @author Matthew Xu
+ */
 @GlideModule
 public class InchoateModule extends AppGlideModule {
 

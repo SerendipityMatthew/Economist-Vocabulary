@@ -2,7 +2,6 @@ package com.xuwanjin.inchoate;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -33,6 +32,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setEconomistService;
 
 
+/**
+ * @author Matthew Xu
+ */
 public class InchoateActivity extends AppCompatActivity implements
         BottomNavigationView.OnNavigationItemSelectedListener,
         BottomNavigationController {

@@ -1,5 +1,8 @@
 package com.xuwanjin.inchoate;
 
+/**
+ * @author Matthew Xu
+ */
 public class Constants {
     public static final String ECONOMIST_RSS_URL = "https://www.economist.com/audio-edition-podcast/gjnM3ZCaCYmUq40rM%24uSaA/index.xml";
     public static final String COMMON_URL = "https://www.economist.com/graphql?version=v1&query=query";

@@ -12,6 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * @author Matthew Xu
+ */
 public class CrashReportWriter implements Thread.UncaughtExceptionHandler {
     public static final String TAG = "CrashReportWriter";
     private final Thread.UncaughtExceptionHandler defaultHandler;

@@ -32,6 +32,9 @@ import java.util.Map;
 import static com.xuwanjin.inchoate.InchoateApp.sArticleLinkedHashMap;
 
 
+/**
+ * @author Matthew Xu
+ */
 public class Utils {
     public static final String TAG = "Utils";
 

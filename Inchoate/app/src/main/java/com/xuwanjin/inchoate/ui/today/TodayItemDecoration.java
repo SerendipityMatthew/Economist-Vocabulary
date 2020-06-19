@@ -81,10 +81,9 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
     }
 
     @Override
-    public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
-                               @NonNull RecyclerView.State state, TodayNewsAdapter adapter, int position) {
+    public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, int position) {
         int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
-        String itemHeaderTitle = adapter.getGroupName(position);
+        String itemHeaderTitle = mAdapter.getGroupName(position);
         canvas.drawRect(0, 0, parent.getWidth(), dip2px(mContext, 10), mBlackPaint);
         canvas.drawRect(0, 20, parent.getWidth(), mItemHeaderHeight, mGreenPaint);
         canvas.drawText(itemHeaderTitle, 50, y, mTextPaint);

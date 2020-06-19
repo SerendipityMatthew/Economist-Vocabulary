@@ -69,8 +69,7 @@ public class IssueCategoryItemDecoration extends BaseItemDecoration<IssueCategor
     }
 
     @Override
-    public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
-                               @NonNull RecyclerView.State state, IssueCategoryAdapter adapter, int position) {
+    public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, int position) {
 
     }
 }

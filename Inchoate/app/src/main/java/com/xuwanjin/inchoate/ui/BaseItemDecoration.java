@@ -44,7 +44,7 @@ public abstract class BaseItemDecoration<T extends BaseAdapter> extends Recycler
         int position = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
         T adapter = (T) getAdapter(parent);
         if (!isSkipDraw(position, true)) {
-            onDrawOverImpl(canvas, parent, state, adapter, position);
+            onDrawOverImpl(canvas, parent, position);
         }
     }
 
@@ -61,10 +61,8 @@ public abstract class BaseItemDecoration<T extends BaseAdapter> extends Recycler
      *
      * @param canvas
      * @param parent
-     * @param state
      */
-    public abstract void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
-                                        @NonNull RecyclerView.State state, T adapter, int position);
+    public abstract void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, int position);
 
 
     public RecyclerView.Adapter getAdapter(RecyclerView parent) {

@@ -109,15 +109,14 @@ public class WeeklyItemDecoration extends BaseItemDecoration<WeeklyAdapter> {
      * 在这里我们绘制在手机界面上可见的 item 上面画一个 header. 因为 header 需要在 item 的上面显示
      */
     @Override
-    public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
-                               @NonNull RecyclerView.State state, WeeklyAdapter adapter, int position) {
+    public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, int position) {
 
         // 当 RecyclerView 含有 HeaderView 的时候, 第一个可见的 View, 不是里面的填充item, 而是 eaderView
         // 因此绘制第一个 Group 的 headerView 时候, 需要在大的 HeaderView 的下方
         if (parent.findViewHolderForAdapterPosition(position) == null) {
             return;
         }
-        boolean isHeader = adapter.isItemHeader(position);
+        boolean isHeader = mAdapter.isItemHeader(position);
         // position 为零表示, 这个是 HeaderView, 不需要再 HeaderView 上面画一个 itemHeader
 
 
@@ -128,7 +127,7 @@ public class WeeklyItemDecoration extends BaseItemDecoration<WeeklyAdapter> {
             怎样找到第一个可见的 View, 以及在第一个可见的 View 的顶部x, y 坐标值
          */
 
-        String groupName = adapter.getGroupName(position);
+        String groupName = mAdapter.getGroupName(position);
         int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
         if (isHeader) {
             int bottom = Math.min(mItemHeaderHeight, view.getBottom());

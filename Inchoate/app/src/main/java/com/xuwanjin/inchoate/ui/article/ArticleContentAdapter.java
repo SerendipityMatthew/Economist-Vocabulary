@@ -47,7 +47,7 @@ public class ArticleContentAdapter extends BaseAdapter<ArticleParagraphViewHolde
 
     @Override
     public void onBindViewHolderImpl(@NonNull ArticleParagraphViewHolder holder, int position) {
-        Paragraph paragraph = mDataList.get(position - 1);
+        Paragraph paragraph = mDataList.get(position-1);
         holder.paragraphTextView.setText(paragraph.paragraph, TextView.BufferType.SPANNABLE);
         holder.setCurrentParagraph(paragraph);
     }
@@ -59,7 +59,7 @@ public class ArticleContentAdapter extends BaseAdapter<ArticleParagraphViewHolde
 
     @Override
     protected boolean isBindViewItem(int position) {
-        if (position >= 1 && position < getItemCount() - 1) {
+        if (position >= 1 && position < getItemCount()) {
             return true;
         }
         return false;

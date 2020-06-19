@@ -77,9 +77,6 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
 
     @Override
     protected boolean isSkipDraw(int position) {
-        if (position == 0) {
-            return true;
-        }
         return false;
     }
 

@@ -134,7 +134,7 @@ public class WeeklyItemDecoration extends BaseItemDecoration<WeeklyAdapter> {
             怎样找到第一个可见的 View, 以及在第一个可见的 View 的顶部x, y 坐标值
          */
 
-        String groupName = adapter.getGroupName(position - 1);
+        String groupName = adapter.getGroupName(position);
         int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
         if (isHeader) {
             int bottom = Math.min(mItemHeaderHeight, view.getBottom());

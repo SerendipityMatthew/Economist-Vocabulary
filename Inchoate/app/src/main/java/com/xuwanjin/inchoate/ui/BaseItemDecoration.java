@@ -2,6 +2,7 @@ package com.xuwanjin.inchoate.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,12 +30,10 @@ public abstract class BaseItemDecoration<T extends BaseAdapter> extends Recycler
     @Override
     public void onDrawOver(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         super.onDrawOver(canvas, parent, state);
-        if (isAttachedAdapter(parent)) {
-            int position = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
-            T adapter = (T) getAdapter(parent);
-            if (!isSkipDraw(position)) {
-                onDrawOverImpl(canvas, parent, state, adapter, position);
-            }
+        int position = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
+        T adapter = (T) getAdapter(parent);
+        if (!isSkipDraw(position)) {
+            onDrawOverImpl(canvas, parent, state, adapter, position);
         }
     }
 
@@ -50,26 +49,6 @@ public abstract class BaseItemDecoration<T extends BaseAdapter> extends Recycler
     public abstract void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
                                         @NonNull RecyclerView.State state, T adapter, int position);
 
-    public boolean isAttachedAdapter(RecyclerView parent) {
-        try {
-            if (Class.forName(getAdapterClassName()).getClass().isInstance(getAdapter(parent))) {
-                return true;
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    /**
-     * 获取 Adapter 的具体类型
-     *
-     * @return
-     */
-
-    public String getAdapterClassName() {
-        return mAdapter.getClass().getName();
-    }
 
     public RecyclerView.Adapter getAdapter(RecyclerView parent) {
         return parent.getAdapter();

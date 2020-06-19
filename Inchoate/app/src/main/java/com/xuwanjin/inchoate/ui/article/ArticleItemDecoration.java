@@ -72,7 +72,7 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
     public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
                                @NonNull RecyclerView.State state, ArticleContentAdapter adapter, int position) {
         int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
-        String paragraph = adapter.getDataList().get(position - 1).paragraph.toString();
+        String paragraph = adapter.getDataList().get(position).paragraph.toString();
         int paragraphWordCount = getArticleWordCount(adapter.getDataList());
 
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);

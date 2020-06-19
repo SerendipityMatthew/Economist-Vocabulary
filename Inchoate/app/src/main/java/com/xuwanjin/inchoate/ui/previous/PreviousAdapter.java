@@ -39,8 +39,7 @@ public class PreviousAdapter extends BaseAdapter<PreviousIssueViewHolder, Issue>
     }
 
     @Override
-    public void onBindViewHolderImpl(@NonNull PreviousIssueViewHolder holder, int position) {
-        Issue issue = mDataList.get(position);
+    public void onBindViewHolderImpl(@NonNull PreviousIssueViewHolder holder, int position, Issue issue) {
         Glide.with(mContext)
                 .load(issue.coverImageUrl)
                 .placeholder(R.mipmap.the_economist_cover_placeholder)

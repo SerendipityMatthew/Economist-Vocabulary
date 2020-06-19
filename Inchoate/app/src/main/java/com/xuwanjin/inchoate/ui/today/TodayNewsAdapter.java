@@ -36,8 +36,7 @@ public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> 
     }
 
     @Override
-    public void onBindViewHolderImpl(@NonNull TodayNewsViewHolder holder, final int position) {
-        final Article article = mDataList.get(position);
+    public void onBindViewHolderImpl(@NonNull TodayNewsViewHolder holder, final int position, Article article) {
         Glide.with(mContext)
                 .load(article.mainArticleImage)
                 .placeholder(R.mipmap.the_economist)

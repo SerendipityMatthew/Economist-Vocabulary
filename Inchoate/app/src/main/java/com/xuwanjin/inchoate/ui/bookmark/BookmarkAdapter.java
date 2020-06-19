@@ -91,8 +91,7 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
     }
 
     @Override
-    public void onBindViewHolderImpl(@NonNull BookmarkViewHolder holder, final int position) {
-        Article article = mDataList.get(position);
+    public void onBindViewHolderImpl(@NonNull BookmarkViewHolder holder, final int position, Article article) {
         Glide.with(mContext)
                 .load(article.mainArticleImage)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

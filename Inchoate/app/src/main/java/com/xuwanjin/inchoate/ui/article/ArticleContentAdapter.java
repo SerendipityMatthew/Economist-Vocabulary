@@ -46,8 +46,7 @@ public class ArticleContentAdapter extends BaseAdapter<ArticleParagraphViewHolde
     }
 
     @Override
-    public void onBindViewHolderImpl(@NonNull ArticleParagraphViewHolder holder, int position) {
-        Paragraph paragraph = mDataList.get(position-1);
+    protected void onBindViewHolderImpl(@NonNull ArticleParagraphViewHolder holder, int position, Paragraph paragraph){
         holder.paragraphTextView.setText(paragraph.paragraph, TextView.BufferType.SPANNABLE);
         holder.setCurrentParagraph(paragraph);
     }

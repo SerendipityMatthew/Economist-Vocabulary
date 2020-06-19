@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-
 /**
  * @author Matthew Xu
  */
@@ -74,8 +73,9 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
      * onBindViewHolder 的实现
      * @param holder
      * @param position
+     * @param filledData
      */
-    protected abstract void onBindViewHolderImpl(T holder, int position);
+    protected abstract void onBindViewHolderImpl(T holder, int position, E filledData);
 
     /**
      * @param position
@@ -83,10 +83,19 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
      */
     public abstract boolean isItemHeader(int position);
 
+    public E fetchTheCorrectData(int position){
+        int revised = position;
+        if (mHeaderView != null){
+            revised = position -1;
+        }
+        E dataList = mDataList.get(revised);
+        return dataList;
+    }
+
     @Override
     public void onBindViewHolder(@NonNull T holder, int position) {
         if (isBindViewItem(position)) {
-            onBindViewHolderImpl(holder, position);
+            onBindViewHolderImpl(holder, position, fetchTheCorrectData(position));
         }
     }
 

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.ui.BaseAdapter;
 
 import java.util.List;
@@ -43,12 +44,8 @@ public class IssueCategoryAdapter extends BaseAdapter<IssueCategoryViewHolder, S
     }
 
     @Override
-    public void onBindViewHolderImpl(@NonNull IssueCategoryViewHolder holder, final int position) {
-        int revisedPosition = position;
-        if (mHeaderView != null) {
-            revisedPosition = position - 1;
-        }
-        holder.categoryMenu.setText(mDataList.get(revisedPosition));
+    public void onBindViewHolderImpl(@NonNull IssueCategoryViewHolder holder, final int position, String sectionName) {
+        holder.categoryMenu.setText(sectionName);
         holder.categoryMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

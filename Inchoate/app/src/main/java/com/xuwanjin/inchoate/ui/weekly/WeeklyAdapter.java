@@ -43,9 +43,7 @@ public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article> {
     }
 
     @Override
-    public void onBindViewHolderImpl(@NonNull WeeklyViewHolder holder, final int position) {
-        //  mArticleList.get(position) 会出现第一个 item 不显示的状况
-        Article article = mDataList.get(position - 1);
+    public void onBindViewHolderImpl(@NonNull WeeklyViewHolder holder, final int position, Article article) {
         Glide.with(mContext)
                 .load(article.mainArticleImage)
                 .error(R.mipmap.the_economist)

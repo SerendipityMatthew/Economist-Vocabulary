@@ -164,19 +164,19 @@ public class WeeklyFragment extends BaseFragment {
         initOnClickListener();
     }
 
+    /**
+     *
+     *1. 从缓存里获取数据
+     *       存在就显示
+     *       如果不存在,
+     *           从数据库里获取数据: 1. 根据 xml最新的期刊日期,去数据里获取最新的期刊,
+     *                            2. 如果没有, 从数据库获取最新的一集,
+     *                                      数据库里什么都没有, 从网络获取
+     *           从网络上获取数据 ---> 并写入数据库
+     *           如果以上都没有, 填入假数据
+     */
     @Override
     public void loadData() {
-        /*
-            1. 从缓存里获取数据
-                存在就显示
-                如果不存在,
-                        从数据库里获取数据: 1. 根据 xml最新的期刊日期,去数据里获取最新的期刊,
-                                         2. 如果没有, 从数据库获取最新的一集,
-                                               数据库里什么都没有, 从网络获取
-                        从网络上获取数据 ---> 并写入数据库
-                        如果以上都没有, 填入假数据
-
-         */
         if (isLoadFromCache()) {
             InchoateApp.setNewestIssueCache(sIssueCache);
             updateWeeklyFragmentContent(sIssueCache);

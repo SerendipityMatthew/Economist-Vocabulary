@@ -41,11 +41,6 @@ public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> 
         mTextRect = new Rect();
     }
 
-    public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
-    }
-
     //Item header 按照 section, issueDate, bookmarkDate, Topic,
     // 给item 设置间距的,
     @Override

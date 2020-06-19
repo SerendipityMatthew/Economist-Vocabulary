@@ -2,7 +2,6 @@ package com.xuwanjin.inchoate.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -21,6 +20,11 @@ public abstract class BaseItemDecoration<T extends BaseAdapter> extends Recycler
         this.mContext = context;
         this.mRecyclerView = recyclerView;
         this.mAdapter = (T) recyclerView.getAdapter();
+    }
+
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 
     @Override

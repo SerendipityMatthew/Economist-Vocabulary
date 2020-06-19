@@ -52,11 +52,6 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
         mBlackPaint.setColor(Color.BLACK);
     }
 
-    public static int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
-    }
-
     @Override
     public void onDrawImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, View childView, int position) {
         TodayNewsAdapter adapter = (TodayNewsAdapter) parent.getAdapter();

@@ -71,6 +71,9 @@ import static com.xuwanjin.inchoate.Utils.getIssue;
 import static com.xuwanjin.inchoate.model.ArticleCategorySection.OBITUARY;
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setEconomistService;
 
+/**
+ * @author Matthew Xu
+ */
 public class WeeklyFragment extends BaseFragment {
     AtomicBoolean mAtomicBoolean = new AtomicBoolean();
     public static final String TAG = "WeeklyFragment";

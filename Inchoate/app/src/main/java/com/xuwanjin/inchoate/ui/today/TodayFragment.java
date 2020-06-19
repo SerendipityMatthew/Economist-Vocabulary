@@ -33,6 +33,9 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.xuwanjin.inchoate.Utils.getTodayArticleList;
 
+/**
+ * @author Matthew Xu
+ */
 public class TodayFragment extends BaseFragment {
     public static final String TAG = "TodayFragment";
     RecyclerView mRecyclerViewTodayNews;

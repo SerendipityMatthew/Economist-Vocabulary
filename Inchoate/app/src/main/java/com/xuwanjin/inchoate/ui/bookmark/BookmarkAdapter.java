@@ -19,6 +19,9 @@ import com.xuwanjin.inchoate.ui.BaseAdapter;
 import java.util.List;
 
 
+/**
+ * @author Matthew Xu
+ */
 public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
     public static final String TAG = "BookmarkAdapter";
 

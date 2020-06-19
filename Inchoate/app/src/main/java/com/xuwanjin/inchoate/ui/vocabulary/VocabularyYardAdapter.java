@@ -10,6 +10,9 @@ import com.xuwanjin.inchoate.ui.BaseAdapter;
 
 import java.util.List;
 
+/**
+ * @author Matthew Xu
+ */
 public class VocabularyYardAdapter extends BaseAdapter<VocabularyYardViewHolder, Vocabulary> {
     public static final String TAG = "VocabularyYardAdapter";
     protected VocabularyYardAdapter(Context context, List<Vocabulary> dataList) {

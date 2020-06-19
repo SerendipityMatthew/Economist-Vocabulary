@@ -16,6 +16,9 @@ import com.xuwanjin.inchoate.ui.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Matthew Xu
+ */
 public class FloatActionFragment extends BaseFragment {
     public static final String TAG = "FloatActionFragment";
 

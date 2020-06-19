@@ -16,6 +16,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * @author Matthew Xu
+ */
 public class VocabularyYardFragment extends BaseFragment {
     private RecyclerView mVocabularyRecyclerView;
     private VocabularyYardAdapter mVocabularyYardAdapter;

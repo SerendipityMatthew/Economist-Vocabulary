@@ -14,6 +14,9 @@ import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.ui.BaseAdapter;
 
+/**
+ * @author Matthew Xu
+ */
 public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article> {
 
     public WeeklyAdapter(Context context) {

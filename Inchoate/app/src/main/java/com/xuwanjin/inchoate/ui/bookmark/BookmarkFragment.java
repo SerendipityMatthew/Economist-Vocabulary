@@ -27,6 +27,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+/**
+ * @author Matthew Xu
+ */
 public class BookmarkFragment extends BaseFragment {
     private static final String TAG = "BookmarkFragment";
     private RecyclerView mBookmarkRecycleView;

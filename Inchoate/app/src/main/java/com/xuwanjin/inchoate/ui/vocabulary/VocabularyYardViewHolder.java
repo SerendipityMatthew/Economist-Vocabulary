@@ -9,6 +9,9 @@ import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.ui.BaseViewHolder;
 
 
+/**
+ * @author Matthew Xu
+ */
 public class VocabularyYardViewHolder extends BaseViewHolder {
     public TextView vocabulary;
     public TextView sentence;

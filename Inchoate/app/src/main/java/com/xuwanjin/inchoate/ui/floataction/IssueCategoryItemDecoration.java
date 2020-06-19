@@ -14,6 +14,9 @@ import android.graphics.Paint;
 import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
 
+/**
+ * @author Matthew Xu
+ */
 public class IssueCategoryItemDecoration extends BaseItemDecoration<IssueCategoryAdapter> {
     private RecyclerView.LayoutManager mManager;
     private int mItemHeaderHeight;

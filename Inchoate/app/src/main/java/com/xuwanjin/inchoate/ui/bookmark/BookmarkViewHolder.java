@@ -9,6 +9,9 @@ import androidx.annotation.NonNull;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.ui.BaseViewHolder;
 
+/**
+ * @author Matthew Xu
+ */
 public class BookmarkViewHolder extends BaseViewHolder {
     TextView article_title;
     TextView articleFlyTitle;

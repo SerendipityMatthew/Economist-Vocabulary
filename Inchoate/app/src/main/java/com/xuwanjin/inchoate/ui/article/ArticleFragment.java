@@ -62,11 +62,9 @@ import static com.xuwanjin.inchoate.Utils.getDurationFormat;
 /**
  * @author Matthew Xu
  */
-public class ArticleFragment extends BaseFragment {
+public class ArticleFragment extends BaseFragment<ArticleContentAdapter> {
     public static final String TAG = "ArticleFragment";
     public static final String DIGITAL_PATTERN = "\".*\\\\\\\\d+.*\"";
-    RecyclerView mArticleContentRV;
-    public ArticleContentAdapter mArticleContentAdapter;
     public List<Paragraph> mParagraphList;
     public GridLayoutManager mGridLayoutManager;
     public View mArticleContentHeaderView;
@@ -117,16 +115,16 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private void initArticleFragment(View view) {
-        mArticleContentRV = view.findViewById(R.id.article_content_recyclerview);
+        mRecyclerView = view.findViewById(R.id.article_content_recyclerview);
         mBackToWeeklyToolbar = view.findViewById(R.id.back_to_weekly_toolbar);
         mFontSizeToolbar = view.findViewById(R.id.font_size_toolbar);
         mBookmarkArticleToolbar = view.findViewById(R.id.bookmark_article_toolbar);
         mArticleShareToolbar = view.findViewById(R.id.article_share_toolbar);
 
         mArticleContentHeaderView = LayoutInflater.from(getContext())
-                .inflate(R.layout.fragment_article_header_view, mArticleContentRV, false);
+                .inflate(R.layout.fragment_article_header_view, mRecyclerView, false);
         mArticleContentFooterView = LayoutInflater.from(getContext())
-                .inflate(R.layout.fragment_article_detail_footer, mArticleContentRV, false);
+                .inflate(R.layout.fragment_article_detail_footer, mRecyclerView, false);
 
         mDuration = mArticleContentHeaderView.findViewById(R.id.duration);
         mPlay = mArticleContentHeaderView.findViewById(R.id.play);
@@ -139,7 +137,7 @@ public class ArticleFragment extends BaseFragment {
         mLinearLayout = mArticleContentHeaderView.findViewById(R.id.article_play_bar);
         mArticlePlayBarDivider = mArticleContentHeaderView.findViewById(R.id.article_play_bar_divider);
         mGridLayoutManager = new GridLayoutManager(getContext(), 1);
-        mArticleContentRV.setLayoutManager(mGridLayoutManager);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
 
         mView = view;
     }
@@ -153,13 +151,13 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private void setArticleAdapter() {
-        mArticleContentAdapter = new ArticleContentAdapter(getContext(), mParagraphList);
-        mArticleContentRV.setAdapter(mArticleContentAdapter);
-        mArticleContentAdapter.setHeaderView(mArticleContentHeaderView);
-        mArticleContentAdapter.setFooterView(mArticleContentFooterView);
-        mArticleContentAdapter.setArticle(mArticle);
-        ArticleItemDecoration articleItemDecoration = new ArticleItemDecoration(getContext(), mArticleContentRV);
-        mArticleContentRV.addItemDecoration(articleItemDecoration);
+        mBaseAdapter = new ArticleContentAdapter(getContext(), mParagraphList);
+        mRecyclerView.setAdapter(mBaseAdapter);
+        mBaseAdapter.setHeaderView(mArticleContentHeaderView);
+        mBaseAdapter.setFooterView(mArticleContentFooterView);
+        mBaseAdapter.setArticle(mArticle);
+        ArticleItemDecoration articleItemDecoration = new ArticleItemDecoration(getContext(), mRecyclerView);
+        mRecyclerView.addItemDecoration(articleItemDecoration);
     }
 
     @Override
@@ -217,7 +215,7 @@ public class ArticleFragment extends BaseFragment {
                         Integer index = integerParagraphHashMap.keySet().iterator().next();
                         adapterDataList.add(index, integerParagraphHashMap.get(index));
                         if (mCount == adapterDataList.size() - 1) {
-                            mArticleContentAdapter.updateData(adapterDataList);
+                            mBaseAdapter.updateData(adapterDataList);
                         }
                         mCount++;
                     }

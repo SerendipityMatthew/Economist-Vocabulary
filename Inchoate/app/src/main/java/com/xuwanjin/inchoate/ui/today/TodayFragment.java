@@ -10,12 +10,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.R;
-import com.xuwanjin.inchoate.Utils;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.today.TodayJson;
 import com.xuwanjin.inchoate.ui.BaseFragment;
@@ -36,11 +34,9 @@ import static com.xuwanjin.inchoate.Utils.getTodayArticleList;
 /**
  * @author Matthew Xu
  */
-public class TodayFragment extends BaseFragment {
+public class TodayFragment extends BaseFragment<TodayNewsAdapter> {
     public static final String TAG = "TodayFragment";
-    RecyclerView mRecyclerViewTodayNews;
     private static List<Article> sTodayArticleList = new ArrayList<>();
-    private TodayNewsAdapter mTodayNewsAdapter;
     private Disposable mDisposable;
 
     @Nullable
@@ -51,14 +47,14 @@ public class TodayFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        mRecyclerViewTodayNews = view.findViewById(R.id.today_news_recyclerView);
+        mRecyclerView = view.findViewById(R.id.today_news_recyclerView);
         GridLayoutManager manager = new GridLayoutManager(getContext(), 1);
         manager.setOrientation(GridLayoutManager.VERTICAL);
-        mRecyclerViewTodayNews.setLayoutManager(manager);
-        mTodayNewsAdapter = new TodayNewsAdapter(getContext());
-        mRecyclerViewTodayNews.setAdapter(mTodayNewsAdapter);
-        TodayItemDecoration todayItemDecoration = new TodayItemDecoration(getContext(), mRecyclerViewTodayNews);
-        mRecyclerViewTodayNews.addItemDecoration(todayItemDecoration);
+        mRecyclerView.setLayoutManager(manager);
+        mBaseAdapter = new TodayNewsAdapter(getContext());
+        mRecyclerView.setAdapter(mBaseAdapter);
+        TodayItemDecoration todayItemDecoration = new TodayItemDecoration(getContext(), mRecyclerView);
+        mRecyclerView.addItemDecoration(todayItemDecoration);
     }
 
     @Override
@@ -97,7 +93,7 @@ public class TodayFragment extends BaseFragment {
     }
 
     private void updateTodayFragment(List<Article> articleList) {
-        mTodayNewsAdapter.updateData(articleList);
+        mBaseAdapter.updateData(articleList);
     }
 
     @Override
@@ -132,7 +128,7 @@ public class TodayFragment extends BaseFragment {
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(articles -> {
-                    mTodayNewsAdapter.updateData(articles);
+                    mBaseAdapter.updateData(articles);
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {

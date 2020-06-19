@@ -19,25 +19,23 @@ import java.util.stream.Stream;
 /**
  * @author Matthew Xu
  */
-public class VocabularyYardFragment extends BaseFragment {
-    private RecyclerView mVocabularyRecyclerView;
-    private VocabularyYardAdapter mVocabularyYardAdapter;
+public class VocabularyYardFragment extends BaseFragment<VocabularyYardAdapter> {
     private static List<Vocabulary> mVocabularyList;
 
     @Override
     protected void initView(View view) {
-        mVocabularyRecyclerView = view.findViewById(R.id.vocabulary_recyclerview);
+        mRecyclerView = view.findViewById(R.id.vocabulary_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-        mVocabularyRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
 
     }
 
     @Override
     protected void loadData() {
         List<Vocabulary> vocabularyList = fetchDataFromDBOrNetwork();
-        mVocabularyYardAdapter = new VocabularyYardAdapter(getContext(), mVocabularyList);
-        mVocabularyRecyclerView.setAdapter(mVocabularyYardAdapter);
+        mBaseAdapter = new VocabularyYardAdapter(getContext(), mVocabularyList);
+        mRecyclerView.setAdapter(mBaseAdapter);
         mVocabularyList = vocabularyList.stream().filter(new Predicate<Vocabulary>() {
             @Override
             public boolean test(Vocabulary vocabulary) {
@@ -45,7 +43,7 @@ public class VocabularyYardFragment extends BaseFragment {
                 return voca != null && !voca.trim().equals("");
             }
         }).collect(Collectors.toList());
-        mVocabularyYardAdapter.updateData(mVocabularyList);
+        mBaseAdapter.updateData(mVocabularyList);
     }
 
     @Override

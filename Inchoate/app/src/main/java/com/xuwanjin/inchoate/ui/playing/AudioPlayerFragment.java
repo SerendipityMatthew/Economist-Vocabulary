@@ -31,6 +31,7 @@ import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.player.IPlayer;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
+import com.xuwanjin.inchoate.ui.BaseAdapter;
 import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,7 +45,7 @@ import static com.xuwanjin.inchoate.Constants.INCHOATE_PREFERENCE_FILE_NAME;
 import static com.xuwanjin.inchoate.Constants.REWIND_BY_SECONDS_PREFERENCE;
 import static com.xuwanjin.inchoate.Constants.REWIND_OR_FORWARD_PREFERENCE;
 
-public class AudioPlayerFragment extends BaseFragment implements IPlayer.Callback {
+public class AudioPlayerFragment extends BaseFragment<BaseAdapter> implements IPlayer.Callback {
     public static final String TAG = "AudioPlayerFragment";
     private IPlayer mPlayService;
     private IEconomistService mEconomistService;

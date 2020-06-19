@@ -56,7 +56,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
@@ -74,10 +73,8 @@ import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setE
 /**
  * @author Matthew Xu
  */
-public class WeeklyFragment extends BaseFragment {
-    AtomicBoolean mAtomicBoolean = new AtomicBoolean();
+public class WeeklyFragment extends BaseFragment<WeeklyAdapter> {
     public static final String TAG = "WeeklyFragment";
-    RecyclerView mIssueContentRecyclerView;
     private View mSectionHeaderView;
     private TextView mPreviousEdition;
     private FloatingActionButton mFab;
@@ -86,7 +83,6 @@ public class WeeklyFragment extends BaseFragment {
     private TextView mIssueDate;
     private TextView mMagazineHeadline;
     private ImageView mMagazineCover;
-    private WeeklyAdapter mWeeklyAdapter;
     private WeeklyItemDecoration mWeeklyItemDecoration;
 
     public DownloadService mDownloadService;
@@ -322,18 +318,18 @@ public class WeeklyFragment extends BaseFragment {
 
 
     public void initWeeklyFragmentView(View view) {
-        mIssueContentRecyclerView = view.findViewById(R.id.issue_content_recyclerView);
+        mRecyclerView = view.findViewById(R.id.issue_content_recyclerView);
         mLinearLayoutManager = new LinearLayoutManager(getContext());
         mLinearLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        mIssueContentRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         /*
             这种 header 的出现, 他会 inflate 在 RecyclerView 的上面, 这个时候, 画第一个 item 的 header,
             也会出现在 RecyclerView 的上面, 但是他会出现, HeaderView 的上面
          */
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        mSectionHeaderView = layoutInflater.inflate(R.layout.weekly_section_header, mIssueContentRecyclerView, false);
-        View mFooterView = layoutInflater.inflate(R.layout.weekly_footer, mIssueContentRecyclerView, false);
+        mSectionHeaderView = layoutInflater.inflate(R.layout.weekly_section_header, mRecyclerView, false);
+        View mFooterView = layoutInflater.inflate(R.layout.weekly_footer, mRecyclerView, false);
 
         mFab = view.findViewById(R.id.issue_category_fab);
         mFab.setFocusable(true);
@@ -347,12 +343,12 @@ public class WeeklyFragment extends BaseFragment {
         mMagazineCover = mSectionHeaderView.findViewById(R.id.magazine_cover);
         mMagazineHeadline = mSectionHeaderView.findViewById(R.id.magazine_headline);
 
-        mWeeklyAdapter = new WeeklyAdapter(getContext());
-        mIssueContentRecyclerView.setAdapter(mWeeklyAdapter);
-        mWeeklyAdapter.setHeaderView(mSectionHeaderView);
-        mWeeklyAdapter.setFooterView(mFooterView);
-        mWeeklyItemDecoration = new WeeklyItemDecoration(getContext(), mIssueContentRecyclerView);
-        mIssueContentRecyclerView.addItemDecoration(mWeeklyItemDecoration);
+        mBaseAdapter = new WeeklyAdapter(getContext());
+        mRecyclerView.setAdapter(mBaseAdapter);
+        mBaseAdapter.setHeaderView(mSectionHeaderView);
+        mBaseAdapter.setFooterView(mFooterView);
+        mWeeklyItemDecoration = new WeeklyItemDecoration(getContext(), mRecyclerView);
+        mRecyclerView.addItemDecoration(mWeeklyItemDecoration);
 
         int sectionToPosition = InchoateApp.getScrollToPosition();
         Log.d(TAG, "onCreateView: sectionToPosition = " + sectionToPosition);
@@ -373,7 +369,7 @@ public class WeeklyFragment extends BaseFragment {
                 .into(mMagazineCover);
         mIssueDate.setText(issue.issueDate);
         mMagazineHeadline.setText(issue.headline);
-        mWeeklyAdapter.updateData(issue.containArticle);
+        mBaseAdapter.updateData(issue.containArticle);
     }
 
     public void initOnClickListener() {

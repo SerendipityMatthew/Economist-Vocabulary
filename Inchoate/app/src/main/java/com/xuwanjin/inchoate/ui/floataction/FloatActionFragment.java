@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Matthew Xu
  */
-public class FloatActionFragment extends BaseFragment {
+public class FloatActionFragment extends BaseFragment<IssueCategoryAdapter> {
     public static final String TAG = "FloatActionFragment";
 
     private List<String> mSectionList = new ArrayList<>();
@@ -33,14 +33,13 @@ public class FloatActionFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        RecyclerView recyclerView = view.findViewById(R.id.float_action_recyclerView);
-        View mHeaderSectionView = LayoutInflater.from(getContext()).inflate(R.layout.float_action_header, recyclerView, false);
-        IssueCategoryAdapter categoryAdapter = new IssueCategoryAdapter(
-                getContext(), mSectionList);
-        categoryAdapter.setHeaderView(mHeaderSectionView);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(categoryAdapter);
-        recyclerView.addItemDecoration(new IssueCategoryItemDecoration(getContext(), recyclerView));
+        mRecyclerView = view.findViewById(R.id.float_action_recyclerView);
+        View mHeaderSectionView = LayoutInflater.from(getContext()).inflate(R.layout.float_action_header, mRecyclerView, false);
+        mBaseAdapter = new IssueCategoryAdapter(getContext(), mSectionList);
+        mBaseAdapter.setHeaderView(mHeaderSectionView);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setAdapter(mBaseAdapter);
+        mRecyclerView.addItemDecoration(new IssueCategoryItemDecoration(getContext(), mRecyclerView));
     }
 
     @Override

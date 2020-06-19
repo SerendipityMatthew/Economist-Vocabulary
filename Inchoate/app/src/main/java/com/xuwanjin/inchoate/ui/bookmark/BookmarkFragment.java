@@ -30,23 +30,21 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * @author Matthew Xu
  */
-public class BookmarkFragment extends BaseFragment {
+public class BookmarkFragment extends BaseFragment<BookmarkAdapter> {
     private static final String TAG = "BookmarkFragment";
-    private RecyclerView mBookmarkRecycleView;
     private TextView mTextView;
     private Disposable mDisposable;
-    private BookmarkAdapter mBookmarkAdapter;
     private static List<Article> sArticleList = new ArrayList<>();
 
     @Override
     protected void initView(View view) {
-        mBookmarkRecycleView = view.findViewById(R.id.bookmark_recyclerView);
+        mRecyclerView = view.findViewById(R.id.bookmark_recyclerView);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1);
         gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        mBookmarkRecycleView.setLayoutManager(gridLayoutManager);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
         mTextView = view.findViewById(R.id.bookmark_title);
-        mBookmarkAdapter = new BookmarkAdapter(getContext(),initFakeData());
-        mBookmarkRecycleView.setAdapter(mBookmarkAdapter);
+        mBaseAdapter = new BookmarkAdapter(getContext(),initFakeData());
+        mRecyclerView.setAdapter(mBaseAdapter);
     }
     @Override
     protected List<Article> initFakeData() {
@@ -117,8 +115,8 @@ public class BookmarkFragment extends BaseFragment {
 
     private void updateFragmentContent(List<Article> articleList) {
         Log.d(TAG, "updateFragmentContent: articleList = " + articleList.size());
-        mBookmarkRecycleView.addItemDecoration(new BookmarkItemDecoration(getContext(), mBookmarkRecycleView));
-        mBookmarkAdapter.updateData(articleList);
+        mRecyclerView.addItemDecoration(new BookmarkItemDecoration(getContext(), mRecyclerView));
+        mBaseAdapter.updateData(articleList);
     }
 
     @Override

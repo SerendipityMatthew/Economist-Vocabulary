@@ -9,18 +9,23 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.ui.today.TodayNewsAdapter;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
@@ -34,8 +39,12 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public abstract class BaseFragment extends Fragment {
-
+/**
+ * @author Matthew Xu
+ */
+public abstract class BaseFragment<T extends BaseAdapter> extends Fragment {
+    protected RecyclerView mRecyclerView;
+    protected T mBaseAdapter;
     private static final int CALL_TIMEOUT = 10;
     private static final int CONNECT_TIMEOUT = 10;
     private static final int READ_TIMEOUT = 10;

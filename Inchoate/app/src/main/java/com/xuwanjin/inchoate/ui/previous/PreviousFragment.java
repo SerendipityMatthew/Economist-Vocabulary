@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
@@ -30,12 +29,13 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class PreviousFragment extends BaseFragment {
+/**
+ * @author Matthew Xu
+ */
+public class PreviousFragment extends BaseFragment<PreviousAdapter> {
     public static final String TAG = "PreviousFragment";
 
-    RecyclerView mIssueListRecyclerView;
     GridLayoutManager mGridLayoutManager;
-    PreviousAdapter mPreviousAdapter;
     public static List<Issue> sIssueList = new ArrayList<>();
     private Disposable mDisposable;
 
@@ -48,12 +48,12 @@ public class PreviousFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        mIssueListRecyclerView = view.findViewById(R.id.issue_list_recyclerView);
+        mRecyclerView = view.findViewById(R.id.issue_list_recyclerView);
         mGridLayoutManager = new GridLayoutManager(getContext(), 2);
         mGridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        mIssueListRecyclerView.setLayoutManager(mGridLayoutManager);
-        mPreviousAdapter = new PreviousAdapter(getContext());
-        mIssueListRecyclerView.setAdapter(mPreviousAdapter);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mBaseAdapter = new PreviousAdapter(getContext());
+        mRecyclerView.setAdapter(mBaseAdapter);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class PreviousFragment extends BaseFragment {
     }
 
     private void updatePreviousFragmentContent(List<Issue> issueList) {
-        mPreviousAdapter.updateData(issueList);
+        mBaseAdapter.updateData(issueList);
     }
 
     @Override

@@ -19,8 +19,6 @@ import com.xuwanjin.inchoate.ui.BaseItemDecoration;
  */
 public class IssueCategoryItemDecoration extends BaseItemDecoration<IssueCategoryAdapter> {
     private RecyclerView.LayoutManager mManager;
-    private int mItemHeaderHeight;
-    private Rect mTextRect;
     // 每一项的分割线
     private Paint mLinePaint;
 
@@ -30,8 +28,6 @@ public class IssueCategoryItemDecoration extends BaseItemDecoration<IssueCategor
 
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mLinePaint.setColor(Color.GRAY);
-
-        mTextRect = new Rect();
     }
 
 
@@ -54,15 +50,16 @@ public class IssueCategoryItemDecoration extends BaseItemDecoration<IssueCategor
      */
     @Override
     public void onDrawImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, View childView, int position) {
-        if (position != 0 && position != 1) {
-            canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.
-                    getTop(), mLinePaint);
-        }
+        canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.
+                getTop(), mLinePaint);
     }
 
     @Override
     protected boolean isSkipDraw(int position, boolean isOver) {
-        return false;
+        if (position != 0 && position != 1) {
+            return false;
+        }
+        return true;
     }
 
     @Override

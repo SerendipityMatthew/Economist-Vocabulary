@@ -102,7 +102,11 @@ public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article> {
 
     @Override
     public String getGroupName(int position) {
-        return mDataList.get(position).section;
+        int pos = position;
+        if (mHeaderView != null) {
+            pos = position - 1;
+        }
+        return mDataList.get(pos).section;
     }
 
     // 判断当前的 position 对应的 item1 是否是相应的组的第一项
@@ -124,8 +128,8 @@ public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article> {
 
         // 因为我们有一个 HeaderView, 这个 Position 是
         // RecyclerView 里的是 List.size() +1 项, 为了数据对应. 这里的需要  position -2
-        String lastGroupName = getGroupName(position - 2);
-        String currentGroupName = getGroupName(position - 1);
+        String lastGroupName = getGroupName(position - 1);
+        String currentGroupName = getGroupName(position);
         if (lastGroupName.equals(currentGroupName)) {
             return false;
         }

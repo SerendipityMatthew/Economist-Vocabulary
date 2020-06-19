@@ -82,7 +82,7 @@ public class WeeklyItemDecoration extends BaseItemDecoration<WeeklyAdapter> {
         if (isHeader) {
             //draw left 矩形的左边位置, top 矩形的上边位置, right 矩形的右边位置, bottom 矩形的下边位置
             int y = childView.getTop() - mItemHeaderHeight;
-            String groupName = mAdapter.getGroupName(position - 1);
+            String groupName = mAdapter.getGroupName(position);
             canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), mItemHeaderPaint);
             mTextPaint.getTextBounds(groupName, 0, groupName.length(), mTextRect);
             canvas.drawText(groupName, 50,

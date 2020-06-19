@@ -111,6 +111,7 @@ public class WeeklyItemDecoration extends BaseItemDecoration<WeeklyAdapter> {
     @Override
     public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
                                @NonNull RecyclerView.State state, WeeklyAdapter adapter, int position) {
+
         // 当 RecyclerView 含有 HeaderView 的时候, 第一个可见的 View, 不是里面的填充item, 而是 eaderView
         // 因此绘制第一个 Group 的 headerView 时候, 需要在大的 HeaderView 的下方
         if (parent.findViewHolderForAdapterPosition(position) == null) {

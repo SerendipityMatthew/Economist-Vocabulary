@@ -19,10 +19,13 @@ import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
     public static final String TAG = "TodayItemDecoration";
     private int mItemHeaderHeight = 0;
-    Paint mItemHeaderPaint;
+    private Paint mItemHeaderPaint;
     private Rect mTextRect;
     private Paint mTextPaint;
     private Paint mLinePaint;
+    private Paint mPaintRed;
+    private Paint mGreenPaint;
+    private Paint mBlackPaint;
 
 
     public TodayItemDecoration(Context context, RecyclerView recyclerView) {
@@ -32,13 +35,21 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
         mItemHeaderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         // got the color of textview background, by color picker
         mItemHeaderPaint.setColor(Color.parseColor("#FBFBFB"));
-
+        Log.d(TAG, "TodayItemDecoration: ");
         mTextRect = new Rect();
         mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mTextPaint.setTextSize(46);
         mTextPaint.setColor(Color.BLACK);
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+        mPaintRed = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintRed.setColor(Color.RED);
+
+        mGreenPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mGreenPaint.setColor(Color.GREEN);
+
+        mBlackPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mBlackPaint.setColor(Color.BLACK);
     }
 
     public static int dip2px(Context context, float dpValue) {
@@ -53,11 +64,7 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
         boolean isHeader = adapter.isItemHeader(position);
         if (isHeader) {
             String itemHeaderTitle = adapter.getGroupName(position);
-            Paint paintRed = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paintRed.setColor(Color.RED);
-            Paint paintBlack = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paintBlack.setColor(Color.BLACK);
-            canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), paintRed);
+            canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), mPaintRed);
             canvas.drawText(itemHeaderTitle, 50, y + mItemHeaderHeight / 2, mTextPaint);
         }
     }
@@ -77,14 +84,9 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
     public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent,
                                @NonNull RecyclerView.State state, TodayNewsAdapter adapter, int position) {
         int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
-
         String itemHeaderTitle = adapter.getGroupName(position);
-        Paint greenPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        greenPaint.setColor(Color.GREEN);
-        Paint paintBlack = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paintBlack.setColor(Color.BLACK);
-        canvas.drawRect(0, 0, parent.getWidth(), dip2px(mContext, 10), paintBlack);
-        canvas.drawRect(0, 20, parent.getWidth(), mItemHeaderHeight, greenPaint);
+        canvas.drawRect(0, 0, parent.getWidth(), dip2px(mContext, 10), mBlackPaint);
+        canvas.drawRect(0, 20, parent.getWidth(), mItemHeaderHeight, mGreenPaint);
         canvas.drawText(itemHeaderTitle, 50, y, mTextPaint);
     }
 

@@ -30,7 +30,7 @@ public abstract class BaseItemDecoration<T extends BaseAdapter> extends Recycler
         for (int i = 0; i < count; i++) {
             View childView = parent.getChildAt(i);
             int position = parent.getChildLayoutPosition(childView);
-            if (!isSkipDraw(position)) {
+            if (!isSkipDraw(position, false)) {
                 onDrawImpl(canvas, parent, childView, position);
             }
         }
@@ -43,12 +43,18 @@ public abstract class BaseItemDecoration<T extends BaseAdapter> extends Recycler
         super.onDrawOver(canvas, parent, state);
         int position = ((LinearLayoutManager) (parent.getLayoutManager())).findFirstVisibleItemPosition();
         T adapter = (T) getAdapter(parent);
-        if (!isSkipDraw(position)) {
+        if (!isSkipDraw(position, true)) {
             onDrawOverImpl(canvas, parent, state, adapter, position);
         }
     }
 
-    protected abstract boolean isSkipDraw(int position);
+    /**
+     *
+     * @param position 绘制的位置
+     * @param isOver 只是, 这个是onDraw 还是 onDrawOver 的绘制
+     * @return 是否跳过当前的绘制
+     */
+    protected abstract boolean isSkipDraw(int position, boolean isOver);
 
     /**
      * onDrawOver 的具体实现

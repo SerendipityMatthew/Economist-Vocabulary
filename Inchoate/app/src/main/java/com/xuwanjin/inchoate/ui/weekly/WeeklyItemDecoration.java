@@ -94,7 +94,7 @@ public class WeeklyItemDecoration extends BaseItemDecoration<WeeklyAdapter> {
     }
 
     @Override
-    protected boolean isSkipDraw(int position) {
+    protected boolean isSkipDraw(int position, boolean isOver) {
         if (position == 0) {
             return true;
         }

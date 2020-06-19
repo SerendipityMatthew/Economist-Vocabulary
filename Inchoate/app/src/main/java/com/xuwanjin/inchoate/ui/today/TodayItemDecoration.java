@@ -11,7 +11,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.xuwanjin.inchoate.ui.BaseAdapter;
 import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
 /**
@@ -64,7 +63,13 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
     }
 
     @Override
-    protected boolean isSkipDraw(int position) {
+    protected boolean isSkipDraw(int position, boolean isOver) {
+        // 对 Today Page, onDraw 的第一个不需要绘制, 否则会导致和 onDrawImpl 的第一个相冲突
+        if (position == 0) {
+            if (!isOver) {
+                return true;
+            }
+        }
         return false;
     }
 

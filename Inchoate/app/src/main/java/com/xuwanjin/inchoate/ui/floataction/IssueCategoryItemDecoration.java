@@ -59,12 +59,12 @@ public class IssueCategoryItemDecoration extends BaseItemDecoration<IssueCategor
     public void onDrawImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, View childView, int position) {
         if (position != 0 && position != 1) {
             canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.
-            getTop(), mLinePaint);
+                    getTop(), mLinePaint);
         }
     }
 
     @Override
-    protected boolean isSkipDraw(int position) {
+    protected boolean isSkipDraw(int position, boolean isOver) {
         return false;
     }
 

@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xuwanjin.inchoate.model.Paragraph;
-import com.xuwanjin.inchoate.ui.BaseAdapter;
 import com.xuwanjin.inchoate.ui.BaseItemDecoration;
 
 import java.util.List;
@@ -56,7 +55,7 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
     }
 
     @Override
-    protected boolean isSkipDraw(int position) {
+    protected boolean isSkipDraw(int position, boolean isOver){
         if (position == 0) {
             return true;
         }
@@ -97,7 +96,7 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
         super.getItemOffsets(outRect, view, parent, state);
         if (parent.getAdapter() instanceof ArticleContentAdapter) {
             int position = parent.getChildLayoutPosition(view);
-            if (isSkipDraw(position)) {
+            if (isSkipDraw(position, false)) {
                 return;
             } else {
                 outRect.top = mItemHeaderHeight;

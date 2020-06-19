@@ -113,7 +113,7 @@ public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> 
     }
 
     @Override
-    protected boolean isSkipDraw(int position) {
+    protected boolean isSkipDraw(int position, boolean isOver){
         if (position == mAdapter.getItemCount() - 1) {
             return true;
         }

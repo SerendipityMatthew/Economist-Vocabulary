@@ -56,12 +56,4 @@ public class ArticleContentAdapter extends BaseAdapter<ArticleParagraphViewHolde
     public boolean isItemHeader(int position) {
         return false;
     }
-
-    @Override
-    protected boolean isBindViewItem(int position) {
-        if (position >= 1 && position < getItemCount()) {
-            return true;
-        }
-        return false;
-    }
 }

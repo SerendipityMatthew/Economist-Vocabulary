@@ -23,7 +23,7 @@ public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> 
     private Paint mLinePaint;
     private Rect mTextRect;
 
-    public BookmarkItemDecoration( Context context, RecyclerView recyclerView) {
+    public BookmarkItemDecoration(Context context, RecyclerView recyclerView) {
         super(context, recyclerView);
         this.mManager = recyclerView.getLayoutManager();
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -95,27 +95,21 @@ public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> 
     }
 
     @Override
-    public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        super.onDraw(canvas, parent, state);
-        int count = parent.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View view = parent.getChildAt(i);
-            // view 是 RecyclerView 里的每一项, 包括填充进去的 HeaderView
-            int position = parent.getChildLayoutPosition(view);
-            boolean isHeader = mAdapter.isItemHeader(position);
-            if (isHeader) {
-                //draw left 矩形的左边位置, top 矩形的上边位置, right 矩形的右边位置, bottom 矩形的下边位置
-                int y = view.getTop() - mItemHeaderHeight;
-                String groupName = mAdapter.getGroupName(position);
-                canvas.drawRect(0, y, parent.getWidth(), view.getTop(), mItemHeaderPaint);
-                mTextPaint.getTextBounds(groupName, 0, groupName.length(), mTextRect);
-                canvas.drawText(groupName, 50,
-                        (y) + mItemHeaderHeight / 2 + 15, mTextPaint);
-            } else {
-                // 在这里绘制每一项的分割线
-                canvas.drawRect(50, view.getTop() - 1, parent.getWidth(), view.getTop(), mLinePaint);
-            }
+    public void onDrawImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, View childView, int position) {
+        boolean isHeader = mAdapter.isItemHeader(position);
+        if (isHeader) {
+            //draw left 矩形的左边位置, top 矩形的上边位置, right 矩形的右边位置, bottom 矩形的下边位置
+            int y = childView.getTop() - mItemHeaderHeight;
+            String groupName = mAdapter.getGroupName(position);
+            canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), mItemHeaderPaint);
+            mTextPaint.getTextBounds(groupName, 0, groupName.length(), mTextRect);
+            canvas.drawText(groupName, 50,
+                    (y) + mItemHeaderHeight / 2 + 15, mTextPaint);
+        } else {
+            // 在这里绘制每一项的分割线
+            canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.getTop(), mLinePaint);
         }
+
     }
 
     @Override

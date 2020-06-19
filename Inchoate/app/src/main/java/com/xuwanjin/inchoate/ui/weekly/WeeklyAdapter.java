@@ -131,13 +131,4 @@ public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article> {
         }
         return true;
     }
-
-    @Override
-    protected boolean isBindViewItem(int position) {
-        int viewType = getItemViewType(position);
-        if (viewType == TYPE_NORMAL) {
-            return true;
-        }
-        return false;
-    }
 }

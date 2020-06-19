@@ -3,6 +3,7 @@ package com.xuwanjin.inchoate.ui;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,9 +24,19 @@ public abstract class BaseItemDecoration<T extends BaseAdapter> extends Recycler
     }
 
     @Override
-    public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        super.onDraw(c, parent, state);
+    public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+        super.onDraw(canvas, parent, state);
+        int count = parent.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View childView = parent.getChildAt(i);
+            int position = parent.getChildLayoutPosition(childView);
+            if (!isSkipDraw(position)) {
+                onDrawImpl(canvas, parent, childView, position);
+            }
+        }
     }
+
+    protected abstract void onDrawImpl(Canvas canvas, RecyclerView parent, View childView, int position);
 
     @Override
     public void onDrawOver(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {

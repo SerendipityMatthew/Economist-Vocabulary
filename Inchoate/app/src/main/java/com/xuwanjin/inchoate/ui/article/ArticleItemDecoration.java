@@ -49,22 +49,20 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
     }
 
     @Override
-    public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        super.onDraw(canvas, parent, state);
-        int count = parent.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View childView = parent.getChildAt(i);
-            int position = parent.getChildLayoutPosition(childView);
-            if (!isSkipDraw(position)) {
-                int y = childView.getTop() - mItemHeaderHeight;
-                canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), mItemHeaderPaint);
-                canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.getTop(), mLinePaint);
-            }
-        }
+    public void onDrawImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, View childView, int position) {
+        int y = childView.getTop() - mItemHeaderHeight;
+        canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), mItemHeaderPaint);
+        canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.getTop(), mLinePaint);
     }
 
     @Override
     protected boolean isSkipDraw(int position) {
+        if (position == 0) {
+            return true;
+        }
+        if (position == mAdapter.getItemCount() - 2) {
+            return true;
+        }
         return false;
     }
 

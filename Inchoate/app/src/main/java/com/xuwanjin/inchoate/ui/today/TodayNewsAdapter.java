@@ -85,11 +85,4 @@ public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> 
         }
         return true;
     }
-
-
-    @Override
-    public int getItemCount() {
-        return mDataList == null ? 0 : mDataList.size();
-    }
-
 }

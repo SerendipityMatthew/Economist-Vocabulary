@@ -50,34 +50,34 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
 
     /**
      * 提供给 Adapter 的布局 id,
+     *
      * @return 返回 资源的 id
      */
     protected abstract int getLayoutItemResId();
 
     /**
-     *  抽象每一个 Adapter 的 ViewHolder, 让子类提供 ViewHolder
-     * @param view Adapter 的布局文件生成的 view
+     * 抽象每一个 Adapter 的 ViewHolder, 让子类提供 ViewHolder
+     *
+     * @param view             Adapter 的布局文件生成的 view
      * @param isHeaderOrFooter 是否是 HeaderView 还是 FooterView
      * @return 返回相应 Adapter 需要的 ViewHolder
      */
     protected abstract T getViewHolder(View view, boolean isHeaderOrFooter);
 
     /**
-     *
      * @param position
      * @return
      */
     public abstract String getGroupName(int position);
 
     /**
-     *
+     * onBindViewHolder 的实现
      * @param holder
      * @param position
      */
     protected abstract void onBindViewHolderImpl(T holder, int position);
 
     /**
-     *
      * @param position
      * @return
      */
@@ -85,17 +85,23 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
 
     @Override
     public void onBindViewHolder(@NonNull T holder, int position) {
-        if (isBindViewItem(position)){
+        if (isBindViewItem(position)) {
             onBindViewHolderImpl(holder, position);
         }
     }
 
     /**
      * 绘制 item 的条件
+     *
      * @param position
      * @return
      */
-    protected boolean isBindViewItem(int position){
+    protected boolean isBindViewItem(int position) {
+        int viewType = getItemViewType(position);
+        if (viewType == TYPE_HEADER
+                || viewType == TYPE_FOOTER) {
+            return false;
+        }
         return true;
     }
 
@@ -110,17 +116,19 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
 
     @Override
     public int getItemCount() {
-        if (mHeaderView != null && mFooterView != null) {
-            return mDataList.size() + 2;
+        if (mHeaderView != null) {
+            if (mFooterView != null) {
+                return mDataList.size() + 2;
+            } else {
+                return mDataList.size() + 1;
+            }
+        } else {
+            if (mFooterView != null) {
+                return mDataList.size() + 1;
+            } else {
+                return mDataList.size();
+            }
         }
-        if ((mHeaderView == null && mFooterView != null) ||
-                (mHeaderView != null && mFooterView == null)) {
-            return mDataList.size() + 1;
-        }
-        if ((mHeaderView == null && mFooterView == null)) {
-            return mDataList.size();
-        }
-        return mDataList == null ? 0 : mDataList.size();
     }
 
     @Override
@@ -150,6 +158,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
         mDataList = dataList;
         notifyDataSetChanged();
     }
+
     public List<E> getDataList() {
         return mDataList;
     }

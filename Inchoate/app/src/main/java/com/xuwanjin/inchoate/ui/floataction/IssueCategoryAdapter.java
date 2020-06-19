@@ -59,14 +59,6 @@ public class IssueCategoryAdapter extends BaseAdapter<IssueCategoryViewHolder, S
         });
     }
 
-    @Override
-    protected boolean isBindViewItem(int position) {
-        int viewType = getItemViewType(position);
-        if (viewType == TYPE_NORMAL) {
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public boolean isItemHeader(int position) {

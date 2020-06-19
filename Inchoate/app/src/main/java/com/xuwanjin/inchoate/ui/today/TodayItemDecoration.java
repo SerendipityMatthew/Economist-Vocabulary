@@ -48,30 +48,18 @@ public class TodayItemDecoration extends BaseItemDecoration<TodayNewsAdapter> {
     }
 
     @Override
-    public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        super.onDraw(canvas, parent, state);
-        if (parent.getAdapter() instanceof TodayNewsAdapter) {
-            TodayNewsAdapter adapter = (TodayNewsAdapter) parent.getAdapter();
-            int count = parent.getChildCount();
-            for (int i = 0; i < count; i++) {
-                View childView = parent.getChildAt(i);
-                int position = parent.getChildLayoutPosition(childView);
-                int y = childView.getTop() - mItemHeaderHeight;
-                if (position == 0) {
-                    return;
-                }
-                boolean isHeader = adapter.isItemHeader(position);
-                if (isHeader) {
-                    String itemHeaderTitle = adapter.getGroupName(position);
-                    Paint paintRed = new Paint(Paint.ANTI_ALIAS_FLAG);
-                    paintRed.setColor(Color.RED);
-                    Paint paintBlack = new Paint(Paint.ANTI_ALIAS_FLAG);
-                    paintBlack.setColor(Color.BLACK);
-                    canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), paintRed);
-                    canvas.drawText(itemHeaderTitle, 50, y + mItemHeaderHeight / 2 , mTextPaint);
-                }
-            }
-
+    public void onDrawImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, View childView, int position) {
+        TodayNewsAdapter adapter = (TodayNewsAdapter) parent.getAdapter();
+        int y = childView.getTop() - mItemHeaderHeight;
+        boolean isHeader = adapter.isItemHeader(position);
+        if (isHeader) {
+            String itemHeaderTitle = adapter.getGroupName(position);
+            Paint paintRed = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paintRed.setColor(Color.RED);
+            Paint paintBlack = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paintBlack.setColor(Color.BLACK);
+            canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), paintRed);
+            canvas.drawText(itemHeaderTitle, 50, y + mItemHeaderHeight / 2, mTextPaint);
         }
     }
 

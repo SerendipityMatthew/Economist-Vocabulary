@@ -52,21 +52,14 @@ public class IssueCategoryItemDecoration extends BaseItemDecoration<IssueCategor
      *
      * @param canvas
      * @param parent
-     * @param state
+     * @param childView
+     * @param position
      */
     @Override
-    public void onDraw(@NonNull Canvas canvas, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        super.onDraw(canvas, parent, state);
-        int count = parent.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View view = parent.getChildAt(i);
-            // view 是 RecyclerView 里的每一项, 包括填充进去的 HeaderView
-            // 在这里绘制每一项的分割线
-            int position = parent.getChildLayoutPosition(view);
-            if (position != 0 && position != 1) {
-                canvas.drawRect(50, view.getTop() - 1, parent.getWidth(), view.getTop(), mLinePaint);
-            }
-
+    public void onDrawImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, View childView, int position) {
+        if (position != 0 && position != 1) {
+            canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.
+            getTop(), mLinePaint);
         }
     }
 

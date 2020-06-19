@@ -1,12 +1,17 @@
 package com.xuwanjin.inchoate.ui;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.xuwanjin.inchoate.R;
 
 import java.util.List;
 
@@ -96,6 +101,8 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
     public void onBindViewHolder(@NonNull T holder, int position) {
         if (isBindViewItem(position)) {
             onBindViewHolderImpl(holder, position, fetchTheCorrectData(position));
+            Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.scale_50_to_100);
+            holder.itemView.startAnimation(animation);
         }
     }
 

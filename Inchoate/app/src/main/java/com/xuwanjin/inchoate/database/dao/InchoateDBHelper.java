@@ -191,7 +191,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     public List<Article> queryBookmarkedArticle() {
         sDatabase = openInchoateDB();
         // Select * from article where is_bookmark='true';
-        String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE " + KEY_IS_BOOKMARK + " =\'0\'";
+        String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE " + KEY_IS_BOOKMARK + " =\'1\'";
         Cursor cursor = sDatabase.rawQuery(query, null);
 
         List<Article> articleList = new ArrayList<>();

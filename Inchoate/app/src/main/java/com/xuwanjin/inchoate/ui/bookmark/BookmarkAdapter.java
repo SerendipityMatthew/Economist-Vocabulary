@@ -3,6 +3,7 @@ package com.xuwanjin.inchoate.ui.bookmark;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -119,16 +120,14 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
         holder.bookmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick: position = " + position);
                 if (article.isBookmark) {
                     article.isBookmark = false;
                 } else {
                     article.isBookmark = true;
                 }
-                Glide.with(mContext)
-                        .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .placeholder(R.mipmap.bookmark_white)
-                        .into(holder.bookmark);
+                mDataList.remove(position);
+                updateData(mDataList);
                 InchoateDBHelper helper = InchoateDBHelper.getInstance(mContext);
                 helper.setBookmarkStatus(article, article.isBookmark);
 //                helper.close();

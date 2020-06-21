@@ -99,7 +99,6 @@ public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> 
         // RecyclerView 里的是 List.size() +1 项, 为了数据对应. 这里的需要  position -2
         String lastGroupName = getGroupName(position - 1);
         String currentGroupName = getGroupName(position);
-        Log.d(TAG, "isItemHeader: lastGroupName = " + lastGroupName + ", currentGroupName " + currentGroupName);
         if (lastGroupName.equals(currentGroupName)) {
             return false;
         }

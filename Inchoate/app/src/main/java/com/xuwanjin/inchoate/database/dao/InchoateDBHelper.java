@@ -229,6 +229,15 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             Article article = getArticleFromCursor(cursor);
             articleList.add(article);
         }
+
+        String todayQuery = "SELECT * FROM " + TABLE_NAME_TODAY_NEWS + " WHERE " + KEY_IS_BOOKMARK + " =\'1\'";
+        Cursor todayCursor = sDatabase.rawQuery(todayQuery, null);
+
+        while (todayCursor != null && todayCursor.moveToNext()) {
+            Article article = getArticleFromCursor(todayCursor);
+            articleList.add(article);
+        }
+
         if (sDatabase != null) {
             closeInchoateDB();
         }

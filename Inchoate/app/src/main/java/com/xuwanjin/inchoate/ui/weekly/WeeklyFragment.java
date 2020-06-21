@@ -282,7 +282,6 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
     public Issue loadWholeIssue(String issueDate, String urlId) {
         // 数据库 (数据库插入不全)---> 网络
         Issue issue = getIssueDataFromDB(issueDate);
-        Log.d(TAG, "loadWholeIssue: issue = " + issue);
         boolean shouldLoadFromNetwork = false;
         if (issue != null) {
             List<Article> articleList = issue.containArticle;

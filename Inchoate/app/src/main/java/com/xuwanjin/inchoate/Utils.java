@@ -176,6 +176,7 @@ public class Utils {
                 article.title = secondParts.title;
                 article.headline = firstParts.headline;
                 article.flyTitle = secondParts.flyTitle;
+                article.articleUrl = secondParts.url.canonical;
                 List<Internal> internalList = secondParts.articleSection.internal;
                 if (internalList != null) {
                     article.section = internalList.get(0).sectionName;

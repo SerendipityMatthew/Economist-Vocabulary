@@ -138,7 +138,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             + ");";
 
     private static final String CREATE_TABLE_TODAY_NEWS = "CREATE TABLE IF NOT EXISTS "
-            + TABLE_NAME_TODAY_NEWS+ " ( " + KEY_ID_PARA
+            + TABLE_NAME_TODAY_NEWS + " ( " + KEY_ID_PARA
             + KEY_SECTION + " TEXT,"
             + KEY_TITLE + " TEXT,"
             + KEY_ARTICLE_URL + " TEXT,"
@@ -421,8 +421,12 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         }
         return rowID;
     }
+
     public long insertArticle(Article article) {
         sDatabase = openInchoateDB();
+        if (isArticleExistedInTodayNews(article)){
+            return -1;
+        }
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_SECTION, article.section);
         contentValues.put(KEY_TITLE, article.title);
@@ -442,6 +446,24 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             closeInchoateDB();
         }
         return rowID;
+    }
+
+    private boolean isArticleExistedInTodayNews(Article insertArticle) {
+        sDatabase = openInchoateDB();
+        // Select * from vocabulary where vocabulary_content='';
+        String queryByArticleID = "SELECT * FROM " + TABLE_NAME_TODAY_NEWS + " WHERE "
+                + KEY_ARTICLE_URL + " =\'" + insertArticle.articleUrl + "\'";
+        Cursor cursor = sDatabase.rawQuery(queryByArticleID, null);
+        List<Article> arrayList = new ArrayList<>();
+        while (cursor != null && cursor.moveToNext()) {
+            Article article = getArticleFromCursor(cursor);
+            arrayList.add(article);
+        }
+        if (arrayList.size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public List<Vocabulary> queryVocabulary(String vocabularyContent) {

@@ -11,15 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * @author Matthew Xu
  */
-public abstract class BaseItemDecoration<T extends BaseAdapter> extends RecyclerView.ItemDecoration {
+public abstract class BaseItemDecoration<Adapter extends BaseAdapter> extends RecyclerView.ItemDecoration {
     protected RecyclerView mRecyclerView;
     protected Context mContext;
-    protected T mAdapter;
+    protected Adapter mAdapter;
 
     protected BaseItemDecoration(Context context, RecyclerView recyclerView) {
         this.mContext = context;
         this.mRecyclerView = recyclerView;
-        this.mAdapter = (T) recyclerView.getAdapter();
+        this.mAdapter = (Adapter) recyclerView.getAdapter();
     }
 
     public static int dip2px(Context context, float dpValue) {

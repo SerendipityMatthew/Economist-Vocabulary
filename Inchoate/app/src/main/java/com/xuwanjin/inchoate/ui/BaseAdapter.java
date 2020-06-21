@@ -18,23 +18,23 @@ import java.util.List;
 /**
  * @author Matthew Xu
  */
-public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerView.Adapter<T> {
+public abstract class BaseAdapter<Holder extends BaseViewHolder, Data> extends RecyclerView.Adapter<Holder> {
     protected Context mContext;
-    protected List<E> mDataList;
+    protected List<Data> mDataList;
     protected View mHeaderView;
     protected View mFooterView;
     protected static final int TYPE_HEADER = 0;
     protected static final int TYPE_FOOTER = 1;
     protected static final int TYPE_NORMAL = 2;
 
-    protected BaseAdapter(Context context, List<E> dataList) {
+    protected BaseAdapter(Context context, List<Data> dataList) {
         mContext = context;
         this.mDataList = dataList;
     }
 
     @NonNull
     @Override
-    public T onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         switch (viewType) {
             case TYPE_FOOTER:
@@ -66,7 +66,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
      * @param isHeaderOrFooter 是否是 HeaderView 还是 FooterView
      * @return 返回相应 Adapter 需要的 ViewHolder
      */
-    protected abstract T getViewHolder(View view, boolean isHeaderOrFooter);
+    protected abstract Holder getViewHolder(View view, boolean isHeaderOrFooter);
 
     /**
      * @param position
@@ -80,7 +80,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
      * @param position
      * @param filledData
      */
-    protected abstract void onBindViewHolderImpl(T holder, int position, E filledData);
+    protected abstract void onBindViewHolderImpl(Holder holder, int position, Data filledData);
 
     /**
      * @param position
@@ -88,12 +88,12 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
      */
     public abstract boolean isItemHeader(int position);
 
-    public E fetchTheCorrectData(int position){
+    public Data fetchTheCorrectData(int position){
         int revised = position;
         if (mHeaderView != null){
             revised = position -1;
         }
-        E dataList = mDataList.get(revised);
+        Data dataList = mDataList.get(revised);
         return dataList;
     }
 
@@ -107,7 +107,7 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
 
 
     @Override
-    public void onBindViewHolder(@NonNull T holder, int position) {
+    public void onBindViewHolder(@NonNull Holder holder, int position) {
         if (isBindViewItem(position)) {
             onBindViewHolderImpl(holder, position, fetchTheCorrectData(position));
             Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.scale_50_to_100);
@@ -179,12 +179,12 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
         return TYPE_NORMAL;
     }
 
-    public void updateData(List<E> dataList) {
+    public void updateData(List<Data> dataList) {
         mDataList = dataList;
         notifyDataSetChanged();
     }
 
-    public List<E> getDataList() {
+    public List<Data> getDataList() {
         return mDataList;
     }
 }

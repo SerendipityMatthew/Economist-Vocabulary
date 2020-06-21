@@ -97,6 +97,15 @@ public abstract class BaseAdapter<T extends BaseViewHolder, E> extends RecyclerV
         return dataList;
     }
 
+    protected int fetchPositionInDataList(int positionInAdapter){
+        int revised = positionInAdapter;
+        if (mHeaderView != null){
+            revised = positionInAdapter -1;
+        }
+        return revised;
+    }
+
+
     @Override
     public void onBindViewHolder(@NonNull T holder, int position) {
         if (isBindViewItem(position)) {

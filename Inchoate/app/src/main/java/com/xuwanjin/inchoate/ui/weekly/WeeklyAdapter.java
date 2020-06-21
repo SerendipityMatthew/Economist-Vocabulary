@@ -2,6 +2,7 @@ package com.xuwanjin.inchoate.ui.weekly;
 
 import android.animation.Animator;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -21,7 +22,7 @@ import com.xuwanjin.inchoate.ui.BaseAdapter;
  * @author Matthew Xu
  */
 public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article> {
-
+    public static final String TAG = "WeeklyAdapter";
     public WeeklyAdapter(Context context) {
         super(context, null);
     }
@@ -87,15 +88,11 @@ public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article> {
                 } else {
                     article.isBookmark = true;
                 }
-                Glide.with(mContext)
-                        .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .placeholder(R.mipmap.bookmark_white)
-                        .into(holder.bookmark);
-
+                Log.d(TAG, "onClick: article = " + article);
+                mDataList.set(fetchPositionInDataList(position), article);
                 InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(mContext);
                 dbHelper.setBookmarkStatus(article, article.isBookmark);
-//                    dbHelper.close();
+                notifyItemChanged(position);
             }
         });
     }

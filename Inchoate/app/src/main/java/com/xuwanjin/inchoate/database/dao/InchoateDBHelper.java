@@ -183,9 +183,23 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     public void setBookmarkStatus(Article article, boolean isBookmark) {
         sDatabase = openInchoateDB();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(KEY_IS_BOOKMARK, isBookmark);
-        sDatabase.update(TABLE_NAME_ARTICLE, contentValues, KEY_ID + "=?", new String[]{String.valueOf(article.rowIdInDB)});
-        closeInchoateDB();
+        contentValues.put(KEY_IS_BOOKMARK, isBookmark ? 1 : 0);
+        contentValues.put(KEY_ISSUE_DATE, article.date);
+        contentValues.put(KEY_SECTION, article.section);
+
+        contentValues.put(KEY_FLYTITLE, article.flyTitle);
+        contentValues.put(KEY_AUDIO_URL, article.audioUrl);
+        contentValues.put(KEY_LOCALE_AUDIO_URL, article.localeAudioUrl);
+        contentValues.put(KEY_MAIN_ARTICLE_IMAGE, article.mainArticleImage);
+
+        contentValues.put(KEY_ARTICLE_RUBRIC, article.articleRubric);
+        contentValues.put(KEY_AUDIO_DURATION, article.audioDuration);
+        String whereClause = KEY_ARTICLE_URL + "=?";
+        long affectedRowCount = sDatabase.update(TABLE_NAME_ARTICLE, contentValues, whereClause, new String[]{String.valueOf(article.articleUrl)});
+        Log.d(TAG, "setBookmarkStatus: affectedRowCount = " + affectedRowCount);
+        if (sDatabase != null) {
+            closeInchoateDB();
+        }
     }
 
     public List<Article> queryBookmarkedArticle() {

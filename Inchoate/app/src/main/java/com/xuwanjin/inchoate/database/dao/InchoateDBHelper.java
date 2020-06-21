@@ -35,6 +35,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     static final String TABLE_NAME_ARTICLE = "article";
     static final String TABLE_NAME_PARAGRAPH = "paragraph";
     static final String TABLE_NAME_VOCABULARY = "vocabulary";
+    static final String TABLE_NAME_TODAY_NEWS = "today_news";
     public Context mContext;
     private static volatile SQLiteDatabase sDatabase;
     private static AtomicInteger mInchoateDBCounter = new AtomicInteger();
@@ -134,6 +135,21 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             + KEY_BELONGED_SECTION_NAME + " TEXT,"
             + KEY_BELONGED_ISSUE_DATE + " TEXT,"
             + KEY_BELONGED_ARTICLE_URL + " TEXT"
+            + ");";
+
+    private static final String CREATE_TABLE_TODAY_NEWS = "CREATE TABLE IF NOT EXISTS "
+            + TABLE_NAME_TODAY_NEWS+ " ( " + KEY_ID_PARA
+            + KEY_SECTION + " TEXT,"
+            + KEY_TITLE + " TEXT,"
+            + KEY_ARTICLE_URL + " TEXT,"
+            + KEY_AUDIO_URL + " TEXT,"
+            + KEY_LOCALE_AUDIO_URL + " TEXT,"
+            + KEY_FLYTITLE + " TEXT,"
+            + KEY_MAIN_ARTICLE_IMAGE + " TEXT,"
+            + KEY_ARTICLE_IMAGE + " TEXT,"
+            + KEY_ARTICLE_RUBRIC + " TEXT,"
+            + KEY_AUDIO_DURATION + " TEXT,"
+            + KEY_IS_BOOKMARK + " TEXT"
             + ");";
 
     // 创建索引
@@ -391,6 +407,28 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         contentValues.put(KEY_IS_BOOKMARK, article.isBookmark);
         contentValues.put(KEY_ISSUE_ID, issueRowId);
         long rowID = sDatabase.insert(TABLE_NAME_ARTICLE, null, contentValues);
+        if (sDatabase != null) {
+            closeInchoateDB();
+        }
+        return rowID;
+    }
+    public long insertArticle(Article article) {
+        sDatabase = openInchoateDB();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(KEY_SECTION, article.section);
+        contentValues.put(KEY_TITLE, article.title);
+
+        contentValues.put(KEY_FLYTITLE, article.flyTitle);
+        contentValues.put(KEY_ARTICLE_URL, article.articleUrl);
+        contentValues.put(KEY_AUDIO_URL, article.audioUrl);
+        contentValues.put(KEY_LOCALE_AUDIO_URL, article.articleUrl);
+        contentValues.put(KEY_MAIN_ARTICLE_IMAGE, article.mainArticleImage);
+
+        contentValues.put(KEY_ARTICLE_RUBRIC, article.articleRubric);
+        contentValues.put(KEY_AUDIO_DURATION, article.audioDuration);
+        contentValues.put(KEY_IS_BOOKMARK, article.isBookmark);
+        long rowID = sDatabase.insert(TABLE_NAME_TODAY_NEWS, null, contentValues);
+        Log.d(TAG, "insertArticle: rowID = " + rowID);
         if (sDatabase != null) {
             closeInchoateDB();
         }
@@ -855,6 +893,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_ARTICLE);
         db.execSQL(CREATE_TABLE_PARAGRAPH);
         db.execSQL(CREATE_TABLE_VOCABULARY);
+        db.execSQL(CREATE_TABLE_TODAY_NEWS);
     }
 
     @Override

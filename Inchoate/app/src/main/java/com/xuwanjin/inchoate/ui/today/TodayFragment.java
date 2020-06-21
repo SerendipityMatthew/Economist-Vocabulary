@@ -14,12 +14,17 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.today.TodayJson;
 import com.xuwanjin.inchoate.ui.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
@@ -38,6 +43,7 @@ public class TodayFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecor
     public static final String TAG = "TodayFragment";
     private static List<Article> sTodayArticleList = new ArrayList<>();
     private Disposable mDisposable;
+    private static ScheduledExecutorService mExecutorService = Executors.newSingleThreadScheduledExecutor();
 
     @Nullable
     @Override
@@ -127,8 +133,9 @@ public class TodayFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecor
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(articles -> {
-                    mBaseAdapter.updateData(articles);
+                .subscribe(articleList -> {
+                    mBaseAdapter.updateData(articleList);
+                    updateDatabase(articleList);
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
@@ -137,6 +144,21 @@ public class TodayFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecor
                     }
                 });
 
+    }
+
+    public void updateDatabase(List<Article> articleList) {
+        Runnable mInsertIssueData = new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "mInsertIssueData: run: ");
+                InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
+                for (Article article : articleList) {
+                    helper.insertArticle(article);
+                }
+            }
+        };
+        mExecutorService.schedule(mInsertIssueData, 10, TimeUnit.SECONDS);
+        // 延迟插入数据, 防止线程竞争打开数据库的问题.
     }
 
     @Override

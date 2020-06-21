@@ -10,6 +10,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.ui.BaseAdapter;
 
@@ -42,12 +43,18 @@ public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> 
                 .placeholder(R.mipmap.the_economist)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.articleImage);
+
+        Glide.with(mContext)
+                .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.mipmap.bookmark_white)
+                .into(holder.bookmark);
+
         holder.sectionText.setText(article.section);
         holder.title.setText(article.title);
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: article = " + article);
                 if (article.section != null && !"null".equalsIgnoreCase(article.section)) {
                     InchoateApp.setDisplayArticleCache(article);
                     Utils.navigationController(
@@ -58,6 +65,20 @@ public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> 
         holder.articleImage.setOnClickListener(onClickListener);
         holder.sectionText.setOnClickListener(onClickListener);
         holder.title.setOnClickListener(onClickListener);
+        holder.bookmark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (article.isBookmark) {
+                    article.isBookmark = false;
+                } else {
+                    article.isBookmark = true;
+                }
+                mDataList.set(fetchPositionInDataList(position), article);
+                InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(mContext);
+                dbHelper.setBookmarkStatus(article, article.isBookmark);
+                notifyItemChanged(position);
+            }
+        });
     }
 
     public List<Article> getTodayNewsArticleList() {

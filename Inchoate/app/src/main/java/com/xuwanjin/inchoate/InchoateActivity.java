@@ -153,15 +153,17 @@ public class InchoateActivity extends AppCompatActivity implements
         if (mPanelState == PanelState.EXPANDED) {
             collapsedTheAudioPlayerFragment(PanelState.COLLAPSED);
         }
+        int resId = 0;
         if (item.getItemId() == R.id.item_today) {
-            Utils.navigationController(mController, R.id.navigation_today);
+            resId =  R.id.navigation_today;
         } else if (item.getItemId() == R.id.item_weekly) {
-            Utils.navigationController(mController, R.id.navigation_weekly);
+            resId =  R.id.navigation_weekly;
         } else if (item.getItemId() == R.id.item_bookmark) {
-            Utils.navigationController(mController, R.id.navigation_bookmark);
+            resId =  R.id.navigation_bookmark;
         } else if (item.getItemId() == R.id.item_setting) {
-            Utils.navigationController(mController, R.id.navigation_settings);
+            resId =  R.id.navigation_settings;
         }
+        Utils.navigationController(mController, resId);
 
         return true;
     }

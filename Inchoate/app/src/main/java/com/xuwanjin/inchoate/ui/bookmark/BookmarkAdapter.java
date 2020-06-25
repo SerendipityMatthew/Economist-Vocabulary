@@ -129,10 +129,9 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
                 mDataList.remove(position);
                 updateData(mDataList);
                 InchoateDBHelper helper = InchoateDBHelper.getInstance(mContext);
-                helper.setBookmarkStatus(article, article.isBookmark);
+                helper.setBookmarkStatus(article);
 //                helper.close();
             }
         });
     }
-
 }

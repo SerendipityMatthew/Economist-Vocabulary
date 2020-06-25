@@ -414,7 +414,7 @@ public class ArticleFragment extends BaseFragment<ArticleContentAdapter, Article
                         .into(mBookmarkArticleToolbar);
 
                 InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(getContext());
-                dbHelper.setBookmarkStatus(mArticle, mArticle.isBookmark);
+                dbHelper.setBookmarkStatus(mArticle);
 //                dbHelper.close();
             }
         });

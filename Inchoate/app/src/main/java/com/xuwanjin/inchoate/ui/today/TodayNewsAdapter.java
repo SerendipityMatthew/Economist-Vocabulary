@@ -75,7 +75,7 @@ public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> 
                 }
                 mDataList.set(fetchPositionInDataList(position), article);
                 InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(mContext);
-                dbHelper.setBookmarkStatus(article, article.isBookmark);
+                dbHelper.setBookmarkStatus(article);
                 notifyItemChanged(position);
             }
         });

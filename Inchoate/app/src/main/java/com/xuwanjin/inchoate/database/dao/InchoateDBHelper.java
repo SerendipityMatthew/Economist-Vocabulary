@@ -196,10 +196,10 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         this.mContext = context;
     }
 
-    public void setBookmarkStatus(Article article, boolean isBookmark) {
+    public void setBookmarkStatus(Article article) {
         sDatabase = openInchoateDB();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(KEY_IS_BOOKMARK, isBookmark ? 1 : 0);
+        contentValues.put(KEY_IS_BOOKMARK, article.isBookmark ? 1 : 0);
         contentValues.put(KEY_ISSUE_DATE, article.date);
         contentValues.put(KEY_SECTION, article.section);
 

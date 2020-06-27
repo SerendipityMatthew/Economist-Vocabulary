@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <scale
+        android:interpolator= "@android:anim/anticipate_overshoot_interpolator"
+        android:fillEnabled="true"
+        android:fromXScale="0.6"
+        android:toXScale="1.25"
+        android:fromYScale="0.6"
+        android:toYScale="1.25"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:startOffset="0"
+        android:duration="100" />
+</set>

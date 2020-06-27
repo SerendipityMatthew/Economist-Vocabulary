@@ -39,17 +39,18 @@
         <Button
             android:id="@+id/stream_audio"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
             android:drawableStart="@mipmap/play_stream"
             android:drawablePadding="10dp"
             android:text="@string/stream_audio"
             android:textAllCaps="false" />
 
-        <Button
+        <com.xuwanjin.inchoate.view.DownloadProgressView
             android:id="@+id/download_audio"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="170dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="-10dp"
             android:layout_marginStart="10dp"
             android:drawableStart="@mipmap/download"
             android:drawablePadding="10dp"

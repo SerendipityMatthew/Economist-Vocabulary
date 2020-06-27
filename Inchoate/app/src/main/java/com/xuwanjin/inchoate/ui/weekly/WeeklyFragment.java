@@ -46,9 +46,11 @@ import static com.xuwanjin.inchoate.Constants.WEEK_FRAGMENT_QUERY_05_30_URL;
 
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
 import com.xuwanjin.inchoate.ui.BaseFragment;
+import com.xuwanjin.inchoate.view.DownloadProgressView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -76,7 +78,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
     private View mSectionHeaderView;
     private TextView mPreviousEdition;
     private FloatingActionButton mFab;
-    private View mDownloadAudio;
+    private DownloadProgressView mDownloadAudio;
     private View mStreamAudio;
     private TextView mIssueDate;
     private TextView mMagazineHeadline;
@@ -108,6 +110,8 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
             }
             if (mDownloadService != null) {
                 float percent = mDownloadService.getDownloadPercent();
+
+                mDownloadAudio.setProgress(percent);
                 Log.d(TAG, "mGetDownloadPercentRunnable: percent = " + percent);
             }
             mHandler.postDelayed(mGetDownloadPercentRunnable, DELAY_TIME);

@@ -16,7 +16,6 @@ import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
-import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.today.TodayJson;
 import com.xuwanjin.inchoate.ui.BaseFragment;
 

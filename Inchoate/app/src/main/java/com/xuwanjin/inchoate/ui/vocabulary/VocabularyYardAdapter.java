@@ -1,7 +1,6 @@
 package com.xuwanjin.inchoate.ui.vocabulary;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import com.xuwanjin.inchoate.R;

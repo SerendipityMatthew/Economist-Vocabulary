@@ -2,18 +2,12 @@ package com.xuwanjin.inchoate.ui.floataction;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
-import com.xuwanjin.inchoate.Utils;
-import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.ui.BaseAdapter;
 
 import java.util.List;

@@ -22,7 +22,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -36,7 +35,6 @@ import com.xuwanjin.inchoate.model.Paragraph;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
 import com.xuwanjin.inchoate.ui.BaseFragment;
-import com.xuwanjin.inchoate.ui.previous.PreviousAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 

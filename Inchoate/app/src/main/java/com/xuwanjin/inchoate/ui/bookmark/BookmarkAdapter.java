@@ -110,6 +110,9 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isFakeData(article)) {
+                    return;
+                }
                 InchoateApp.setDisplayArticleCache(mDataList.get(position));
                 navigationToFragment(R.id.navigation_article);
             }
@@ -118,6 +121,9 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
         holder.bookmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isFakeData(article)) {
+                    return;
+                }
                 Log.d(TAG, "onClick: position = " + position);
                 article.isBookmark = !article.isBookmark;
                 mDataList.remove(position);
@@ -127,5 +133,14 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
 //                helper.close();
             }
         });
+    }
+    private boolean isFakeData(Article article){
+        if (article == null
+                || article.title == null
+                || article.title.equals("")
+                || article.paragraphList == null) {
+            return true;
+        }
+        return false;
     }
 }

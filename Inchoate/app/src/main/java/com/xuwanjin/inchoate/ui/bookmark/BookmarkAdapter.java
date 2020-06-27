@@ -121,11 +121,7 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: position = " + position);
-                if (article.isBookmark) {
-                    article.isBookmark = false;
-                } else {
-                    article.isBookmark = true;
-                }
+                article.isBookmark = !article.isBookmark;
                 mDataList.remove(position);
                 updateData(mDataList);
                 InchoateDBHelper helper = InchoateDBHelper.getInstance(mContext);

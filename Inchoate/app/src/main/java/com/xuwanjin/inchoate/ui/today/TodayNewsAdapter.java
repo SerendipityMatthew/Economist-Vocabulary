@@ -68,11 +68,7 @@ public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> 
         holder.bookmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (article.isBookmark) {
-                    article.isBookmark = false;
-                } else {
-                    article.isBookmark = true;
-                }
+                article.isBookmark = !article.isBookmark;
                 mDataList.set(fetchPositionInDataList(position), article);
                 InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(mContext);
                 dbHelper.setBookmarkStatus(article);

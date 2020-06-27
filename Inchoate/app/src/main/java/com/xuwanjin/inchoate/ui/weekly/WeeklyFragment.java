@@ -84,25 +84,25 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
     private TextView mMagazineHeadline;
     private ImageView mMagazineCover;
 
-    public DownloadService mDownloadService;
+    private DownloadService mDownloadService;
     private static Issue sIssueCache = new Issue();
 
-    CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-    public static String mFormatIssueDateStr = NEWEST_ISSUE_DATE;
+    private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+    private static String mFormatIssueDateStr = NEWEST_ISSUE_DATE;
     private static ScheduledExecutorService mExecutorService = Executors.newSingleThreadScheduledExecutor();
     private Handler mHandler = new Handler();
     public IEconomistService mEconomistService;
-    public static final int DELAY_TIME = 3000;
+    private static final int DELAY_TIME = 3000;
     private boolean isSuccess = false;
     private static boolean isInsertData = false;
-    public Runnable mBindServiceRunnable = new Runnable() {
+    private Runnable mBindServiceRunnable = new Runnable() {
         @Override
         public void run() {
             isSuccess = EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
         }
     };
 
-    public Runnable mGetDownloadPercentRunnable = new Runnable() {
+    private Runnable mGetDownloadPercentRunnable = new Runnable() {
         @Override
         public void run() {
             if (isDetached()) {
@@ -127,7 +127,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
         }
     };
 
-    ServiceConnection economistServiceConnection = new ServiceConnection() {
+    private ServiceConnection economistServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mEconomistService = IEconomistService.Stub.asInterface(service);

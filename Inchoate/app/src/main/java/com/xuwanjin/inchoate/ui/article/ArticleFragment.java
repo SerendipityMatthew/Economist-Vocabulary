@@ -36,6 +36,7 @@ import com.xuwanjin.inchoate.model.Paragraph;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
 import com.xuwanjin.inchoate.ui.BaseFragment;
+import com.xuwanjin.inchoate.ui.previous.PreviousAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -62,7 +63,7 @@ import static com.xuwanjin.inchoate.Utils.getDurationFormat;
 /**
  * @author Matthew Xu
  */
-public class ArticleFragment extends BaseFragment<ArticleContentAdapter, ArticleItemDecoration, Object, GridLayoutManager> {
+public class ArticleFragment extends BaseFragment<ArticleContentAdapter, ArticleItemDecoration, List<Paragraph>, GridLayoutManager> {
     public static final String TAG = "ArticleFragment";
     public static final String DIGITAL_PATTERN = "\".*\\\\\\\\d+.*\"";
     public List<Paragraph> mParagraphList;
@@ -165,12 +166,12 @@ public class ArticleFragment extends BaseFragment<ArticleContentAdapter, Article
     }
 
     @Override
-    protected Object fetchDataFromDBOrNetwork() {
+    protected List<Paragraph> fetchDataFromDBOrNetwork() {
         return null;
     }
 
     @Override
-    protected Object initFakeData() {
+    protected List<Paragraph> initFakeData() {
         return null;
     }
 

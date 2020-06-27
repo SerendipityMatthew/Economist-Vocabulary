@@ -50,7 +50,6 @@ import com.xuwanjin.inchoate.view.DownloadProgressView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -98,7 +97,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
     private Runnable mBindServiceRunnable = new Runnable() {
         @Override
         public void run() {
-            isSuccess = EconomistPlayerTimberStyle.binToService(getActivity(), economistServiceConnection);
+            isSuccess = EconomistPlayerTimberStyle.binToService(getActivity(), mEconomistServiceConnection);
         }
     };
 
@@ -117,7 +116,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
             mHandler.postDelayed(mGetDownloadPercentRunnable, DELAY_TIME);
         }
     };
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mDownloadService = ((DownloadService.LocalBinder) service).getService();
@@ -129,7 +128,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
         }
     };
 
-    private ServiceConnection economistServiceConnection = new ServiceConnection() {
+    private ServiceConnection mEconomistServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mEconomistService = IEconomistService.Stub.asInterface(service);
@@ -405,7 +404,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
                     intent.setClass(getContext(), DownloadService.class);
                     intent.putExtra(PENDING_DOWNLOAD_ISSUE_DATE, sIssueCache.issueFormatDate);
                     getContext().startService(intent);
-                    getContext().bindService(intent, serviceConnection, 0);
+                    getContext().bindService(intent, mServiceConnection, 0);
                     mHandler.post(mGetDownloadPercentRunnable);
                 }
             }
@@ -487,7 +486,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
             mCompositeDisposable.dispose();
         }
         if (isSuccess && mEconomistService != null) {
-            EconomistPlayerTimberStyle.unbindToService(getActivity(), economistServiceConnection);
+            EconomistPlayerTimberStyle.unbindToService(getActivity(), mEconomistServiceConnection);
         }
     }
 }

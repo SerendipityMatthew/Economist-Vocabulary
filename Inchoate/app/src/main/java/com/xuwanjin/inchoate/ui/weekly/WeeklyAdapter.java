@@ -67,8 +67,7 @@ public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article> {
                     return;
                 }
                 InchoateApp.setDisplayArticleCache(article);
-                Utils.navigationController(
-                        InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
+                navigationToFragment(R.id.navigation_article);
             }
 
         };

@@ -11,7 +11,9 @@ import android.view.animation.AnimationUtils;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.Utils;
 
 import java.util.List;
 
@@ -187,4 +189,9 @@ public abstract class BaseAdapter<Holder extends BaseViewHolder, Data> extends R
     public List<Data> getDataList() {
         return mDataList;
     }
+
+    protected void navigationToFragment(int resId) {
+        Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, resId);
+    }
+
 }

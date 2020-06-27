@@ -57,8 +57,7 @@ public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> 
             public void onClick(View v) {
                 if (article.section != null && !"null".equalsIgnoreCase(article.section)) {
                     InchoateApp.setDisplayArticleCache(article);
-                    Utils.navigationController(
-                            InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
+                    navigationToFragment(R.id.navigation_article);
                 }
             }
         };

@@ -112,8 +112,7 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
             @Override
             public void onClick(View v) {
                 InchoateApp.setDisplayArticleCache(mDataList.get(position));
-                Utils.navigationController(
-                        InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_article);
+                navigationToFragment(R.id.navigation_article);
             }
         });
 

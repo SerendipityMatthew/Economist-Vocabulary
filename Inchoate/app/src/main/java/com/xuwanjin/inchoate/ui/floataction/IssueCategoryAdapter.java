@@ -51,7 +51,7 @@ public class IssueCategoryAdapter extends BaseAdapter<IssueCategoryViewHolder, S
             public void onClick(View v) {
                 InchoateApp.setScrollToPosition(position);
                 Log.d(TAG, "onClick:  position = " + position);
-                Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, R.id.navigation_weekly);
+                navigationToFragment(R.id.navigation_weekly);
             }
         });
     }

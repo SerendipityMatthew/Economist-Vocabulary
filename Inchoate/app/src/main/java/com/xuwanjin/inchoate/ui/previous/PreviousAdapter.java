@@ -63,8 +63,4 @@ public class PreviousAdapter extends BaseAdapter<PreviousIssueViewHolder, Issue>
         return false;
     }
 
-    private void navigationToFragment(int resId) {
-        Utils.navigationController(InchoateApp.NAVIGATION_CONTROLLER, resId);
-    }
-
 }

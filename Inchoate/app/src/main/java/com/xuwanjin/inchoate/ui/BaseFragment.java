@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.FieldNamingStrategy;
@@ -37,10 +38,11 @@ import okhttp3.Response;
 /**
  * @author Matthew Xu
  */
-public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration extends BaseItemDecoration, Data> extends Fragment {
+public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration extends BaseItemDecoration, Data, BaseLayoutManager extends RecyclerView.LayoutManager> extends Fragment {
     protected RecyclerView mRecyclerView;
     protected Adapter mBaseAdapter;
     protected Decoration mBaseItemDecoration;
+    protected BaseLayoutManager mLayoutManager;
     private static final int CALL_TIMEOUT = 10;
     private static final int CONNECT_TIMEOUT = 10;
     private static final int READ_TIMEOUT = 10;

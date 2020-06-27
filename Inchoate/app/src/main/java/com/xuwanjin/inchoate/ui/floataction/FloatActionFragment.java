@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Matthew Xu
  */
-public class FloatActionFragment extends BaseFragment<IssueCategoryAdapter, IssueCategoryItemDecoration, List<String>> {
+public class FloatActionFragment extends BaseFragment<IssueCategoryAdapter, IssueCategoryItemDecoration, List<String>, LinearLayoutManager> {
     public static final String TAG = "FloatActionFragment";
 
     private List<String> mSectionList = new ArrayList<>();
@@ -32,12 +32,12 @@ public class FloatActionFragment extends BaseFragment<IssueCategoryAdapter, Issu
 
     @Override
     protected void initView(View view) {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView = view.findViewById(R.id.float_action_recyclerView);
         View mHeaderSectionView = LayoutInflater.from(getContext()).inflate(R.layout.float_action_header, mRecyclerView, false);
         mBaseAdapter = new IssueCategoryAdapter(getContext(), mSectionList);
         mBaseAdapter.setHeaderView(mHeaderSectionView);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mBaseAdapter);
         mRecyclerView.addItemDecoration(new IssueCategoryItemDecoration(getContext(), mRecyclerView));
     }

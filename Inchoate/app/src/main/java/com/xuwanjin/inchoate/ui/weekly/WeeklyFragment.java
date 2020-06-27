@@ -73,7 +73,7 @@ import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setE
 /**
  * @author Matthew Xu
  */
-public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecoration, Issue> {
+public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecoration, Issue, LinearLayoutManager> {
     public static final String TAG = "WeeklyFragment";
     private View mSectionHeaderView;
     private TextView mPreviousEdition;
@@ -90,7 +90,6 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
     CompositeDisposable mCompositeDisposable = new CompositeDisposable();
     public static String mFormatIssueDateStr = NEWEST_ISSUE_DATE;
     private static ScheduledExecutorService mExecutorService = Executors.newSingleThreadScheduledExecutor();
-    private LinearLayoutManager mLinearLayoutManager;
     private Handler mHandler = new Handler();
     public IEconomistService mEconomistService;
     public static final int DELAY_TIME = 3000;
@@ -317,9 +316,9 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
 
     public void initWeeklyFragmentView(View view) {
         mRecyclerView = view.findViewById(R.id.issue_content_recyclerView);
-        mLinearLayoutManager = new LinearLayoutManager(getContext());
-        mLinearLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         /*
             这种 header 的出现, 他会 inflate 在 RecyclerView 的上面, 这个时候, 画第一个 item 的 header,
@@ -354,7 +353,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
             int scrollToPosition = Utils.getArticleSumBySection(sectionToPosition - 2, sIssueCache);
             Log.d(TAG, "onCreateView: scrollToPosition = " + scrollToPosition);
             if (scrollToPosition > 0) {
-                mLinearLayoutManager.scrollToPosition(scrollToPosition);
+                mLayoutManager.scrollToPosition(scrollToPosition);
             }
         }
     }

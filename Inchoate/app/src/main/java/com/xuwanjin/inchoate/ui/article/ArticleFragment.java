@@ -62,11 +62,10 @@ import static com.xuwanjin.inchoate.Utils.getDurationFormat;
 /**
  * @author Matthew Xu
  */
-public class ArticleFragment extends BaseFragment<ArticleContentAdapter, ArticleItemDecoration, Object> {
+public class ArticleFragment extends BaseFragment<ArticleContentAdapter, ArticleItemDecoration, Object, GridLayoutManager> {
     public static final String TAG = "ArticleFragment";
     public static final String DIGITAL_PATTERN = "\".*\\\\\\\\d+.*\"";
     public List<Paragraph> mParagraphList;
-    public GridLayoutManager mGridLayoutManager;
     public View mArticleContentHeaderView;
     public View mArticleContentFooterView;
     TextView mSectionAndDate;
@@ -136,8 +135,8 @@ public class ArticleFragment extends BaseFragment<ArticleContentAdapter, Article
 
         mLinearLayout = mArticleContentHeaderView.findViewById(R.id.article_play_bar);
         mArticlePlayBarDivider = mArticleContentHeaderView.findViewById(R.id.article_play_bar_divider);
-        mGridLayoutManager = new GridLayoutManager(getContext(), 1);
-        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mLayoutManager = new GridLayoutManager(getContext(), 1);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         mView = view;
     }

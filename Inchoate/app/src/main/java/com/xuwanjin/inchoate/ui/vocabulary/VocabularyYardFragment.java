@@ -20,15 +20,15 @@ import java.util.stream.Stream;
 /**
  * @author Matthew Xu
  */
-public class VocabularyYardFragment extends BaseFragment<VocabularyYardAdapter, BaseItemDecoration, List<Vocabulary>> {
+public class VocabularyYardFragment extends BaseFragment<VocabularyYardAdapter, BaseItemDecoration, List<Vocabulary>, LinearLayoutManager> {
     private static List<Vocabulary> mVocabularyList;
 
     @Override
     protected void initView(View view) {
         mRecyclerView = view.findViewById(R.id.vocabulary_recyclerview);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(RecyclerView.VERTICAL);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager.setOrientation(RecyclerView.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
     }
 

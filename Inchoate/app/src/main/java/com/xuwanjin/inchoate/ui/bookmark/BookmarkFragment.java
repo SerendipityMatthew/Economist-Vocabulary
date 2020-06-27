@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -30,7 +31,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * @author Matthew Xu
  */
-public class BookmarkFragment extends BaseFragment<BookmarkAdapter, BookmarkItemDecoration, List<Article>> {
+public class BookmarkFragment extends BaseFragment<BookmarkAdapter, BookmarkItemDecoration, List<Article>, LinearLayoutManager> {
     private static final String TAG = "BookmarkFragment";
     private TextView mTextView;
     private Disposable mDisposable;
@@ -39,9 +40,9 @@ public class BookmarkFragment extends BaseFragment<BookmarkAdapter, BookmarkItem
     @Override
     protected void initView(View view) {
         mRecyclerView = view.findViewById(R.id.bookmark_recyclerView);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1);
-        gridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(gridLayoutManager);
+        mLayoutManager = new GridLayoutManager(getContext(), 1);
+        mLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mTextView = view.findViewById(R.id.bookmark_title);
         mBaseAdapter = new BookmarkAdapter(getContext(),initFakeData());
         mRecyclerView.setAdapter(mBaseAdapter);

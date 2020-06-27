@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSeekBar;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -49,7 +50,7 @@ import static com.xuwanjin.inchoate.Constants.REWIND_OR_FORWARD_PREFERENCE;
 /**
  * @author Matthew Xu
  */
-public class AudioPlayerFragment extends BaseFragment<BaseAdapter, BaseItemDecoration, Object> implements IPlayer.Callback {
+public class AudioPlayerFragment extends BaseFragment<BaseAdapter, BaseItemDecoration, Object, GridLayoutManager> implements IPlayer.Callback {
     public static final String TAG = "AudioPlayerFragment";
     private IPlayer mPlayService;
     private IEconomistService mEconomistService;

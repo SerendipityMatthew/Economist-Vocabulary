@@ -33,10 +33,8 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * @author Matthew Xu
  */
-public class PreviousFragment extends BaseFragment<PreviousAdapter, BaseItemDecoration, List<Issue> > {
+public class PreviousFragment extends BaseFragment<PreviousAdapter, BaseItemDecoration, List<Issue>, GridLayoutManager > {
     public static final String TAG = "PreviousFragment";
-
-    GridLayoutManager mGridLayoutManager;
     public static List<Issue> sIssueList = new ArrayList<>();
     private Disposable mDisposable;
 
@@ -50,9 +48,9 @@ public class PreviousFragment extends BaseFragment<PreviousAdapter, BaseItemDeco
     @Override
     protected void initView(View view) {
         mRecyclerView = view.findViewById(R.id.issue_list_recyclerView);
-        mGridLayoutManager = new GridLayoutManager(getContext(), 2);
-        mGridLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mGridLayoutManager);
+        mLayoutManager = new GridLayoutManager(getContext(), 2);
+        mLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mBaseAdapter = new PreviousAdapter(getContext());
         mRecyclerView.setAdapter(mBaseAdapter);
     }

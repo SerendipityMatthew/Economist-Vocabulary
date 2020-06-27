@@ -64,27 +64,26 @@ import static com.xuwanjin.inchoate.Utils.getDurationFormat;
  * @author Matthew Xu
  */
 public class ArticleFragment extends BaseFragment<ArticleContentAdapter, ArticleItemDecoration, List<Paragraph>, GridLayoutManager> {
-    public static final String TAG = "ArticleFragment";
-    public static final String DIGITAL_PATTERN = "\".*\\\\\\\\d+.*\"";
-    public List<Paragraph> mParagraphList;
-    public View mArticleContentHeaderView;
-    public View mArticleContentFooterView;
-    TextView mSectionAndDate;
-    ImageView mPlay;
-    TextView mDuration;
-    TextView mArticleTitle;
-    TextView mArticleFlyTitle;
-    TextView mArticleRubric;
-    ImageView mArticleCoverImage;
-    Article mArticle;
-    TextView mBackToWeeklyToolbar;
-    ImageView mFontSizeToolbar;
-    ImageView mBookmarkArticleToolbar;
-    ImageView mArticleShareToolbar;
-    LinearLayout mLinearLayout;
-    View mArticlePlayBarDivider;
-    int mCount = 0;
-    private View mView;
+    private static final String TAG = "ArticleFragment";
+    private static final String DIGITAL_PATTERN = "\".*\\\\\\\\d+.*\"";
+    private List<Paragraph> mParagraphList;
+    private View mArticleContentHeaderView;
+    private View mArticleContentFooterView;
+    private TextView mSectionAndDate;
+    private ImageView mPlay;
+    private TextView mDuration;
+    private TextView mArticleTitle;
+    private TextView mArticleFlyTitle;
+    private TextView mArticleRubric;
+    private ImageView mArticleCoverImage;
+    private Article mArticle;
+    private TextView mBackToWeeklyToolbar;
+    private ImageView mFontSizeToolbar;
+    private ImageView mBookmarkArticleToolbar;
+    private ImageView mArticleShareToolbar;
+    private LinearLayout mLinearLayout;
+    private View mArticlePlayBarDivider;
+    private int mCount = 0;
     private List<String> mCollectedVocabularyList = new ArrayList<>();
     private IEconomistService mEconomistService;
     private ExecutorService mExecutorService = Executors.newSingleThreadExecutor();
@@ -138,8 +137,6 @@ public class ArticleFragment extends BaseFragment<ArticleContentAdapter, Article
         mArticlePlayBarDivider = mArticleContentHeaderView.findViewById(R.id.article_play_bar_divider);
         mLayoutManager = new GridLayoutManager(getContext(), 1);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mView = view;
     }
 
     @Override

@@ -30,7 +30,7 @@ import java.util.Random;
 /**
  * @author Matthew Xu
  */
-public class DownloadProgressView extends Button {
+public class DownloadProgressView extends androidx.appcompat.widget.AppCompatButton {
     public static final String TAG = "DownloadProgressView";
     private PorterDuffXfermode mXfermode = new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP);
 

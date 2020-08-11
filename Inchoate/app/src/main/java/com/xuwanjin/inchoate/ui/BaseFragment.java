@@ -77,7 +77,7 @@ public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration exten
 
     /**
      * 从服务器或者网络上获取数据的方法
-     * @param Data 返回数据的泛型, 有时候是 List<Issue> 有时候是 List<Article>
+     * Data 返回数据的泛型, 有时候是 List<Issue> 有时候是 List<Article>
      * @return 返回界面需要的数据
      */
     protected abstract Data fetchDataFromDBOrNetwork();

@@ -102,7 +102,6 @@ public class DownloadService extends Service {
         mIssue = helper.queryIssueByFormatIssueDate(formatIssueDate).get(0);
 //        helper.close();
         Article article = intent.getParcelableExtra(Constants.DOWNLOAD_ARTICLE);
-        Log.d(TAG, "onStartCommand: mIssue = " + mIssue);
         if (mIssue != null && article == null) {
             mDownloadArticle = mIssue.containArticle;
         }
@@ -129,8 +128,11 @@ public class DownloadService extends Service {
             return 0;
         }
         int count = 0;
+        File audioFile ;
         for (int i = 0; i < mLocalAudioUrlMap.size(); i++ ){
-            if (mLocalAudioUrlMap.valueAt(i)){
+            String audioPath  = mLocalAudioUrlMap.keyAt(i);
+            audioFile = new File(audioPath);
+            if (audioFile.exists() && audioFile.isFile()){
                 count++;
             }
         }

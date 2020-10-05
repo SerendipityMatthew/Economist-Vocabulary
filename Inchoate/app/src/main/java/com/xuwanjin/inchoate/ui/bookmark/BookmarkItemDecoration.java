@@ -73,16 +73,9 @@ public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> 
 
         String groupName = mAdapter.getGroupName(position);
         int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
-        if (isHeader) {
-            int bottom = Math.min(mItemHeaderHeight, view.getBottom());
-            canvas.drawRect(0, view.getTop() - mItemHeaderHeight, parent.getWidth(), bottom, mItemHeaderPaint);
-            canvas.drawText(groupName, 50,
-                    y - (mItemHeaderHeight - bottom), mTextPaint);
-        } else {
-            // 如果把下面的注释掉, 会出现即使下一个分类小组没有滑动到顶部, 顶部的 stick header 会消失
-            canvas.drawRect(0, 0, parent.getWidth(), mItemHeaderHeight, mItemHeaderPaint);
-            canvas.drawText(groupName, 50, y, mTextPaint);
-        }
+        canvas.drawRect(0, 0, parent.getWidth(), mItemHeaderHeight, mItemHeaderPaint);
+        canvas.drawText(groupName, 50, y, mTextPaint);
+
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.util.ArrayMap;
 import android.util.Log;
 
+import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -37,6 +38,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  */
 public class DownloadService extends Service {
     public static final String TAG = "DownloadService";
+    public static final int DOWNLOAD_TAG = 12;
     private final IBinder mBinder = new LocalBinder();
     private Issue mIssue = new Issue();
     private List<Article> mDownloadArticle = new ArrayList<>();
@@ -45,7 +47,6 @@ public class DownloadService extends Service {
     final Runnable mDownloadRunnable = new Runnable() {
         @Override
         public void run() {
-            Log.d(TAG, "mDownloadRunnable: run: ");
             ArrayList<Article> audioArticle = new ArrayList<>();
             for (Article article : mDownloadArticle) {
                 if (article.audioUrl != null
@@ -72,11 +73,10 @@ public class DownloadService extends Service {
                         new DownloadTask
                                 .Builder(article.audioUrl, noSpacePath, noSpaceName)
                                 .build()
-                                .addTag(12, article);
+                                .addTag(DOWNLOAD_TAG, article);
                 downloadTasks[i] = task;
-                String fullPath = noSpacePath + noSpaceName;
+                String fullPath = noSpacePath + "/" + noSpaceName;
                 mLocalAudioUrlMap.put(fullPath, false);
-                Log.d(TAG, "mDownloadRunnable: run: ");
             }
             DownloadTask.enqueue(downloadTasks, downloadListener);
         }
@@ -92,11 +92,11 @@ public class DownloadService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        startDownloadRunnable(intent);
         return mBinder;
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void startDownloadRunnable(Intent intent) {
         String formatIssueDate = intent.getStringExtra(Constants.PENDING_DOWNLOAD_ISSUE_DATE);
         InchoateDBHelper helper = InchoateDBHelper.getInstance(getApplicationContext());
         mIssue = helper.queryIssueByFormatIssueDate(formatIssueDate).get(0);
@@ -115,28 +115,33 @@ public class DownloadService extends Service {
         if (mIssue == null && article == null) {
 
         }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+
     }
 
     public float getDownloadPercent() {
-        if (mLocalAudioUrlMap == null || !(mLocalAudioUrlMap.size()>0)){
+        if (mLocalAudioUrlMap == null || !(mLocalAudioUrlMap.size() > 0)) {
             return 0;
         }
         int count = 0;
-        File audioFile ;
-        for (int i = 0; i < mLocalAudioUrlMap.size(); i++ ){
-            String audioPath  = mLocalAudioUrlMap.keyAt(i);
+        File audioFile;
+        for (int i = 0; i < mLocalAudioUrlMap.size(); i++) {
+            String audioPath = mLocalAudioUrlMap.keyAt(i);
             audioFile = new File(audioPath);
-            if (audioFile.exists() && audioFile.isFile()){
+            if (audioFile.exists() && audioFile.isFile()) {
                 count++;
             }
         }
-        float percent = (float) ((count*100.0)/ mLocalAudioUrlMap.size());
+        float percent = (float) ((count * 100.0) / mLocalAudioUrlMap.size());
         Log.d(TAG, "getDownloadPercent: percent = " + percent);
         return percent;
     }
@@ -196,7 +201,7 @@ public class DownloadService extends Service {
         @Override
         public void taskEnd(@NonNull DownloadTask task, @NonNull EndCause cause, @Nullable Exception realCause) {
             String localeAudioUrl = task.getParentFile().getAbsolutePath() + "/" + task.getFilename();
-            Article article = (Article) task.getTag(12);
+            Article article = (Article) task.getTag(DOWNLOAD_TAG);
             article.localeAudioUrl = localeAudioUrl;
             Log.d(TAG, "taskEnd: localeAudioUrl = " + localeAudioUrl);
             InchoateDBHelper helper = InchoateDBHelper.getInstance(getApplication());

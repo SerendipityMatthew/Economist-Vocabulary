@@ -50,6 +50,7 @@ import com.xuwanjin.inchoate.view.DownloadProgressView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -158,6 +159,22 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
         initWeeklyFragmentView(view);
         initOnClickListener();
     }
+    public float getDownloadPercent() {
+        Issue issue = sIssueCache;
+        List<Article> articleList = issue.containArticle;
+        int count = 0;
+        File audioFile;
+        for (int i = 0; i < articleList.size(); i++) {
+            String audioPath = articleList.get(i).localeAudioUrl;
+            audioFile = new File(audioPath);
+            if (audioFile.exists() && audioFile.isFile()) {
+                count++;
+            }
+        }
+
+        float percent = (float) ((count * 100.0) / articleList.size());
+        return percent;
+    }
 
     /**
      *
@@ -213,6 +230,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
                     @Override
                     public void accept(Issue issue) throws Exception {
                         sIssueCache = issue;
+                        mDownloadAudio.setProgress(getDownloadPercent());
                         Log.d(TAG, "loadTodayArticleList: issue.containArticle.size: " + issue.containArticle.size());
                         updateWeeklyFragmentContent(sIssueCache);
                         updateDatabase(sIssueCache);
@@ -365,6 +383,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.mipmap.the_economist_cover_placeholder)
                 .into(mMagazineCover);
+
         mIssueDate.setText(issue.issueDate);
         mMagazineHeadline.setText(issue.headline);
         mBaseAdapter.updateData(issue.containArticle);

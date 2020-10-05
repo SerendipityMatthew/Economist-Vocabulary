@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -365,7 +366,22 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
         mBaseAdapter.setFooterView(mFooterView);
         mBaseItemDecoration = new WeeklyItemDecoration(getContext(), mRecyclerView);
         mRecyclerView.addItemDecoration(mBaseItemDecoration);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE){
+                    Glide.with(getActivity()).resumeRequests();
+                }else {
+                    Glide.with(getActivity()).pauseRequests();
+                }
+            }
 
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
         int sectionToPosition = InchoateApp.getScrollToPosition();
         Log.d(TAG, "onCreateView: sectionToPosition = " + sectionToPosition);
         if (sectionToPosition > 0) {

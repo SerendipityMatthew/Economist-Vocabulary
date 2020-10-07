@@ -64,7 +64,7 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
         // HeaderView 上面不能画一个 ItemHeaderView, 所以, 返回的是 false
         // 因为第一项是 HeaderView
         if (position == 0) {
-            return false;
+            return true;
         }
         if (position == getItemCount() - 1) {
             return false;

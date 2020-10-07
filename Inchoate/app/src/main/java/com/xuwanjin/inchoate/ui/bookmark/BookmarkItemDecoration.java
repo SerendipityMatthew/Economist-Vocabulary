@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import com.xuwanjin.inchoate.ui.BaseItemDecoration;
  * @author Matthew Xu
  */
 public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> {
+    public static final String TAG = "BookmarkItemDecoration";
     private RecyclerView.LayoutManager mManager;
     private int mItemHeaderHeight = -1;
     private Paint mItemHeaderPaint;
@@ -87,8 +89,7 @@ public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> 
             String groupName = mAdapter.getGroupName(position);
             canvas.drawRect(0, y, parent.getWidth(), childView.getTop(), mItemHeaderPaint);
             mTextPaint.getTextBounds(groupName, 0, groupName.length(), mTextRect);
-            canvas.drawText(groupName, 50,
-                    (y) + mItemHeaderHeight / 2 + 15, mTextPaint);
+            canvas.drawText(groupName, 50, (y) + mItemHeaderHeight / 2 + 15, mTextPaint);
         } else {
             // 在这里绘制每一项的分割线
             canvas.drawRect(50, childView.getTop() - 1, parent.getWidth(), childView.getTop(), mLinePaint);
@@ -98,9 +99,6 @@ public class BookmarkItemDecoration extends BaseItemDecoration<BookmarkAdapter> 
 
     @Override
     protected boolean isSkipDraw(int position, boolean isOver) {
-        if (position == mAdapter.getItemCount() - 1) {
-            return true;
-        }
         return false;
     }
 }

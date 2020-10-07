@@ -9,16 +9,16 @@
         android:id="@+id/article_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/back_to_weekly_toolbar"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:drawableStart="@mipmap/back"
+            android:text="@string/weekly"
             android:textSize="25sp"
-            android:textStyle="bold"
-            android:text="@string/weekly" />
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/font_size_toolbar"
@@ -42,11 +42,11 @@
             android:src="@mipmap/article_share" />
     </androidx.appcompat.widget.Toolbar>
 
-    <FrameLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/article_toolbar"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toBottomOf="@+id/article_toolbar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/article_content_recyclerview"
@@ -57,8 +57,9 @@
             android:paddingEnd="8dp"
             app:layoutManager="GridLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:ignore="MissingConstraints"
             tools:spanCount="1" />
-    </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

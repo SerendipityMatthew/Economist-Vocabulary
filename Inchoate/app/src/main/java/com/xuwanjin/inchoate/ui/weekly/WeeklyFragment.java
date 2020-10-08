@@ -167,6 +167,9 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
         File audioFile;
         for (int i = 0; i < articleList.size(); i++) {
             String audioPath = articleList.get(i).localeAudioUrl;
+            if (audioPath == null){
+                return 0.0f;
+            }
             audioFile = new File(audioPath);
             if (audioFile.exists() && audioFile.isFile()) {
                 count++;

@@ -44,7 +44,8 @@
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            tools:listitem="@layout/weekly_content_list" />
 
         <include
             layout="@layout/issue_category_fab"

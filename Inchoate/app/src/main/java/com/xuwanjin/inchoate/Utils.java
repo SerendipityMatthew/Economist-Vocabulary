@@ -177,7 +177,11 @@ public class Utils {
                 article.headline = firstParts.headline;
                 article.flyTitle = secondParts.flyTitle;
                 article.articleUrl = secondParts.url.canonical;
+                if (secondParts.articleSection == null){
+                    continue;
+                }
                 List<Internal> internalList = secondParts.articleSection.internal;
+
                 if (internalList != null) {
                     article.section = internalList.get(0).sectionName;
                 }

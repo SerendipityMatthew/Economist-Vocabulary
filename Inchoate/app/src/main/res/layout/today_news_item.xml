@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="40dp"
     android:orientation="vertical">
 
     <ImageView
@@ -45,6 +44,7 @@
         app:layout_constraintTop_toBottomOf="@id/title" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/read_time_play_bookmark_container"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginTop="15dp"
@@ -75,4 +75,10 @@
             android:src="@mipmap/bookmark_black"
             app:layout_constraintRight_toRightOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#1F000000"
+        app:layout_constraintTop_toBottomOf="@id/read_time_play_bookmark_container" />
 </androidx.constraintlayout.widget.ConstraintLayout>

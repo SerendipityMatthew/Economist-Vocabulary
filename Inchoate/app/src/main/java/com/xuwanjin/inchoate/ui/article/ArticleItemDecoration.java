@@ -67,13 +67,15 @@ public class ArticleItemDecoration extends BaseItemDecoration<ArticleContentAdap
 
     @Override
     public void onDrawOverImpl(@NonNull Canvas canvas, @NonNull RecyclerView parent, int position) {
-        int y = mItemHeaderHeight / 2 + mTextRect.height() / 2;
+        if (position < 0){
+            return;
+        }
+        int y = mItemHeaderHeight / 2;
         String paragraph = mAdapter.getDataList().get(position).paragraph.toString();
         canvas.drawRect(0, 0, parent.getWidth(), mItemHeaderHeight, mPaint);
         int wordCount = paragraph.split(" ").length;
-        String displayString = "段落单词数: " + wordCount +
-                "       文章总单词书: " + mArticleWordCount;
-        canvas.drawText(displayString, 50, y, mTextPaint);
+        String displayString = "段落单词数: " + wordCount + "       文章总单词书: " + mArticleWordCount;
+        canvas.drawText(displayString, 50, y +20, mTextPaint);
     }
 
     public int getArticleWordCount(List<Paragraph> paragraphList) {

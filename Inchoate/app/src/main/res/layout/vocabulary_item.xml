@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,12 +11,13 @@
         android:id="@+id/vocabulary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableRight="@mipmap/article_share"
-        android:paddingRight="30dp"
-        android:paddingStart="20dp"
         android:background="@drawable/vocabulary_text"
+        android:drawableRight="@mipmap/article_share"
+        android:paddingStart="20dp"
+        android:paddingRight="30dp"
         android:text="@string/app_name"
-        android:textSize="40sp" />
+        android:textSize="40sp"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/sentence"
@@ -23,15 +25,26 @@
         android:layout_height="wrap_content"
         android:paddingStart="10dp"
         android:text="@string/sentence_demo"
-        android:textSize="25sp" />
+        android:textSize="25sp"
+        app:layout_constraintTop_toBottomOf="@id/vocabulary" />
 
     <TextView
         android:id="@+id/article_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/vocabulary_article_info"
         android:paddingStart="10dp"
         android:text="@string/article_info"
-        android:background="@drawable/vocabulary_article_info"
         android:textColor="@color/red"
-        android:textSize="20sp" />
-</LinearLayout>
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/sentence" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginBottom="20dp"
+        android:paddingStart="10dp"
+        android:background="@color/grey"
+        android:text="@string/article_info"
+        app:layout_constraintTop_toBottomOf="@id/article_info" />
+</androidx.constraintlayout.widget.ConstraintLayout>

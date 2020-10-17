@@ -171,22 +171,24 @@ public class ArticleFragment extends BaseFragment<ArticleContentAdapter, Article
     }
 
     private void initFillCollectedVocabulary() {
-        mCollectedVocabularyList.addAll(InchoateApp.sCollectedVocabularyList);
+        if (InchoateApp.sCollectedVocabularyList != null) {
+            mCollectedVocabularyList.addAll(InchoateApp.sCollectedVocabularyList);
+        }
     }
 
     /**
-      paragraphList                   VocabularyList
-      paragraph 01                    incendiary
-      paragraph 02                    hoodlum
-      paragraph 03                    babble
-      paragraph 04                    incite
-      paragraph 05                    inflammatory
-      paragraph 06                    magnanimous
-      paragraph 07                    retrenchment
-      paragraph 08                    flagrant
-      paragraph 08                    dissidents
-       多对多的关系   flatmap,
- */
+     * paragraphList                   VocabularyList
+     * paragraph 01                    incendiary
+     * paragraph 02                    hoodlum
+     * paragraph 03                    babble
+     * paragraph 04                    incite
+     * paragraph 05                    inflammatory
+     * paragraph 06                    magnanimous
+     * paragraph 07                    retrenchment
+     * paragraph 08                    flagrant
+     * paragraph 08                    dissidents
+     * 多对多的关系   flatmap,
+     */
     @SuppressLint("CheckResult")
     private void processArticleText() {
 
@@ -360,6 +362,7 @@ public class ArticleFragment extends BaseFragment<ArticleContentAdapter, Article
                     .load(mArticle.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.mipmap.bookmark_white)
+                    .centerInside()
                     .into(mBookmarkArticleToolbar);
         }
 
@@ -406,6 +409,7 @@ public class ArticleFragment extends BaseFragment<ArticleContentAdapter, Article
                         .load(mArticle.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .placeholder(R.mipmap.bookmark_white)
+                        .centerInside()
                         .into(mBookmarkArticleToolbar);
 
                 InchoateDBHelper dbHelper = InchoateDBHelper.getInstance(getContext());

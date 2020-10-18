@@ -23,7 +23,7 @@ class WeeklyViewHolder extends BaseViewHolder {
 
     @Override
     protected void initView() {
-        titleAndMainImage = itemView.findViewById(R.id.title_and_main_image);
+        titleAndMainImage = itemView.findViewById(R.id.title_and_image_container);
         articleTitle = itemView.findViewById(R.id.article_title);
         articleFlyTitle = itemView.findViewById(R.id.article_fly_title);
         article_image = itemView.findViewById(R.id.article_image);

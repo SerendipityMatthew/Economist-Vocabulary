@@ -27,10 +27,12 @@ public abstract class BaseAdapter<Holder extends BaseViewHolder, Data> extends R
     protected static final int TYPE_HEADER = 0;
     protected static final int TYPE_FOOTER = 1;
     protected static final int TYPE_NORMAL = 2;
+    Animation animation = null;
 
     protected BaseAdapter(Context context, List<Data> dataList) {
         mContext = context;
         this.mDataList = dataList;
+        animation = AnimationUtils.loadAnimation(context, R.anim.scale_50_to_100);
     }
 
     @NonNull
@@ -77,6 +79,7 @@ public abstract class BaseAdapter<Holder extends BaseViewHolder, Data> extends R
 
     /**
      * onBindViewHolder 的实现
+     *
      * @param holder
      * @param position
      * @param filledData
@@ -89,19 +92,19 @@ public abstract class BaseAdapter<Holder extends BaseViewHolder, Data> extends R
      */
     public abstract boolean isItemHeader(int position);
 
-    public Data fetchTheCorrectData(int position){
+    public Data fetchTheCorrectData(int position) {
         int revised = position;
-        if (mHeaderView != null){
-            revised = position -1;
+        if (mHeaderView != null) {
+            revised = position - 1;
         }
         Data dataList = mDataList.get(revised);
         return dataList;
     }
 
-    protected int fetchPositionInDataList(int positionInAdapter){
+    protected int fetchPositionInDataList(int positionInAdapter) {
         int revised = positionInAdapter;
-        if (mHeaderView != null){
-            revised = positionInAdapter -1;
+        if (mHeaderView != null) {
+            revised = positionInAdapter - 1;
         }
         return revised;
     }
@@ -111,7 +114,6 @@ public abstract class BaseAdapter<Holder extends BaseViewHolder, Data> extends R
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         if (isBindViewItem(position)) {
             onBindViewHolderImpl(holder, position, fetchTheCorrectData(position));
-            Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.scale_50_to_100);
             holder.itemView.startAnimation(animation);
         }
     }

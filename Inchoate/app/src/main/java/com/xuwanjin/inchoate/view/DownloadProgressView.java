@@ -148,7 +148,7 @@ public class DownloadProgressView extends androidx.appcompat.widget.AppCompatBut
             mProgressColor = mLoadingColor;
         }
 
-        mFlickerBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.flicker);
+        mFlickerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.flicker);
         mFlickerLeft = -mFlickerBitmap.getWidth();
 
         initPgBimap();

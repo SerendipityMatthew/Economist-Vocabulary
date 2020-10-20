@@ -400,7 +400,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
         Glide.with(mSectionHeaderView)
                 .load(issue.coverImageUrl)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.mipmap.the_economist_cover_placeholder)
+                .placeholder(R.drawable.the_economist_cover_placeholder)
                 .into(mMagazineCover);
 
         mIssueDate.setText(issue.issueDate);

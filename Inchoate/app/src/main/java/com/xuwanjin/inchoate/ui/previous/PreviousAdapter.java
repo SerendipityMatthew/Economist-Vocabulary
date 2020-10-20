@@ -40,7 +40,7 @@ public class PreviousAdapter extends BaseAdapter<PreviousIssueViewHolder, Issue>
     public void onBindViewHolderImpl(@NonNull PreviousIssueViewHolder holder, int position, Issue issue) {
         Glide.with(mContext)
                 .load(issue.coverImageUrl)
-                .placeholder(R.mipmap.the_economist_cover_placeholder)
+                .placeholder(R.drawable.the_economist_cover_placeholder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.issueCover);
         holder.issueDate.setText(issue.issueDate);

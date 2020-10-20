@@ -232,9 +232,9 @@ public class AudioPlayerFragment extends BaseFragment<BaseAdapter, BaseItemDecor
         }
         Glide.with(getContext())
                 .load(mAudioPlayingArticle.mainArticleImage)
-                .error(R.mipmap.the_economist)
+                .error(R.drawable.the_economist)
                 .timeout(10*1000)
-                .placeholder(R.mipmap.the_economist)
+                .placeholder(R.drawable.the_economist)
                 .into(mArticleCoverImage);
         mPlayFlyTitle.setText(mAudioPlayingArticle.flyTitle);
         mAudioPlayTitle.setText(mAudioPlayingArticle.title);
@@ -242,8 +242,8 @@ public class AudioPlayerFragment extends BaseFragment<BaseAdapter, BaseItemDecor
         mAudioLeft.setText(Utils.getDurationFormat(mAudioPlayingArticle.audioDuration));
         mSeekBarProgress.setMax((int) mAudioPlayingArticle.audioDuration * 1000);
         mBarPlayingProgress.setMax((int) mAudioPlayingArticle.audioDuration * 1000);
-        mPlayToggle.setImageResource(R.mipmap.pause);
-        mBarPlay.setImageResource(R.mipmap.pause);
+        mPlayToggle.setImageResource(R.drawable.pause);
+        mBarPlay.setImageResource(R.drawable.pause);
     }
 
     public void initOnListener() {
@@ -309,8 +309,8 @@ public class AudioPlayerFragment extends BaseFragment<BaseAdapter, BaseItemDecor
     }
 
     public void updatePlayButton(boolean isPlaying) {
-        mPlayToggle.setImageResource(isPlaying ? R.mipmap.pause : R.mipmap.play);
-        mBarPlay.setImageResource(isPlaying ? R.mipmap.pause : R.mipmap.play);
+        mPlayToggle.setImageResource(isPlaying ? R.drawable.pause : R.drawable.play);
+        mBarPlay.setImageResource(isPlaying ? R.drawable.pause : R.drawable.play);
     }
 
     @Override

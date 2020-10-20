@@ -95,11 +95,11 @@ public class BookmarkAdapter extends BaseAdapter<BookmarkViewHolder, Article> {
         Glide.with(mContext)
                 .load(article.mainArticleImage)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.mipmap.the_economist)
+                .placeholder(R.drawable.the_economist)
                 .override(700, 500)
                 .into(holder.article_image);
         Glide.with(mContext)
-                .load(R.mipmap.bookmark_black)
+                .load(R.drawable.bookmark_black)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.bookmark);
 

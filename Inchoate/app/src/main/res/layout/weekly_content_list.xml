@@ -64,7 +64,7 @@
         android:layout_gravity="center"
         android:layout_marginStart="250dp"
         android:layout_marginTop="30dp"
-        android:src="@mipmap/save"
+        android:src="@drawable/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_and_image_container" />

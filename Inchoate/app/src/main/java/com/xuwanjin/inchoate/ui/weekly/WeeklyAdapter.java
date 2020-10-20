@@ -45,8 +45,8 @@ public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article> {
     public void onBindViewHolderImpl(@NonNull WeeklyViewHolder holder, final int position, Article article) {
         Glide.with(mContext)
                 .load(article.mainArticleImage)
-                .error(R.mipmap.the_economist)
-                .placeholder(R.mipmap.the_economist)
+                .error(R.drawable.the_economist)
+                .placeholder(R.drawable.the_economist)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.article_image);
         holder.articleTitle.setText(article.title);
@@ -69,9 +69,9 @@ public class WeeklyAdapter extends BaseAdapter<WeeklyViewHolder, Article> {
         holder.titleAndMainImage.setOnClickListener(viewArticleOnClickListener);
 
         Glide.with(mContext)
-                .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                .load(article.isBookmark ? R.drawable.bookmark_black : R.drawable.bookmark_white)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.mipmap.bookmark_white)
+                .placeholder(R.drawable.bookmark_white)
                 .into(holder.bookmark);
 
         holder.bookmark.setOnClickListener(new View.OnClickListener() {

@@ -39,7 +39,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="10dp"
-                android:background="@mipmap/forward" />
+                android:background="@drawable/forward" />
 
             <ImageView
                 android:id="@+id/bar_playing_close"
@@ -47,14 +47,14 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginStart="10dp"
-                android:src="@mipmap/float_action_close" />
+                android:src="@drawable/float_action_close" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/audio_play_controller"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@mipmap/audio_player_collapse"
+            android:background="@drawable/audio_player_collapse"
             android:backgroundTint="@color/colorPrimary"
             android:visibility="invisible" />
     </FrameLayout>
@@ -101,7 +101,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="80dp"
                     android:layout_marginStart="10dp"
-                    android:src="@mipmap/last" />
+                    android:src="@drawable/last" />
 
                 <ImageView
                     android:id="@+id/article_cover_image"
@@ -114,7 +114,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="80dp"
                     android:layout_marginStart="10dp"
-                    android:src="@mipmap/next" />
+                    android:src="@drawable/next" />
             </LinearLayout>
 
             <LinearLayout
@@ -156,14 +156,14 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="10dp"
-                    android:background="@mipmap/issue_category_menu" />
+                    android:background="@drawable/issue_category_menu" />
 
                 <ImageView
                     android:id="@+id/replay"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="40dp"
-                    android:src="@mipmap/replay" />
+                    android:src="@drawable/replay" />
 
                 <ImageView
                     android:id="@+id/play_toggle"
@@ -176,7 +176,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="40dp"
-                    android:src="@mipmap/forward" />
+                    android:src="@drawable/forward" />
 
                 <TextView
                     android:id="@+id/play_speed"

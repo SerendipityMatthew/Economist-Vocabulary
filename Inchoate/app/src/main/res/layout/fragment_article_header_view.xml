@@ -75,7 +75,7 @@
             android:id="@+id/play"
             android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:background="@mipmap/play" />
+            android:background="@drawable/play" />
 
         <TextView
             android:layout_width="wrap_content"

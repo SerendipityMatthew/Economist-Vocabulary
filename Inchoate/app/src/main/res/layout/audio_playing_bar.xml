@@ -10,7 +10,7 @@
 
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@mipmap/play" />
+        android:background="@drawable/play" />
 
     <androidx.appcompat.widget.AppCompatSeekBar
         android:id="@+id/playing_progress"
@@ -22,11 +22,11 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
-        android:background="@mipmap/forward" />
+        android:background="@drawable/forward" />
 
     <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
-        android:background="@mipmap/float_action_close" />
+        android:background="@drawable/float_action_close" />
 </LinearLayout>

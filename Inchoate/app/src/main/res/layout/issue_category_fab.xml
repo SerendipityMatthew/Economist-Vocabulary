@@ -10,7 +10,7 @@
     android:layout_margin="16dp"
     android:clickable="true"
     android:focusable="true"
-    android:src="@mipmap/issue_category_menu"
+    android:src="@drawable/issue_category_menu"
     android:tint="@color/white"
     android:visibility="gone"
     app:fabSize="normal"

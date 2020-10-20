@@ -65,14 +65,14 @@
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_marginStart="160dp"
-            android:src="@mipmap/audio"
+            android:src="@drawable/audio"
             app:layout_constraintRight_toLeftOf="@id/bookmark" />
 
         <ImageView
             android:id="@+id/bookmark"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:src="@mipmap/bookmark_black"
+            android:src="@drawable/bookmark_black"
             app:layout_constraintRight_toRightOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

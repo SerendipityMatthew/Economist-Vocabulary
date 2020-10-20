@@ -353,15 +353,15 @@ public class ArticleFragment extends BaseFragment<ArticleContentAdapter, Article
         mDuration.setText(getDurationFormat(mArticle.audioDuration));
         Glide.with(getContext())
                 .load(mArticle.mainArticleImage)
-                .placeholder(R.mipmap.article_cover_placeholder)
+                .placeholder(R.drawable.article_cover_placeholder)
                 .into(mArticleCoverImage);
         Log.d(TAG, "initData: article = " + mArticle);
 
         if (mArticle != null) {
             Glide.with(getActivity())
-                    .load(mArticle.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                    .load(mArticle.isBookmark ? R.drawable.bookmark_black : R.drawable.bookmark_white)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(R.mipmap.bookmark_white)
+                    .placeholder(R.drawable.bookmark_white)
                     .centerInside()
                     .into(mBookmarkArticleToolbar);
         }
@@ -406,9 +406,9 @@ public class ArticleFragment extends BaseFragment<ArticleContentAdapter, Article
                     mArticle.isBookmark = true;
                 }
                 Glide.with(getActivity())
-                        .load(mArticle.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                        .load(mArticle.isBookmark ? R.drawable.bookmark_black : R.drawable.bookmark_white)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .placeholder(R.mipmap.bookmark_white)
+                        .placeholder(R.drawable.bookmark_white)
                         .centerInside()
                         .into(mBookmarkArticleToolbar);
 

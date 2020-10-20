@@ -38,14 +38,14 @@ public class TodayNewsAdapter extends BaseAdapter<TodayNewsViewHolder, Article> 
     public void onBindViewHolderImpl(@NonNull TodayNewsViewHolder holder, final int position, Article article) {
         Glide.with(mContext)
                 .load(article.mainArticleImage)
-                .placeholder(R.mipmap.the_economist)
+                .placeholder(R.drawable.the_economist)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.articleImage);
 
         Glide.with(mContext)
-                .load(article.isBookmark ? R.mipmap.bookmark_black : R.mipmap.bookmark_white)
+                .load(article.isBookmark ? R.drawable.bookmark_black : R.drawable.bookmark_white)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.mipmap.bookmark_white)
+                .placeholder(R.drawable.bookmark_white)
                 .into(holder.bookmark);
 
         holder.sectionText.setText(article.section);

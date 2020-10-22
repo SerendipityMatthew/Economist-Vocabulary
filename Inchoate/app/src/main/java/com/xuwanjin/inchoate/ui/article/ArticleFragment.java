@@ -56,7 +56,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.xuwanjin.inchoate.Utils.getDurationFormat;
+import static com.xuwanjin.inchoate.utils.Utils.getDurationFormat;
 
 /**
  * @author Matthew Xu

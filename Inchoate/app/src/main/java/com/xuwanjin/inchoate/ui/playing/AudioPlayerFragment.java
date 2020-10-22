@@ -25,7 +25,7 @@ import com.bumptech.glide.Glide;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
-import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.utils.Utils;
 import com.xuwanjin.inchoate.events.PlayEvent;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;

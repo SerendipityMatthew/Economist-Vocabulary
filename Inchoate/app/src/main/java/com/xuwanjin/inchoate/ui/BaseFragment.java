@@ -8,13 +8,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.InchoateApp;
-import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.utils.Utils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

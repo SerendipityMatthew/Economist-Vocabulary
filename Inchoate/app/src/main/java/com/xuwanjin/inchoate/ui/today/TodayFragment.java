@@ -34,7 +34,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.xuwanjin.inchoate.Utils.getTodayArticleList;
+import static com.xuwanjin.inchoate.utils.Utils.getTodayArticleList;
 
 /**
  * @author Matthew Xu

@@ -1,4 +1,4 @@
-package com.xuwanjin.inchoate;
+package com.xuwanjin.inchoate.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

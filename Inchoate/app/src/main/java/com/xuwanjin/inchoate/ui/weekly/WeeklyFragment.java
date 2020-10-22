@@ -28,13 +28,15 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
-import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.utils.Utils;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
+import com.xuwanjin.inchoate.database.dao.greendao.GreenDaoUtils;
 import com.xuwanjin.inchoate.download.DownloadService;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.ArticleCategorySection;
 import com.xuwanjin.inchoate.model.Issue;
+import com.xuwanjin.inchoate.model.IssueDao;
 import com.xuwanjin.inchoate.model.week.WeekJson;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 
@@ -50,6 +52,7 @@ import com.xuwanjin.inchoate.ui.BaseFragment;
 import com.xuwanjin.inchoate.view.DownloadProgressView;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -67,7 +70,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.xuwanjin.inchoate.Utils.getIssue;
+import static com.xuwanjin.inchoate.utils.Utils.getIssue;
 import static com.xuwanjin.inchoate.model.ArticleCategorySection.OBITUARY;
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setEconomistService;
 
@@ -160,6 +163,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
         initWeeklyFragmentView(view);
         initOnClickListener();
     }
+
     public float getDownloadPercent() {
         Issue issue = sIssueCache;
         List<Article> articleList = issue.containArticle;
@@ -167,7 +171,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
         File audioFile;
         for (int i = 0; i < articleList.size(); i++) {
             String audioPath = articleList.get(i).localeAudioUrl;
-            if (audioPath == null){
+            if (audioPath == null) {
                 return 0.0f;
             }
             audioFile = new File(audioPath);
@@ -298,9 +302,9 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
     }
 
     /**
-        先查看 load 哪一期, 然后是否从数据库, 还是 网络上 load.
-        通过 issueDate 查看是否存在数据库当中,
-        通过 urlId 从网络上加载
+     * 先查看 load 哪一期, 然后是否从数据库, 还是 网络上 load.
+     * 通过 issueDate 查看是否存在数据库当中,
+     * 通过 urlId 从网络上加载
      */
     public Issue loadWholeIssue(String issueDate, String urlId) {
         // 数据库 (数据库插入不全)---> 网络
@@ -324,11 +328,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
             }
 
         } else {
-//            issue = getNewestIssueDataFromDB();
-//            Log.d(TAG, "loadWholeIssue: issue = " + issue);
-//            if (issue == null || issue.containArticle == null || issue.containArticle.size() == 0){
             shouldLoadFromNetwork = true;
-//            }
         }
 
         if (shouldLoadFromNetwork) {
@@ -374,9 +374,9 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE){
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     Glide.with(getActivity()).resumeRequests();
-                }else {
+                } else {
                     Glide.with(getActivity()).pauseRequests();
                 }
             }
@@ -492,14 +492,13 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
     }
 
     private Issue getIssueDataFromDB(String issueDate, Context context) {
-
+        QueryBuilder<Issue> issueQueryBuilder = GreenDaoUtils.getIssueDao(context).queryBuilder()
+                .where(IssueDao.Properties.IssueFormatDate.eq(issueDate));
+        List<Issue> issueList = issueQueryBuilder.list();
         Issue issue = null;
-        InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
-        List<Issue> issueList = helper.queryIssueByFormatIssueDate(issueDate);
         if (issueList != null && issueList.size() > 0) {
             issue = issueList.get(0);
         }
-//        helper.close();
         return issue;
     }
 

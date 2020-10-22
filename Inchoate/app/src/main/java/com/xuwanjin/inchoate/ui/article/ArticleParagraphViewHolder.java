@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.xuwanjin.inchoate.R;
-import com.xuwanjin.inchoate.Utils;
+import com.xuwanjin.inchoate.utils.Utils;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Paragraph;
@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.xuwanjin.inchoate.InchoateApp.NAVIGATION_CONTROLLER;
 

@@ -21,6 +21,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout.PanelState;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
+import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.model.DaoSession;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
 import com.xuwanjin.inchoate.ui.playing.AudioPlayerFragment;
@@ -28,6 +30,8 @@ import com.xuwanjin.inchoate.ui.playing.AudioPlayerFragment;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setEconomistService;
 
@@ -76,6 +80,8 @@ public class InchoateActivity extends AppCompatActivity implements
         EventBus.getDefault().register(this);
         initView();
 
+        List<Article> articleList = ((InchoateApp) getApplication()).getDaoSession().getArticleDao().loadAll();
+        Log.d(TAG, "onCreate: articleList.size() = " + articleList.size());
     }
 
     private void initView() {
@@ -155,13 +161,13 @@ public class InchoateActivity extends AppCompatActivity implements
         }
         int resId = 0;
         if (item.getItemId() == R.id.item_today) {
-            resId =  R.id.navigation_today;
+            resId = R.id.navigation_today;
         } else if (item.getItemId() == R.id.item_weekly) {
-            resId =  R.id.navigation_weekly;
+            resId = R.id.navigation_weekly;
         } else if (item.getItemId() == R.id.item_bookmark) {
-            resId =  R.id.navigation_bookmark;
+            resId = R.id.navigation_bookmark;
         } else if (item.getItemId() == R.id.item_setting) {
-            resId =  R.id.navigation_settings;
+            resId = R.id.navigation_settings;
         }
         Utils.navigationController(mController, resId);
 

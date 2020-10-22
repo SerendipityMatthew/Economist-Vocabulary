@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
+import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
@@ -152,7 +153,8 @@ public class TodayFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecor
                 Log.d(TAG, "mInsertIssueData: run: ");
                 InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
                 for (Article article : articleList) {
-                    helper.insertArticle(article);
+                    ((InchoateApp)(getContext().getApplicationContext())).getDaoSession().getArticleDao().insert(article);
+//                    helper.insertArticle(article);
                 }
             }
         };

@@ -10,10 +10,15 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.xuwanjin.inchoate.InchoateApp;
+import com.xuwanjin.inchoate.database.dao.greendao.GreenDaoUtils;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.model.ArticleDao;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.Paragraph;
 import com.xuwanjin.inchoate.model.Vocabulary;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -56,6 +61,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     private static final String KEY_SECTION = "section";
     private static final String KEY_TITLE = "title";
 
+    private static final String KEY_HEADLINE = "headline";
     private static final String KEY_FLYTITLE = "flytitle";
     private static final String KEY_ARTICLE_URL = "article_url";
     private static final String KEY_AUDIO_URL = "audio_url";
@@ -103,6 +109,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
             + TABLE_NAME_ARTICLE + " ( " + KEY_ID_PARA
             + KEY_ISSUE_DATE + " TEXT,"
             + KEY_SECTION + " TEXT,"
+            + KEY_HEADLINE + " TEXT,"
             + KEY_TITLE + " TEXT,"
             + KEY_ARTICLE_URL + " TEXT,"
             + KEY_AUDIO_URL + " TEXT,"
@@ -219,6 +226,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     }
 
     public List<Article> queryBookmarkedArticle() {
+
         sDatabase = openInchoateDB();
         // Select * from article where is_bookmark='true';
         String query = "SELECT * FROM " + TABLE_NAME_ARTICLE + " WHERE " + KEY_IS_BOOKMARK + " =\'1\'";
@@ -424,7 +432,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
 
     public long insertArticle(Article article) {
         sDatabase = openInchoateDB();
-        if (isArticleExistedInTodayNews(article)){
+        if (isArticleExistedInTodayNews(article)) {
             return -1;
         }
         ContentValues contentValues = new ContentValues();
@@ -583,7 +591,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(KEY_IS_EDITORS_NOTE, paragraph.isEditorsNote);
         contentValues.put(KEY_IS_RELATED_SUGGESTION, paragraph.isRelatedSuggestion);
-        contentValues.put(KEY_PARAGRAPH_CONTENT, paragraph.paragraph.toString());
+        contentValues.put(KEY_PARAGRAPH_CONTENT, paragraph.paragraphContent.toString());
         contentValues.put(KEY_ORDER_OF_PARAGRAPH, paragraph.theOrderOfParagraph);
         contentValues.put(KEY_BELONGED_ARTICLE_ID, articleRowID);
         long affectedRowCount = sDatabase.insert(TABLE_NAME_PARAGRAPH, null, contentValues);
@@ -595,11 +603,14 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
 
     // 查看是否存在, 如果存在,                获取 rowID
     //              如果不存在. 则插入数据,   并且返回 rowID;
-    public Disposable insertWholeData(final Issue issue) {
+    public Disposable insertWholeData(final Issue issue, Context context) {
+
         long rowID = issueRowIDInDB(issue);
+        Log.d(TAG, "insertWholeData:  rowID = " + rowID);
         long issueRowID = RECORD_NOT_EXISTED_IN_DB;
         if (rowID == RECORD_NOT_EXISTED_IN_DB) {
-            issueRowID = insertIssueData(issue);
+            GreenDaoUtils.getIssueDao(context).save(issue);
+//            issueRowID = insertIssueData(issue);
         } else {
             issueRowID = rowID;
         }
@@ -614,12 +625,16 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                     @Override
                     public HashMap<Long, Article> apply(Article article) throws Exception {
                         Log.d(TAG, "insertWholeData: apply: article.title = " + article.title);
-                        long id = articleRowIDInDB(article, issue.issueDate);
+                        QueryBuilder<Article> articleQueryBuilder = GreenDaoUtils.getArticleDao(context)
+                                .queryBuilder()
+                                .where(ArticleDao.Properties.ArticleUrl.eq(article.articleUrl));
                         long articleRowID = RECORD_NOT_EXISTED_IN_DB;
-                        if (id == RECORD_NOT_EXISTED_IN_DB) {
-                            articleRowID = insertArticleData(article, finalIssueRowID, issue.issueDate);
-                        } else {
-                            articleRowID = id;
+                        if (articleQueryBuilder != null && articleQueryBuilder.list().size() > 0){
+                            articleRowID = articleQueryBuilder.list().get(0).rowIdInDB;
+                        }
+                        if (articleQueryBuilder == null || articleQueryBuilder.list().size() == 0) {
+//                            articleRowID = insertArticleData(article, finalIssueRowID, issue.issueDate);
+                            articleRowID = GreenDaoUtils.getArticleDao(context).insert(article);
                         }
                         HashMap<Long, Article> articleHashMap = new HashMap<>(0);
                         articleHashMap.put(articleRowID, article);
@@ -642,7 +657,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
                         Article article = longArticleHashMap.values().iterator().next();
 //                        Log.d(TAG, "insertWholeData: accept: articleRowID = " + articleRowID + " article.date =" + article.date);
                         for (Paragraph paragraph : article.paragraphList) {
-                            long paragraphID = paragraphRowIDInDB(paragraph.paragraph.toString(), articleRowID);
+                            long paragraphID = paragraphRowIDInDB(paragraph.paragraphContent.toString(), articleRowID);
                             if (paragraphID == RECORD_NOT_EXISTED_IN_DB) {
                                 insertParagraphData(paragraph, articleRowID);
                             }
@@ -727,7 +742,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         int issueFormatDateIndex = cursor.getColumnIndex(KEY_ISSUE_FORMAT_DATE);
         int headlineIndex = cursor.getColumnIndex(KEY_ISSUE_HEADLINE);
         Issue issue = new Issue();
-        issue.id = cursor.getInt(issueIDIndex);
+        issue.id = cursor.getLong(issueIDIndex);
         issue.issueDate = cursor.getString(issueDateIndex);
         issue.issueUrl = cursor.getString(issueURLIndex);
         issue.coverImageUrl = cursor.getString(issueCoverImageUrlIndex);
@@ -776,7 +791,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
     public Article getArticleIDFromCursor(Cursor cursor) {
         Article article = new Article();
         int idIndex = cursor.getColumnIndex(KEY_ID);
-        article.rowIdInDB = cursor.getInt(idIndex);
+        article.rowIdInDB = cursor.getLong(idIndex);
         return article;
     }
 
@@ -797,7 +812,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         int isBookmarkIndex = cursor.getColumnIndex(KEY_IS_BOOKMARK);
         int issueIDIndex = cursor.getColumnIndex(KEY_ISSUE_ID);
 
-        article.rowIdInDB = cursor.getInt(idIndex);
+        article.rowIdInDB = cursor.getLong(idIndex);
         article.date = cursor.getString(issueDateIndex);
         article.section = cursor.getString(sectionIndex);
         article.title = cursor.getString(titleIndex);
@@ -852,7 +867,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         return articleList;
     }
 
-    private List<Paragraph> queryParagraphListByArticleID(int articleRowID) {
+    private List<Paragraph> queryParagraphListByArticleID(long articleRowID) {
         // 如果 Paragraph 的表里查不出一个含有 articleRowID 的数据,
         // 表示这个 article 的 paragraph 没有被存入过
         sDatabase = openInchoateDB();
@@ -907,12 +922,14 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
 
     private Paragraph getParagraphFromCursor(Cursor cursor) {
         Paragraph paragraph = new Paragraph();
-        paragraph.id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
+        paragraph.id = cursor.getLong(cursor.getColumnIndex(KEY_ID));
         int isEditorsNote = cursor.getInt(cursor.getColumnIndex(KEY_IS_EDITORS_NOTE));
         paragraph.isEditorsNote = isEditorsNote == 1;
         int isRelatedSuggestion = cursor.getInt(cursor.getColumnIndex(KEY_IS_RELATED_SUGGESTION));
         paragraph.isRelatedSuggestion = isRelatedSuggestion == 1;
+        paragraph.paragraphContent = cursor.getString(cursor.getColumnIndex(KEY_PARAGRAPH_CONTENT));
         paragraph.paragraph = cursor.getString(cursor.getColumnIndex(KEY_PARAGRAPH_CONTENT));
+        paragraph.paragraphContent = cursor.getString(cursor.getColumnIndex(KEY_PARAGRAPH_CONTENT));
         paragraph.theOrderOfParagraph = cursor.getInt(cursor.getColumnIndex(KEY_ORDER_OF_PARAGRAPH));
         paragraph.belongedArticleID = cursor.getInt(cursor.getColumnIndex(KEY_BELONGED_ARTICLE_ID));
         return paragraph;

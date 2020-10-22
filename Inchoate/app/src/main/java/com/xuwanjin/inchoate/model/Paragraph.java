@@ -6,14 +6,36 @@ import android.os.Parcelable;
 
 import androidx.annotation.RequiresApi;
 
+import com.xuwanjin.inchoate.database.dao.greendao.CharSequenceConverter;
+import com.xuwanjin.inchoate.database.dao.greendao.ParagraphConverter;
+
+import org.greenrobot.greendao.annotation.Convert;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Index;
+import org.greenrobot.greendao.annotation.Property;
+import org.greenrobot.greendao.annotation.Transient;
+import org.greenrobot.greendao.annotation.Generated;
+
+@Entity
 public class Paragraph implements Parcelable {
     // 存储到数据库里的时候偶, 需要保证取出来的能拼凑按照顺序的段落
-    public int id;
+    @Id(autoincrement = true)
+    @Property(nameInDb = "id")
+    public Long id;
+    @Property(nameInDb = "order_of_paragraph")
     public int theOrderOfParagraph;
     public String articleName;
+    @Property(nameInDb = "paragraph_content")
+    public String paragraphContent;
+
+    @Transient
     public CharSequence paragraph;
+    @Property(nameInDb = "is_editors_note")
     public boolean isEditorsNote;
+    @Property(nameInDb = "is_related_suggestion")
     public boolean isRelatedSuggestion;
+    @Property(nameInDb = "belonged_article_id")
     public int belongedArticleID;
     public String issueDate;
     public String belongedSection;
@@ -24,24 +46,40 @@ public class Paragraph implements Parcelable {
 
     protected Paragraph(Parcel in) {
         articleName = in.readString();
-        paragraph = in.readString();
+        paragraphContent = in.readString();
         isEditorsNote = Boolean.parseBoolean(in.readString());
         isRelatedSuggestion = Boolean.parseBoolean(in.readString());
         belongedArticleID = in.readInt();
         theOrderOfParagraph = in.readInt();
-        id = in.readInt();
+        id = in.readLong();
+    }
+
+    @Generated(hash = 720031931)
+    public Paragraph(Long id, int theOrderOfParagraph, String articleName,
+            String paragraphContent, boolean isEditorsNote,
+            boolean isRelatedSuggestion, int belongedArticleID, String issueDate,
+            String belongedSection) {
+        this.id = id;
+        this.theOrderOfParagraph = theOrderOfParagraph;
+        this.articleName = articleName;
+        this.paragraphContent = paragraphContent;
+        this.isEditorsNote = isEditorsNote;
+        this.isRelatedSuggestion = isRelatedSuggestion;
+        this.belongedArticleID = belongedArticleID;
+        this.issueDate = issueDate;
+        this.belongedSection = belongedSection;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(articleName);
-        dest.writeString(paragraph.toString());
+        dest.writeString(paragraphContent.toString());
         dest.writeString(String.valueOf(isEditorsNote));
         dest.writeString(String.valueOf(isRelatedSuggestion));
         dest.writeInt(belongedArticleID);
         dest.writeInt(theOrderOfParagraph);
-        dest.writeInt(id);
+        dest.writeLong(id);
     }
 
     @Override
@@ -61,16 +99,16 @@ public class Paragraph implements Parcelable {
         }
     };
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     public int getTheOrderOfParagraph() {
-        return theOrderOfParagraph;
+        return this.theOrderOfParagraph;
     }
 
     public void setTheOrderOfParagraph(int theOrderOfParagraph) {
@@ -78,46 +116,59 @@ public class Paragraph implements Parcelable {
     }
 
     public String getArticleName() {
-        return articleName;
+        return this.articleName;
     }
 
     public void setArticleName(String articleName) {
         this.articleName = articleName;
     }
 
-    public CharSequence getParagraph() {
-        return paragraph;
+    public String getParagraphContent() {
+        return this.paragraphContent;
     }
 
-    public void setParagraph(String paragraph) {
-        this.paragraph = paragraph;
+    public void setParagraphContent(String paragraphContent) {
+        this.paragraphContent = paragraphContent;
     }
 
-    public boolean isEditorsNote() {
-        return isEditorsNote;
+    public boolean getIsEditorsNote() {
+        return this.isEditorsNote;
     }
 
-    public void setEditorsNote(boolean editorsNote) {
-        isEditorsNote = editorsNote;
+    public void setIsEditorsNote(boolean isEditorsNote) {
+        this.isEditorsNote = isEditorsNote;
     }
 
-    public boolean isRelatedSuggestion() {
-        return isRelatedSuggestion;
+    public boolean getIsRelatedSuggestion() {
+        return this.isRelatedSuggestion;
     }
 
-    public void setRelatedSuggestion(boolean relatedSuggestion) {
-        isRelatedSuggestion = relatedSuggestion;
+    public void setIsRelatedSuggestion(boolean isRelatedSuggestion) {
+        this.isRelatedSuggestion = isRelatedSuggestion;
     }
 
     public int getBelongedArticleID() {
-        return belongedArticleID;
+        return this.belongedArticleID;
     }
 
     public void setBelongedArticleID(int belongedArticleID) {
         this.belongedArticleID = belongedArticleID;
     }
 
-    public static Creator<Paragraph> getCREATOR() {
-        return CREATOR;
+    public String getIssueDate() {
+        return this.issueDate;
     }
+
+    public void setIssueDate(String issueDate) {
+        this.issueDate = issueDate;
+    }
+
+    public String getBelongedSection() {
+        return this.belongedSection;
+    }
+
+    public void setBelongedSection(String belongedSection) {
+        this.belongedSection = belongedSection;
+    }
+
 }

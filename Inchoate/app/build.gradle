@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'org.greenrobot.greendao' // apply plugin
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -64,5 +64,5 @@ dependencies {
     implementation 'androidx.preference:preference:1.0.0'
     implementation 'com.liulishuo.okdownload:okdownload:1.0.6'
 //    implementation 'com.squareup.leakcanary:leakcanary-android:2.3'
-
+    implementation 'org.greenrobot:greendao:3.3.0' // add library
 }

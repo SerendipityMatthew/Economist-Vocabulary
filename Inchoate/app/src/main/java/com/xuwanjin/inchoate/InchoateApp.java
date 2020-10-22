@@ -6,7 +6,10 @@ import android.app.Application;
 import androidx.navigation.NavController;
 
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
+import com.xuwanjin.inchoate.database.dao.greendao.GreenDaoDBHelper;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.model.DaoMaster;
+import com.xuwanjin.inchoate.model.DaoSession;
 import com.xuwanjin.inchoate.model.Issue;
 
 import java.io.BufferedReader;
@@ -65,13 +68,14 @@ public class InchoateApp extends Application {
             sCollectedVocabularyList = new ArrayList<>(collectedVocabulary);
         }
     };
+    DaoSession daoSession;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mInchoateApp = this;
-
-        mExecutorService.schedule(mOpenDatabaseRunnable, 3, TimeUnit.SECONDS);
+        daoSession = new DaoMaster(InchoateDBHelper.getInstance(this).getWritableDatabase()).newSession();
+//        mExecutorService.schedule(mOpenDatabaseRunnable, 3, TimeUnit.SECONDS);
         mExecutorService.schedule(mOpenVocabularyRunnable, 3, TimeUnit.SECONDS);
 //        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy
 //                .Builder()
@@ -90,10 +94,12 @@ public class InchoateApp extends Application {
 //                .build());
     }
 
-
+    public DaoSession getDaoSession() {
+        return daoSession;
+    }
 
     public static void setNewestIssueCache(Issue issue) {
-        sCacheNewestIssue.add(0,issue);
+        sCacheNewestIssue.add(0, issue);
     }
 
     public static List<Issue> getNewestIssueCache() {

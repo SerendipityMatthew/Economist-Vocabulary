@@ -258,7 +258,8 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
                 final Disposable disposable;
                 Log.d(TAG, "mInsertIssueData: run: ");
                 InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
-                disposable = helper.insertWholeData(issue);
+                disposable = helper.insertWholeData(issue, getActivity());
+
                 mCompositeDisposable.add(disposable);
 //                helper.close();
                 isInsertData = false;
@@ -303,7 +304,7 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
      */
     public Issue loadWholeIssue(String issueDate, String urlId) {
         // 数据库 (数据库插入不全)---> 网络
-        Issue issue = getIssueDataFromDB(issueDate);
+        Issue issue = getIssueDataFromDB(issueDate, getActivity());
         boolean shouldLoadFromNetwork = false;
         if (issue != null) {
             List<Article> articleList = issue.containArticle;
@@ -490,7 +491,8 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
         return issue;
     }
 
-    private Issue getIssueDataFromDB(String issueDate) {
+    private Issue getIssueDataFromDB(String issueDate, Context context) {
+
         Issue issue = null;
         InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
         List<Issue> issueList = helper.queryIssueByFormatIssueDate(issueDate);

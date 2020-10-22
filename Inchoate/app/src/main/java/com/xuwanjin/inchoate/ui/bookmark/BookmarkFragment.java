@@ -12,10 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.model.Article;
+import com.xuwanjin.inchoate.model.ArticleDao;
 import com.xuwanjin.inchoate.ui.BaseFragment;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +48,10 @@ public class BookmarkFragment extends BaseFragment<BookmarkAdapter, BookmarkItem
         mLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mTextView = view.findViewById(R.id.bookmark_title);
-        mBaseAdapter = new BookmarkAdapter(getContext(),initFakeData());
+        mBaseAdapter = new BookmarkAdapter(getContext(), initFakeData());
         mRecyclerView.setAdapter(mBaseAdapter);
     }
+
     @Override
     protected List<Article> initFakeData() {
         List<Article> articleList = new ArrayList<>();
@@ -79,8 +84,15 @@ public class BookmarkFragment extends BaseFragment<BookmarkAdapter, BookmarkItem
     @Override
     protected List<Article> fetchDataFromDBOrNetwork() {
         List<Article> articleList;
-        InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
-        articleList = helper.queryBookmarkedArticle();
+//        InchoateDBHelper helper = InchoateDBHelper.getInstance(getContext());
+        QueryBuilder<Article> bookmarkArticleQuery = ((InchoateApp)getContext()
+                .getApplicationContext())
+                .getDaoSession()
+                .getArticleDao()
+                .queryBuilder()
+                .where(ArticleDao.Properties.IsBookmark.eq(Boolean.TRUE));
+//        articleList = helper.queryBookmarkedArticle();
+        articleList = bookmarkArticleQuery.list();
         Log.d(TAG, "fetchDataFromDBOrNetwork: articleList.size = " + articleList.size());
 //        helper.close();
         return articleList;

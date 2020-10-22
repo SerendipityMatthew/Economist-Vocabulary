@@ -138,6 +138,7 @@ public class Utils {
                 paragraph.isRelatedSuggestion = true;
             }
             paragraph.paragraph = paragraphString;
+            paragraph.paragraphContent = paragraphString;
             return paragraph;
         }
         return null;

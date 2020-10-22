@@ -6,6 +6,7 @@ import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.model.ArticleDao;
 import com.xuwanjin.inchoate.model.IssueDao;
 import com.xuwanjin.inchoate.model.ParagraphDao;
+import com.xuwanjin.inchoate.model.VocabularyDao;
 
 public class GreenDaoUtils {
     public static ArticleDao getArticleDao(Context context){
@@ -25,5 +26,11 @@ public class GreenDaoUtils {
             return null;
         }
         return ((InchoateApp) (context.getApplicationContext())).getDaoSession().getParagraphDao();
+    }
+    public static VocabularyDao getVocabularyDao(Context context){
+        if (context == null){
+            return null;
+        }
+        return ((InchoateApp) (context.getApplicationContext())).getDaoSession().getVocabularyDao();
     }
 }

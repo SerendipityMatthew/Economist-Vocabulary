@@ -774,7 +774,7 @@ public class InchoateDBHelper extends SQLiteOpenHelper {
         int belongedIssueDateIndex = cursor.getColumnIndex(KEY_BELONGED_ISSUE_DATE);
         int belongedArticleUrlIndex = cursor.getColumnIndex(KEY_BELONGED_ARTICLE_URL);
 
-        vocabulary.rowId = cursor.getInt(idIndex);
+        vocabulary.rowId = cursor.getLong(idIndex);
         vocabulary.vocabularyContent = cursor.getString(vocabularyContentIndex);
         vocabulary.collectedDate = cursor.getString(collectedDateIndex);
         vocabulary.collectedTime = cursor.getString(collectedTimeIndex);

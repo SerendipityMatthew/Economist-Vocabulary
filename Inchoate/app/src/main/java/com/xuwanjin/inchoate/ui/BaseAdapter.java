@@ -144,17 +144,23 @@ public abstract class BaseAdapter<Holder extends BaseViewHolder, Data> extends R
 
     @Override
     public int getItemCount() {
+        int size = 0;
+        if (mDataList == null ){
+            size = 0;
+        }else {
+            size = mDataList.size();
+        }
         if (mHeaderView != null) {
             if (mFooterView != null) {
-                return mDataList.size() + 2;
+                return size + 2;
             } else {
-                return mDataList.size() + 1;
+                return size + 1;
             }
         } else {
             if (mFooterView != null) {
-                return mDataList.size() + 1;
+                return size + 1;
             } else {
-                return mDataList.size();
+                return size;
             }
         }
     }

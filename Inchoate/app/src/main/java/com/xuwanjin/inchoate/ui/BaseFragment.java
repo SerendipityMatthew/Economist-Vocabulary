@@ -53,7 +53,7 @@ public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration exten
     private static final int CONNECT_TIMEOUT = 10;
     private static final int READ_TIMEOUT = 10;
     private static final int WRITE_TIMEOUT = 10;
-    protected ViewDataBinding mBaseViewDataBinding;
+    protected VDB mBaseViewDataBinding;
     protected VM mViewModel;
     protected ViewModelProvider.Factory viewModelFactory;
     @Nullable

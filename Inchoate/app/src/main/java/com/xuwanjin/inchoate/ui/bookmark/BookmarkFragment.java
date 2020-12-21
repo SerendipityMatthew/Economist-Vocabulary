@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,9 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
+import com.xuwanjin.inchoate.databinding.FragmentAudioPlayBinding;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.ArticleDao;
 import com.xuwanjin.inchoate.ui.BaseFragment;
+import com.xuwanjin.inchoate.viewmodel.BaseViewModel;
+import com.xuwanjin.inchoate.viewmodel.BookmarkFragmentViewModel;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -35,11 +39,16 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * @author Matthew Xu
  */
-public class BookmarkFragment extends BaseFragment<BookmarkAdapter, BookmarkItemDecoration, List<Article>, LinearLayoutManager> {
+public class BookmarkFragment extends BaseFragment<BookmarkAdapter, BookmarkItemDecoration, List<Article>, LinearLayoutManager, FragmentAudioPlayBinding, BookmarkFragmentViewModel> {
     private static final String TAG = "BookmarkFragment";
     private TextView mTextView;
     private Disposable mDisposable;
     private static List<Article> sArticleList = new ArrayList<>();
+
+    @Override
+    protected Class<BookmarkFragmentViewModel> getViewModel() {
+        return BookmarkFragmentViewModel.class;
+    }
 
     @Override
     protected void initView(View view) {

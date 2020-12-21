@@ -2,14 +2,18 @@ package com.xuwanjin.inchoate.ui.vocabulary;
 
 import android.view.View;
 
+import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
+import com.xuwanjin.inchoate.databinding.FragmentVocabularyYardBinding;
 import com.xuwanjin.inchoate.model.Vocabulary;
 import com.xuwanjin.inchoate.ui.BaseFragment;
 import com.xuwanjin.inchoate.ui.BaseItemDecoration;
+import com.xuwanjin.inchoate.viewmodel.BaseViewModel;
+import com.xuwanjin.inchoate.viewmodel.VocabularyYardFragmentViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +24,13 @@ import java.util.stream.Stream;
 /**
  * @author Matthew Xu
  */
-public class VocabularyYardFragment extends BaseFragment<VocabularyYardAdapter, BaseItemDecoration, List<Vocabulary>, LinearLayoutManager> {
+public class VocabularyYardFragment extends BaseFragment<VocabularyYardAdapter, BaseItemDecoration, List<Vocabulary>, LinearLayoutManager, FragmentVocabularyYardBinding, VocabularyYardFragmentViewModel> {
     private static List<Vocabulary> mVocabularyList;
+
+    @Override
+    protected Class<VocabularyYardFragmentViewModel> getViewModel() {
+        return VocabularyYardFragmentViewModel.class;
+    }
 
     @Override
     protected void initView(View view) {

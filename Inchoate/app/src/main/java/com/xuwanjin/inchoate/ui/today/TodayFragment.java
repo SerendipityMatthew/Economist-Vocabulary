@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.google.gson.Gson;
@@ -16,9 +17,12 @@ import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
+import com.xuwanjin.inchoate.databinding.FragmentTodayBinding;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.today.TodayJson;
 import com.xuwanjin.inchoate.ui.BaseFragment;
+import com.xuwanjin.inchoate.viewmodel.BaseViewModel;
+import com.xuwanjin.inchoate.viewmodel.TodayNewsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +43,7 @@ import static com.xuwanjin.inchoate.utils.Utils.getTodayArticleList;
 /**
  * @author Matthew Xu
  */
-public class TodayFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecoration, List<Article>, GridLayoutManager> {
+public class TodayFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecoration, List<Article>, GridLayoutManager, FragmentTodayBinding, TodayNewsViewModel> {
     public static final String TAG = "TodayFragment";
     private static List<Article> sTodayArticleList = new ArrayList<>();
     private Disposable mDisposable;
@@ -49,6 +53,11 @@ public class TodayFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecor
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    protected Class<TodayNewsViewModel> getViewModel() {
+        return TodayNewsViewModel.class;
     }
 
     @Override

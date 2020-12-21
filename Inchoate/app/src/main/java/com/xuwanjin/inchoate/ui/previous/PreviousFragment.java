@@ -8,16 +8,19 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.databinding.FragmentPreviousBinding;
 import com.xuwanjin.inchoate.utils.Utils;
 import com.xuwanjin.inchoate.model.Issue;
 import com.xuwanjin.inchoate.model.archive.Archive;
 import com.xuwanjin.inchoate.ui.BaseFragment;
 import com.xuwanjin.inchoate.ui.BaseItemDecoration;
+import com.xuwanjin.inchoate.viewmodel.PreviousFragmentViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +36,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * @author Matthew Xu
  */
-public class PreviousFragment extends BaseFragment<PreviousAdapter, BaseItemDecoration, List<Issue>, GridLayoutManager > {
+public class PreviousFragment extends BaseFragment<PreviousAdapter, BaseItemDecoration, List<Issue>, GridLayoutManager, FragmentPreviousBinding, PreviousFragmentViewModel> {
     public static final String TAG = "PreviousFragment";
     public static List<Issue> sIssueList = new ArrayList<>();
     private Disposable mDisposable;
@@ -43,6 +46,11 @@ public class PreviousFragment extends BaseFragment<PreviousAdapter, BaseItemDeco
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    protected Class<PreviousFragmentViewModel> getViewModel() {
+        return PreviousFragmentViewModel.class;
     }
 
     @Override

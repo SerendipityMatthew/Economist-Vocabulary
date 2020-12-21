@@ -7,10 +7,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.databinding.FragmentFloatActionBinding;
 import com.xuwanjin.inchoate.ui.BaseFragment;
+import com.xuwanjin.inchoate.viewmodel.BaseViewModel;
+import com.xuwanjin.inchoate.viewmodel.FloatActionFragmentViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +22,7 @@ import java.util.List;
 /**
  * @author Matthew Xu
  */
-public class FloatActionFragment extends BaseFragment<IssueCategoryAdapter, IssueCategoryItemDecoration, List<String>, LinearLayoutManager> {
+public class FloatActionFragment extends BaseFragment<IssueCategoryAdapter, IssueCategoryItemDecoration, List<String>, LinearLayoutManager, FragmentFloatActionBinding, FloatActionFragmentViewModel> {
     public static final String TAG = "FloatActionFragment";
 
     private List<String> mSectionList = new ArrayList<>();
@@ -27,6 +31,11 @@ public class FloatActionFragment extends BaseFragment<IssueCategoryAdapter, Issu
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    protected Class<FloatActionFragmentViewModel> getViewModel() {
+        return FloatActionFragmentViewModel.class;
     }
 
     @Override

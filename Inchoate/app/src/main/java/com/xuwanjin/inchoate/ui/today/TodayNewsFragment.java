@@ -43,7 +43,7 @@ import static com.xuwanjin.inchoate.utils.Utils.getTodayArticleList;
 /**
  * @author Matthew Xu
  */
-public class TodayFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecoration, List<Article>, GridLayoutManager, FragmentTodayBinding, TodayNewsViewModel> {
+public class TodayNewsFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecoration, List<Article>, GridLayoutManager, FragmentTodayBinding, TodayNewsViewModel> {
     public static final String TAG = "TodayFragment";
     private static List<Article> sTodayArticleList = new ArrayList<>();
     private Disposable mDisposable;
@@ -62,7 +62,7 @@ public class TodayFragment extends BaseFragment<TodayNewsAdapter, TodayItemDecor
 
     @Override
     protected void initView(View view) {
-        mRecyclerView = view.findViewById(R.id.today_news_recyclerView);
+        mRecyclerView = mBaseViewDataBinding.todayNewsRecyclerView;
         mLayoutManager = new GridLayoutManager(getContext(), 1);
         mLayoutManager.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);

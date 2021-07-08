@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,6 +29,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.Constants;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.databinding.FragmentWeeklyBinding;
 import com.xuwanjin.inchoate.utils.Utils;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
 import com.xuwanjin.inchoate.database.dao.greendao.GreenDaoUtils;
@@ -50,6 +52,8 @@ import static com.xuwanjin.inchoate.Constants.WEEK_FRAGMENT_QUERY_05_30_URL;
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
 import com.xuwanjin.inchoate.ui.BaseFragment;
 import com.xuwanjin.inchoate.view.DownloadProgressView;
+import com.xuwanjin.inchoate.viewmodel.BaseViewModel;
+import com.xuwanjin.inchoate.viewmodel.WeeklyFragmentViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -77,7 +81,7 @@ import static com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle.setE
 /**
  * @author Matthew Xu
  */
-public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecoration, Issue, LinearLayoutManager> {
+public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecoration, Issue, LinearLayoutManager, FragmentWeeklyBinding, WeeklyFragmentViewModel> {
     public static final String TAG = "WeeklyFragment";
     private View mSectionHeaderView;
     private TextView mPreviousEdition;
@@ -156,6 +160,11 @@ public class WeeklyFragment extends BaseFragment<WeeklyAdapter, WeeklyItemDecora
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mExecutorService.submit(mBindServiceRunnable);
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    protected Class<WeeklyFragmentViewModel> getViewModel() {
+        return WeeklyFragmentViewModel.class;
     }
 
     @Override

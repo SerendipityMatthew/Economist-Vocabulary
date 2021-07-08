@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -29,12 +30,15 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
 import com.xuwanjin.inchoate.database.dao.InchoateDBHelper;
+import com.xuwanjin.inchoate.databinding.FragmentArticleDetailBinding;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
 import com.xuwanjin.inchoate.model.Article;
 import com.xuwanjin.inchoate.model.Paragraph;
 import com.xuwanjin.inchoate.timber_style.EconomistPlayerTimberStyle;
 import com.xuwanjin.inchoate.timber_style.IEconomistService;
 import com.xuwanjin.inchoate.ui.BaseFragment;
+import com.xuwanjin.inchoate.viewmodel.ArticleFragmentViewModel;
+import com.xuwanjin.inchoate.viewmodel.BaseViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -61,7 +65,8 @@ import static com.xuwanjin.inchoate.utils.Utils.getDurationFormat;
 /**
  * @author Matthew Xu
  */
-public class ArticleFragment extends BaseFragment<ArticleContentAdapter, ArticleItemDecoration, List<Paragraph>, GridLayoutManager> {
+public class ArticleFragment extends BaseFragment<ArticleContentAdapter, ArticleItemDecoration, List<Paragraph>, GridLayoutManager,
+        FragmentArticleDetailBinding, ArticleFragmentViewModel> {
     private static final String TAG = "ArticleFragment";
     private static final String DIGITAL_PATTERN = "\".*\\\\\\\\d+.*\"";
     private List<Paragraph> mParagraphList;
@@ -103,6 +108,11 @@ public class ArticleFragment extends BaseFragment<ArticleContentAdapter, Article
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    protected Class<ArticleFragmentViewModel> getViewModel() {
+        return ArticleFragmentViewModel.class;
     }
 
     @Override

@@ -7,13 +7,18 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.utils.Utils;
+import com.xuwanjin.inchoate.viewmodel.BaseViewModel;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -37,7 +42,9 @@ import okhttp3.Response;
 /**
  * @author Matthew Xu
  */
-public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration extends BaseItemDecoration, Data, BaseLayoutManager extends RecyclerView.LayoutManager> extends Fragment {
+public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration extends BaseItemDecoration,
+        Data, BaseLayoutManager extends RecyclerView.LayoutManager,
+        VDB extends ViewDataBinding, VM extends BaseViewModel> extends Fragment {
     protected RecyclerView mRecyclerView;
     protected Adapter mBaseAdapter;
     protected Decoration mBaseItemDecoration;
@@ -46,19 +53,26 @@ public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration exten
     private static final int CONNECT_TIMEOUT = 10;
     private static final int READ_TIMEOUT = 10;
     private static final int WRITE_TIMEOUT = 10;
-
+    protected VDB mBaseViewDataBinding;
+    protected VM mViewModel;
+    protected ViewModelProvider.Factory viewModelFactory;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         int layoutResId = getLayoutResId();
-        View mRootView = inflater.inflate(layoutResId, container, false);
+        mBaseViewDataBinding = DataBindingUtil.inflate(inflater, layoutResId, container, false);
+        View mRootView = mBaseViewDataBinding.getRoot();
         initView(mRootView);
         loadData();
+        mViewModel = ViewModelProviders.of(this, viewModelFactory).get(getViewModel());
         return mRootView;
     }
 
+    protected abstract Class<VM> getViewModel();
+
     /**
      * 初始化 Fragment 的 View,
+     *
      * @param view Fragment 布局的根 view
      */
     protected abstract void initView(View view);
@@ -70,6 +84,7 @@ public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration exten
 
     /**
      * 提供一个 布局的 id 给 Fragment 的 onCreateView 方法
+     *
      * @return 布局的 id
      */
     protected abstract int getLayoutResId();
@@ -77,6 +92,7 @@ public abstract class BaseFragment<Adapter extends BaseAdapter, Decoration exten
     /**
      * 从服务器或者网络上获取数据的方法
      * Data 返回数据的泛型, 有时候是 List<Issue> 有时候是 List<Article>
+     *
      * @return 返回界面需要的数据
      */
     protected abstract Data fetchDataFromDBOrNetwork();

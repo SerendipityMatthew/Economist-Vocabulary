@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSeekBar;
+import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.xuwanjin.inchoate.InchoateApp;
 import com.xuwanjin.inchoate.R;
+import com.xuwanjin.inchoate.databinding.FragmentAudioPlayBinding;
 import com.xuwanjin.inchoate.utils.Utils;
 import com.xuwanjin.inchoate.events.PlayEvent;
 import com.xuwanjin.inchoate.events.SlidingUpControllerEvent;
@@ -35,6 +37,8 @@ import com.xuwanjin.inchoate.timber_style.IEconomistService;
 import com.xuwanjin.inchoate.ui.BaseAdapter;
 import com.xuwanjin.inchoate.ui.BaseFragment;
 import com.xuwanjin.inchoate.ui.BaseItemDecoration;
+import com.xuwanjin.inchoate.viewmodel.AudioPlayerViewModel;
+import com.xuwanjin.inchoate.viewmodel.BaseViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -50,7 +54,7 @@ import static com.xuwanjin.inchoate.Constants.REWIND_OR_FORWARD_PREFERENCE;
 /**
  * @author Matthew Xu
  */
-public class AudioPlayerFragment extends BaseFragment<BaseAdapter, BaseItemDecoration, Object, GridLayoutManager> implements IPlayer.Callback {
+public class AudioPlayerFragment extends BaseFragment<BaseAdapter, BaseItemDecoration, Object, GridLayoutManager, FragmentAudioPlayBinding, AudioPlayerViewModel> implements IPlayer.Callback {
     public static final String TAG = "AudioPlayerFragment";
     private IPlayer mPlayService;
     private IEconomistService mEconomistService;
@@ -160,6 +164,11 @@ public class AudioPlayerFragment extends BaseFragment<BaseAdapter, BaseItemDecor
         mHandler.removeCallbacks(mProgressCallback);
         mHandler.postDelayed(mProgressCallback, 1000);
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    protected Class<AudioPlayerViewModel> getViewModel() {
+        return AudioPlayerViewModel.class;
     }
 
     @Override
